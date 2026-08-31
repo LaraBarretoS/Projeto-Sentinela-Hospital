@@ -3,17 +3,9 @@
 <head>
   <link rel="stylesheet" href="/css/atendimento.css">
   <style>
-    /* Estilos simples para alinhar os campos novos mantendo a estrutura original */
-    .form-group {
-      margin-bottom: 10px;
-    }
-    .form-row {
-      display: flex;
-      gap: 10px;
-    }
-    .form-row input, .form-row select {
-      flex: 1;
-    }
+    .form-group { margin-bottom: 10px; }
+    .form-row { display: flex; gap: 10px; }
+    .form-row input, .form-row select { flex: 1; }
     .menor-container {
       display: none;
       background-color: #fff3cd;
@@ -22,24 +14,31 @@
       border-radius: 4px;
       margin-bottom: 10px;
     }
+    #mensagem-status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+      font-weight: bold;
+      text-align: center;
+    }
+    .sucesso { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .erro { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
   </style>
 </head>
 <body>
 <div class="container">
-  <h2>Atendimento</h2>
+  <h2>Recepção - Novo Atendimento</h2>
 
-  <!-- Nome Completo -->
   <div class="form-group">
-    <input id="nome" placeholder="Nome Completo">
+    <input id="nome" placeholder="Nome Completo *">
   </div>
 
-  <!-- CPF e Data de Nascimento -->
   <div class="form-group form-row">
     <input id="cpf" placeholder="CPF (000.000.000-00)">
     <input type="date" id="dataNascimento" onchange="calcularIdade()" title="Data de Nascimento">
   </div>
 
-  <!-- Sexo e Estado Civil -->
   <div class="form-group form-row">
     <select id="sexo">
       <option value="">Selecione o Sexo</option>
@@ -59,13 +58,11 @@
     </select>
   </div>
 
-  <!-- Campo de Alerta/Responsável para Menores -->
   <div class="menor-container" id="campoResponsavel">
     <label style="font-size: 12px; color: #856404; display: block; margin-bottom: 4px;">Paciente menor de idade:</label>
-    <input id="responsavel" placeholder="Nome do Responsável">
+    <input id="responsavel" placeholder="Nome do Responsável *">
   </div>
 
-  <!-- Tipo de Atendimento -->
   <div class="form-group">
     <select id="tipo">
       <option value="Convenio">Convênio</option>
@@ -74,18 +71,19 @@
     </select>
   </div>
 
-  <!-- Foto -->
   <div class="form-group">
     <input type="file" id="foto">
   </div>
 
-  <button onclick="cadastrar()">Cadastrar</button>
+  <button id="btnCadastrar" onclick="cadastrar()">Enviar para Triagem</button>
+
+  <!-- Div para exibir as mensagens na tela sem depender só do alert -->
+  <div id="mensagem-status"></div>
 </div>
 
 <script>
 let idadeCalculada = null;
 
-// Função para calcular a idade automaticamente com base na Data de Nascimento
 function calcularIdade() {
   const dataNascInput = document.getElementById("dataNascimento").value;
   const divResponsavel = document.getElementById("campoResponsavel");
@@ -107,7 +105,6 @@ function calcularIdade() {
 
   idadeCalculada = idade;
 
-  // Exibe campo de responsável se for menor de 18 anos
   if (idade < 18) {
     divResponsavel.style.display = "block";
   } else {
@@ -116,40 +113,59 @@ function calcularIdade() {
   }
 }
 
-function cadastrar(){
-  const nomeVal = document.getElementById("nome").value;
-  const dataNascVal = document.getElementById("dataNascimento").value;
-  const responsavelVal = document.getElementById("responsavel").value;
+function exibirMensagem(texto, tipo) {
+  const divStatus = document.getElementById("mensagem-status");
+  divStatus.textContent = texto;
+  divStatus.className = tipo; // 'sucesso' ou 'erro'
+  divStatus.style.display = "block";
+}
 
-  // Validação simples
+async function cadastrar(){
+  const nomeVal = document.getElementById("nome").value.trim();
+  const dataNascVal = document.getElementById("dataNascimento").value;
+  const responsavelVal = document.getElementById("responsavel").value.trim();
+  const btn = document.getElementById("btnCadastrar");
+
+  // Validação basica
   if(!nomeVal || !dataNascVal) {
-    alert("Por favor, preencha o Nome e a Data de Nascimento.");
+    exibirMensagem("Por favor, preencha o Nome Completo e a Data de Nascimento.", "erro");
     return;
   }
 
   if(idadeCalculada !== null && idadeCalculada < 18 && !responsavelVal) {
-    alert("Pacientes menores de idade precisam do nome do responsável.");
+    exibirMensagem("Pacientes menores de idade precisam do nome do responsável.", "erro");
     return;
   }
 
-  fetch("http://localhost:3000/atendimento", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      nome: nomeVal,
-      cpf: document.getElementById("cpf").value,
-      dataNascimento: dataNascVal,
-      idade: idadeCalculada,
-      sexo: document.getElementById("sexo").value,
-      estadoCivil: document.getElementById("estadoCivil").value,
-      responsavel: responsavelVal,
-      tipo: document.getElementById("tipo").value
-    })
-  })
-  .then(response => {
-    if(response.ok) {
-      alert("Paciente enviado para triagem!");
-      // Limpa os campos
+  // Trava o botão para evitar múltiplos cliques
+  btn.disabled = true;
+  exibirMensagem("Enviando dados...", "sucesso");
+
+  // Estrutura de dados pronta para a fila da Triagem
+  const novoAtendimento = {
+    nome: nomeVal,
+    cpf: document.getElementById("cpf").value.trim(),
+    dataNascimento: dataNascVal,
+    idade: idadeCalculada,
+    sexo: document.getElementById("sexo").value,
+    estadoCivil: document.getElementById("estadoCivil").value,
+    responsavel: responsavelVal,
+    tipo: document.getElementById("tipo").value,
+    status: "Aguardando Triagem", // Define a etapa inicial do paciente
+    dataHoraEntrada: new Date().toISOString()
+  };
+
+  try {
+    const resposta = await fetch("http://localhost:3000/atendimento", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(novoAtendimento)
+    });
+
+    if (resposta.ok) {
+      exibirMensagem("Paciente cadastrado com sucesso e enviado para a fila de Triagem!", "sucesso");
+      
+      // Limpa os campos após salvar
       document.getElementById("nome").value = "";
       document.getElementById("cpf").value = "";
       document.getElementById("dataNascimento").value = "";
@@ -157,11 +173,16 @@ function cadastrar(){
       document.getElementById("estadoCivil").value = "";
       document.getElementById("responsavel").value = "";
       document.getElementById("campoResponsavel").style.display = "none";
+      document.getElementById("foto").value = "";
     } else {
-      alert("Erro ao cadastrar paciente.");
+      exibirMensagem("Erro no servidor ao tentar cadastrar o paciente.", "erro");
     }
-  })
-  .catch(err => console.error("Erro na requisição:", err));
+  } catch (erro) {
+    console.error("Erro na requisição:", erro);
+    exibirMensagem("Não foi possível conectar ao servidor (localhost:3000). Verifique se a API está rodando.", "erro");
+  } finally {
+    btn.disabled = false;
+  }
 }
 </script>
 </body>
