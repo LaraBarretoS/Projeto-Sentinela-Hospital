@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 
@@ -7,11 +8,33 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, "../frontend")));
+// Localiza a pasta do frontend (seja no mesmo nível, na pasta pública ou no diretório pai)
+let frontendPath = path.join(__dirname, "../frontend");
+if (!fs.existsSync(frontendPath)) {
+  frontendPath = fs.existsSync(path.join(__dirname, "public"))
+    ? path.join(__dirname, "public")
+    : path.join(__dirname, "../");
+}
 
-// Banco de dados temporário em memória (Compatível com o Render)
+app.use(express.static(frontendPath));
+
+// Servidor serve o arquivo index.html na rota raiz
+app.get("/", (req, res) => {
+  const indexPath = path.join(frontendPath, "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.send("API do Sistema Hospitalar está rodando!");
+  }
+});
+
+// Banco de dados em memória (Evita o erro 500 de escrita no Render)
 const db = {
-  usuarios: [],
+  usuarios: [
+    { usuario: "admin", senha: "123", area: "atendimento" },
+    { usuario: "triagem", senha: "123", area: "triagem" },
+    { usuario: "medico", senha: "123", area: "medico" }
+  ],
   pacientes: [],
   triagens: [],
   consultas: [],
@@ -21,19 +44,17 @@ const db = {
 
 // LOGIN
 app.post("/login", (req, res) => {
-  const user = db.usuarios.find(u =>
-    u.usuario === req.body.usuario &&
-    u.senha === req.body.senha
-  );
+  const { usuario, senha } = req.body;
+  const user = db.usuarios.find(u => u.usuario === usuario && u.senha === senha);
 
   if (!user) {
-    return res.status(401).json({ erro: "Login inválido" });
+    return res.status(401).json({ erro: "Login ou senha inválidos" });
   }
 
   res.json(user);
 });
 
-// ATENDIMENTO - cadastrar paciente
+// ATENDIMENTO - Cadastrar paciente
 app.post("/atendimento", (req, res) => {
   const paciente = {
     id: Date.now(),
@@ -67,7 +88,7 @@ app.post("/triagem", (req, res) => {
       risco = "verde";
     }
 
-    // Atualiza o status do paciente para ele ir para a fila do médico
+    // Atualiza status do paciente para sair da fila da triagem e ir para a do médico
     if (pacienteId) {
       const paciente = db.pacientes.find(p => p.id === Number(pacienteId) || p.id === pacienteId);
       if (paciente) {
@@ -91,7 +112,7 @@ app.post("/triagem", (req, res) => {
     db.triagens.push(triagem);
     res.json(triagem);
   } catch (error) {
-    console.error("Erro ao salvar triagem:", error);
+    console.error("Erro no processamento da triagem:", error);
     res.status(500).json({ erro: "Erro ao processar triagem no servidor." });
   }
 });
