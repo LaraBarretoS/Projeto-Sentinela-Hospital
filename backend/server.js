@@ -74,36 +74,56 @@ app.get("/pacientes", (req, res) => {
   res.json(db.pacientes);
 });
 
-// TRIAGEM
+// TRIAGEM (Corrigida)
 app.post("/triagem", (req, res) => {
-  const db = readDB();
+  try {
+    const db = readDB();
+    const { pacienteId, nome, sintoma, temperatura, alergia, observacao } = req.body;
 
-  let risco = req.body.risco;
+    let risco = req.body.risco;
+    if (temperatura >= 39) {
+      risco = "vermelho";
+    } else if (temperatura >= 38) {
+      risco = "amarelo";
+    } else if (!risco) {
+      risco = "verde";
+    }
 
-  if (req.body.temperatura >= 39) {
-    risco = "vermelho";
-  } else if (req.body.temperatura >= 38) {
-    risco = "amarelo";
-  } else if (!risco) {
-    risco = "verde";
+    // 1. Atualiza o status do paciente para ele sair da fila da triagem
+    if (pacienteId) {
+      const paciente = db.pacientes.find(p => p.id === Number(pacienteId) || p.id === pacienteId);
+      if (paciente) {
+        paciente.status = "medico";
+      }
+    }
+
+    // 2. Cria o registro de triagem
+    const triagem = {
+      id: Date.now(),
+      pacienteId,
+      nome,
+      sintoma,
+      temperatura,
+      alergia,
+      observacao,
+      risco,
+      status: "aguardando_medico",
+      createdAt: new Date()
+    };
+
+    db.triagens.push(triagem);
+
+    // 3. Tenta gravar no JSON
+    writeDB(db);
+
+    res.json(triagem);
+  } catch (error) {
+    console.error("Erro ao salvar triagem:", error);
+    res.status(500).json({ 
+      erro: "Falha ao gravar no banco de dados.", 
+      detalhes: error.message 
+    });
   }
-
-  const triagem = {
-    id: Date.now(),
-    nome: req.body.nome,
-    sintoma: req.body.sintoma,
-    temperatura: req.body.temperatura,
-    alergia: req.body.alergia,
-    observacao: req.body.observacao,
-    risco,
-    status: "aguardando_medico",
-    createdAt: new Date()
-  };
-
-  db.triagens.push(triagem);
-  writeDB(db);
-
-  res.json(triagem);
 });
 
 // LISTAR TRIAGENS
