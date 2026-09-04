@@ -1,5 +1,4 @@
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 
@@ -10,33 +9,18 @@ app.use(cors());
 
 app.use(express.static(path.join(__dirname, "../frontend")));
 
-const DB_FILE = path.join(__dirname, "db.json");
-
-function readDB() {
-  if (!fs.existsSync(DB_FILE)) {
-    return {
-      usuarios: [],
-      pacientes: [],
-      triagens: [],
-      consultas: [],
-      tv_chamada: null,
-      tv_historico: []
-    };
-  }
-  const db = JSON.parse(fs.readFileSync(DB_FILE));
-  if (!db.tv_chamada) db.tv_chamada = null;
-  if (!db.tv_historico) db.tv_historico = [];
-  return db;
-}
-
-function writeDB(data) {
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-}
+// Banco de dados temporário em memória (Compatível com o Render)
+const db = {
+  usuarios: [],
+  pacientes: [],
+  triagens: [],
+  consultas: [],
+  tv_chamada: null,
+  tv_historico: []
+};
 
 // LOGIN
 app.post("/login", (req, res) => {
-  const db = readDB();
-
   const user = db.usuarios.find(u =>
     u.usuario === req.body.usuario &&
     u.senha === req.body.senha
@@ -51,8 +35,6 @@ app.post("/login", (req, res) => {
 
 // ATENDIMENTO - cadastrar paciente
 app.post("/atendimento", (req, res) => {
-  const db = readDB();
-
   const paciente = {
     id: Date.now(),
     nome: req.body.nome,
@@ -63,21 +45,17 @@ app.post("/atendimento", (req, res) => {
   };
 
   db.pacientes.push(paciente);
-  writeDB(db);
-
   res.json(paciente);
 });
 
-// LISTAR PACIENTES (triagem busca quem foi cadastrado no atendimento)
+// LISTAR PACIENTES
 app.get("/pacientes", (req, res) => {
-  const db = readDB();
   res.json(db.pacientes);
 });
 
-// TRIAGEM (Corrigida)
+// TRIAGEM
 app.post("/triagem", (req, res) => {
   try {
-    const db = readDB();
     const { pacienteId, nome, sintoma, temperatura, alergia, observacao } = req.body;
 
     let risco = req.body.risco;
@@ -89,7 +67,7 @@ app.post("/triagem", (req, res) => {
       risco = "verde";
     }
 
-    // 1. Atualiza o status do paciente para ele sair da fila da triagem
+    // Atualiza o status do paciente para ele ir para a fila do médico
     if (pacienteId) {
       const paciente = db.pacientes.find(p => p.id === Number(pacienteId) || p.id === pacienteId);
       if (paciente) {
@@ -97,7 +75,6 @@ app.post("/triagem", (req, res) => {
       }
     }
 
-    // 2. Cria o registro de triagem
     const triagem = {
       id: Date.now(),
       pacienteId,
@@ -112,33 +89,21 @@ app.post("/triagem", (req, res) => {
     };
 
     db.triagens.push(triagem);
-
-    // 3. Tenta gravar no JSON
-    writeDB(db);
-
     res.json(triagem);
   } catch (error) {
     console.error("Erro ao salvar triagem:", error);
-    res.status(500).json({ 
-      erro: "Falha ao gravar no banco de dados.", 
-      detalhes: error.message 
-    });
+    res.status(500).json({ erro: "Erro ao processar triagem no servidor." });
   }
 });
 
 // LISTAR TRIAGENS
 app.get("/triagens", (req, res) => {
-  const db = readDB();
   res.json(db.triagens);
 });
 
 // ============ MÍDIA INDOOR - TV ============
 
-// Função criada para enviar a chamada do paciente para a tela da TV.
-// Serve para triagem chamar o paciente no guichê e para o médico chamar no consultório.
 app.post("/tv/chamar", (req, res) => {
-  const db = readDB();
-
   const chamada = {
     id: Date.now().toString(),
     localTipo: req.body.localTipo,
@@ -151,14 +116,10 @@ app.post("/tv/chamar", (req, res) => {
   db.tv_historico.unshift(chamada);
   if (db.tv_historico.length > 5) db.tv_historico.pop();
 
-  writeDB(db);
   res.json(chamada);
 });
 
-// Função criada para consultar a chamada atual e o histórico que será exibido na TV.
-// Essa rota é usada para atualizar a tela automaticamente a cada poucos segundos.
 app.get("/tv/chamada", (req, res) => {
-  const db = readDB();
   res.json({
     chamada: db.tv_chamada,
     historico: db.tv_historico
@@ -183,8 +144,6 @@ app.get("/lista-medicacoes", (req, res) => {
 
 // CONSULTA
 app.post("/consulta", (req, res) => {
-  const db = readDB();
-
   const consulta = {
     id: Date.now(),
     paciente: req.body.paciente,
@@ -195,17 +154,15 @@ app.post("/consulta", (req, res) => {
   };
 
   db.consultas.push(consulta);
-  writeDB(db);
-
   res.json(consulta);
 });
 
 // MEDICAÇÕES
 app.get("/medicacoes", (req, res) => {
-  const db = readDB();
   res.json(db.consultas);
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => { console.log (`Porta ${PORT}`);
-                       });
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
