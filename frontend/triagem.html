@@ -272,7 +272,7 @@ function salvar() {
   const alergia = document.getElementById("alergia").value;
   const observacao = document.getElementById("observacao").value;
 
-  if (!nome) {
+  if (!pacienteAtual || !pacienteAtual.id) {
     alert("Por favor, selecione um paciente da lista clicando em 'Chamar na TV'.");
     return;
   }
@@ -288,7 +288,7 @@ function salvar() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
-      pacienteId: pacienteAtual ? pacienteAtual.id : null,
+      pacienteId: pacienteAtual.id,
       nome, 
       sintoma, 
       temperatura, 
@@ -297,7 +297,13 @@ function salvar() {
       risco 
     })
   })
-  .then(r => r.json())
+  .then(async response => {
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Erro HTTP ${response.status}`);
+    }
+    return response.json();
+  })
   .then(data => {
     const resultado = document.getElementById("resultado");
     resultado.className = "risco-" + risco;
@@ -318,8 +324,8 @@ function salvar() {
     carregarPacientes();
   })
   .catch(err => {
-    console.error(err);
-    alert("Erro ao salvar triagem.");
+    console.error("Erro detalhado:", err);
+    alert("Erro ao salvar triagem: " + err.message);
   });
 }
 
