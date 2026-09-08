@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
+const { exec } = require("child_process");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 const db = {
   usuarios: [
     { usuario: "admin", senha: "123", tipo: "atendimento" },
+    { usuario: "atendimento", senha: "123", tipo: "atendimento" },
     { usuario: "triagem", senha: "123", tipo: "triagem" },
     { usuario: "medico", senha: "123", tipo: "medico" }
   ],
@@ -40,16 +42,16 @@ const db = {
   tv_historico: []
 };
 
-// LOGIN (Corrigido para retornar 'tipo')
+// LOGIN
 app.post("/login", (req, res) => {
   const { usuario, senha } = req.body;
   const user = db.usuarios.find(u => u.usuario === usuario && u.senha === senha);
 
   if (!user) {
-    return res.status(401).json({ erro: "Login ou senha inválidos" });
+    return res.status(401).json({ erro: "Usuário ou senha inválidos." });
   }
 
-  res.json(user);
+  res.json({ usuario: user.usuario, tipo: user.tipo });
 });
 
 // ATENDIMENTO
@@ -150,7 +152,7 @@ app.get("/lista-medicacoes", (req, res) => {
   ]);
 });
 
-// CONSULTA (Corrigido para dar baixa na fila)
+// CONSULTA
 app.post("/consulta", (req, res) => {
   const { triagemId, paciente, diagnostico, medicacao, obs } = req.body;
 
@@ -177,6 +179,69 @@ app.post("/consulta", (req, res) => {
 
 app.get("/medicacoes", (req, res) => {
   res.json(db.consultas);
+});
+
+// GERAR PDF DA ALTA
+app.post("/gerar-pdf-alta", (req, res) => {
+  const { paciente, sintoma, temperatura, alergia, diagnostico, medicacao, obs } = req.body;
+  const dataAtual = new Date().toLocaleDateString("pt-BR");
+
+  const htmlContent = `
+  <!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+  <meta charset="UTF-8">
+  <style>
+    @page { size: A4; margin: 20mm 15mm; }
+    body { font-family: Arial, sans-serif; color: #2d3748; margin: 0; padding: 0; font-size: 10.5pt; line-height: 1.5; }
+    .header { border-bottom: 2px solid #2b6cb0; padding-bottom: 12px; margin-bottom: 20px; }
+    .hospital-title { font-size: 18pt; font-weight: bold; color: #1a365d; margin: 0; }
+    .doc-title { text-align: center; background-color: #ebf8ff; border: 1px solid #cbd5e1; color: #2b6cb0; padding: 10px; font-size: 14pt; font-weight: bold; margin-bottom: 20px; }
+    .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    .info-table td { padding: 6px 8px; border: 1px solid #e2e8f0; font-size: 10pt; }
+    .info-table .label { font-weight: bold; background-color: #f8fafc; color: #4a5568; width: 25%; }
+    .box-content { border: 1px solid #e2e8f0; padding: 12px; font-size: 10pt; min-height: 50px; }
+    .signature-area { margin-top: 50px; text-align: center; }
+    .signature-line { width: 250px; border-top: 1px solid #4a5568; margin: 0 auto 8px auto; }
+  </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="hospital-title">🏥 Hospital Sentinela</div>
+      <div>Data: ${dataAtual}</div>
+    </div>
+    <div class="doc-title">Termo de Alta Médica</div>
+    <table class="info-table">
+      <tr><td class="label">Paciente:</td><td><strong>${paciente || "Não informado"}</strong></td></tr>
+      <tr><td class="label">Sintoma:</td><td>${sintoma || "—"}</td></tr>
+      <tr><td class="label">Temperatura:</td><td>${temperatura ? temperatura + " °C" : "—"}</td></tr>
+      <tr><td class="label">Alergias:</td><td>${alergia || "Nenhuma"}</td></tr>
+      <tr><td class="label">Diagnóstico:</td><td>${diagnostico || "—"}</td></tr>
+      <tr><td class="label">Medicação:</td><td>${medicacao || "—"}</td></tr>
+    </table>
+    <div class="box-content"><strong>Observações:</strong><br>${obs ? obs.replace(/\n/g, "<br>") : "Paciente liberado."}</div>
+    <div class="signature-area">
+      <div class="signature-line"></div>
+      <div>Dr. Médico Responsável</div>
+    </div>
+  </body>
+  </html>
+  `;
+
+  const htmlPath = path.join(__dirname, "temp_alta.html");
+  const pdfPath = path.join(__dirname, "temp_alta.pdf");
+
+  fs.writeFileSync(htmlPath, htmlContent, "utf-8");
+
+  exec(`weasyprint "${htmlPath}" "${pdfPath}"`, (error) => {
+    if (error) {
+      return res.status(500).json({ erro: "Erro ao gerar PDF." });
+    }
+    res.sendFile(pdfPath, () => {
+      if (fs.existsSync(htmlPath)) fs.unlinkSync(htmlPath);
+      if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
+    });
+  });
 });
 
 const PORT = process.env.PORT || 3000;
