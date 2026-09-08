@@ -2,13 +2,14 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
-const { exec } = require("child_process");
+const PDFDocument = require("pdfkit");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
+// Configuração dos caminhos estáticos
 let frontendPath = path.join(__dirname, "../frontend");
 if (!fs.existsSync(frontendPath)) {
   frontendPath = fs.existsSync(path.join(__dirname, "public"))
@@ -181,67 +182,65 @@ app.get("/medicacoes", (req, res) => {
   res.json(db.consultas);
 });
 
-// GERAR PDF DA ALTA
+// GERAR PDF DA ALTA (USANDO PDFKIT VIA BUFFER)
 app.post("/gerar-pdf-alta", (req, res) => {
-  const { paciente, sintoma, temperatura, alergia, diagnostico, medicacao, obs } = req.body;
-  const dataAtual = new Date().toLocaleDateString("pt-BR");
+  try {
+    const { paciente, sintoma, temperatura, alergia, diagnostico, medicacao, obs } = req.body;
+    const dataAtual = new Date().toLocaleDateString("pt-BR");
 
-  const htmlContent = `
-  <!DOCTYPE html>
-  <html lang="pt-BR">
-  <head>
-  <meta charset="UTF-8">
-  <style>
-    @page { size: A4; margin: 20mm 15mm; }
-    body { font-family: Arial, sans-serif; color: #2d3748; margin: 0; padding: 0; font-size: 10.5pt; line-height: 1.5; }
-    .header { border-bottom: 2px solid #2b6cb0; padding-bottom: 12px; margin-bottom: 20px; }
-    .hospital-title { font-size: 18pt; font-weight: bold; color: #1a365d; margin: 0; }
-    .doc-title { text-align: center; background-color: #ebf8ff; border: 1px solid #cbd5e1; color: #2b6cb0; padding: 10px; font-size: 14pt; font-weight: bold; margin-bottom: 20px; }
-    .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-    .info-table td { padding: 6px 8px; border: 1px solid #e2e8f0; font-size: 10pt; }
-    .info-table .label { font-weight: bold; background-color: #f8fafc; color: #4a5568; width: 25%; }
-    .box-content { border: 1px solid #e2e8f0; padding: 12px; font-size: 10pt; min-height: 50px; }
-    .signature-area { margin-top: 50px; text-align: center; }
-    .signature-line { width: 250px; border-top: 1px solid #4a5568; margin: 0 auto 8px auto; }
-  </style>
-  </head>
-  <body>
-    <div class="header">
-      <div class="hospital-title">🏥 Hospital Sentinela</div>
-      <div>Data: ${dataAtual}</div>
-    </div>
-    <div class="doc-title">Termo de Alta Médica</div>
-    <table class="info-table">
-      <tr><td class="label">Paciente:</td><td><strong>${paciente || "Não informado"}</strong></td></tr>
-      <tr><td class="label">Sintoma:</td><td>${sintoma || "—"}</td></tr>
-      <tr><td class="label">Temperatura:</td><td>${temperatura ? temperatura + " °C" : "—"}</td></tr>
-      <tr><td class="label">Alergias:</td><td>${alergia || "Nenhuma"}</td></tr>
-      <tr><td class="label">Diagnóstico:</td><td>${diagnostico || "—"}</td></tr>
-      <tr><td class="label">Medicação:</td><td>${medicacao || "—"}</td></tr>
-    </table>
-    <div class="box-content"><strong>Observações:</strong><br>${obs ? obs.replace(/\n/g, "<br>") : "Paciente liberado."}</div>
-    <div class="signature-area">
-      <div class="signature-line"></div>
-      <div>Dr. Médico Responsável</div>
-    </div>
-  </body>
-  </html>
-  `;
+    const doc = new PDFDocument({ size: "A4", margin: 40 });
+    let buffers = [];
 
-  const htmlPath = path.join(__dirname, "temp_alta.html");
-  const pdfPath = path.join(__dirname, "temp_alta.pdf");
-
-  fs.writeFileSync(htmlPath, htmlContent, "utf-8");
-
-  exec(`weasyprint "${htmlPath}" "${pdfPath}"`, (error) => {
-    if (error) {
-      return res.status(500).json({ erro: "Erro ao gerar PDF." });
-    }
-    res.sendFile(pdfPath, () => {
-      if (fs.existsSync(htmlPath)) fs.unlinkSync(htmlPath);
-      if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
+    doc.on("data", buffers.push.bind(buffers));
+    doc.on("end", () => {
+      const pdfData = Buffer.concat(buffers);
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Length", pdfData.length);
+      res.setHeader("Content-Disposition", "inline; filename=alta_medica.pdf");
+      res.status(200).send(pdfData);
     });
-  });
+
+    // Conteúdo do PDF
+    doc.fontSize(18).fillColor("#1a365d").text("🏥 HOSPITAL SENTINELA", { align: "left" });
+    doc.fontSize(9).fillColor("#4a5568").text("Sistema de Gestão Hospitalar e Prontuário Eletrônico", { align: "left" });
+    doc.fontSize(9).fillColor("#718096").text(`Data de Emissão: ${dataAtual}`, { align: "right" });
+    doc.moveDown(1);
+
+    doc.moveTo(40, doc.y).lineTo(555, doc.y).strokeColor("#2b6cb0").lineWidth(2).stroke();
+    doc.moveDown(1.5);
+
+    doc.fontSize(14).fillColor("#2b6cb0").text("TERMO DE ALTA MÉDICA", { align: "center" });
+    doc.moveDown(1.5);
+
+    doc.fontSize(11).fillColor("#1a365d").text("IDENTIFICAÇÃO DO PACIENTE");
+    doc.fontSize(10).fillColor("#2d3748");
+    doc.text(`Paciente: ${paciente || "Não informado"}`);
+    doc.text(`Sintoma: ${sintoma || "—"}`);
+    doc.text(`Temperatura: ${temperatura ? temperatura + " °C" : "—"}`);
+    doc.text(`Alergias: ${alergia || "Nenhuma"}`);
+    doc.moveDown(1.5);
+
+    doc.fontSize(11).fillColor("#1a365d").text("DIAGNÓSTICO E CONDUTA MÉDICA");
+    doc.fontSize(10).fillColor("#2d3748");
+    doc.text(`Diagnóstico: ${diagnostico || "—"}`);
+    doc.text(`Medicação Prescrita: ${medicacao || "Nenhuma"}`);
+    doc.moveDown(1.5);
+
+    doc.fontSize(11).fillColor("#1a365d").text("OBSERVAÇÕES E ORIENTAÇÕES");
+    doc.fontSize(10).fillColor("#2d3748").text(obs || "Paciente liberado com orientações gerais de repouso.", { align: "justify" });
+    doc.moveDown(4);
+
+    const posY = doc.y;
+    doc.moveTo(170, posY).lineTo(425, posY).strokeColor("#4a5568").lineWidth(1).stroke();
+    doc.moveDown(0.5);
+    doc.fontSize(10).fillColor("#1a365d").text("Dr. Médico Responsável", { align: "center" });
+    doc.fontSize(9).fillColor("#718096").text("CRM/UF 123456 • Medicina de Emergência", { align: "center" });
+
+    doc.end();
+  } catch (error) {
+    console.error("Erro interno no PDF:", error);
+    res.status(500).send("Erro interno ao processar PDF: " + error.message);
+  }
 });
 
 const PORT = process.env.PORT || 3000;
