@@ -8,7 +8,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Localiza a pasta do frontend (seja no mesmo nível, na pasta pública ou no diretório pai)
 let frontendPath = path.join(__dirname, "../frontend");
 if (!fs.existsSync(frontendPath)) {
   frontendPath = fs.existsSync(path.join(__dirname, "public"))
@@ -18,7 +17,6 @@ if (!fs.existsSync(frontendPath)) {
 
 app.use(express.static(frontendPath));
 
-// Servidor serve o arquivo index.html na rota raiz
 app.get("/", (req, res) => {
   const indexPath = path.join(frontendPath, "index.html");
   if (fs.existsSync(indexPath)) {
@@ -28,12 +26,12 @@ app.get("/", (req, res) => {
   }
 });
 
-// Banco de dados em memória (Evita o erro 500 de escrita no Render)
+// Banco de dados em memória
 const db = {
   usuarios: [
-    { usuario: "admin", senha: "123", area: "atendimento" },
-    { usuario: "triagem", senha: "123", area: "triagem" },
-    { usuario: "medico", senha: "123", area: "medico" }
+    { usuario: "admin", senha: "123", tipo: "atendimento" },
+    { usuario: "triagem", senha: "123", tipo: "triagem" },
+    { usuario: "medico", senha: "123", tipo: "medico" }
   ],
   pacientes: [],
   triagens: [],
@@ -42,7 +40,7 @@ const db = {
   tv_historico: []
 };
 
-// LOGIN
+// LOGIN (Corrigido para retornar 'tipo')
 app.post("/login", (req, res) => {
   const { usuario, senha } = req.body;
   const user = db.usuarios.find(u => u.usuario === usuario && u.senha === senha);
@@ -54,12 +52,15 @@ app.post("/login", (req, res) => {
   res.json(user);
 });
 
-// ATENDIMENTO - Cadastrar paciente
+// ATENDIMENTO
 app.post("/atendimento", (req, res) => {
   const paciente = {
     id: Date.now(),
     nome: req.body.nome,
     cpf: req.body.cpf,
+    dataNascimento: req.body.dataNascimento,
+    idade: req.body.idade,
+    responsavel: req.body.responsavel,
     tipo: req.body.tipo,
     status: "triagem",
     createdAt: new Date()
@@ -69,7 +70,6 @@ app.post("/atendimento", (req, res) => {
   res.json(paciente);
 });
 
-// LISTAR PACIENTES
 app.get("/pacientes", (req, res) => {
   res.json(db.pacientes);
 });
@@ -88,9 +88,8 @@ app.post("/triagem", (req, res) => {
       risco = "verde";
     }
 
-    // Atualiza status do paciente para sair da fila da triagem e ir para a do médico
     if (pacienteId) {
-      const paciente = db.pacientes.find(p => p.id === Number(pacienteId) || p.id === pacienteId);
+      const paciente = db.pacientes.find(p => String(p.id) === String(pacienteId));
       if (paciente) {
         paciente.status = "medico";
       }
@@ -112,18 +111,15 @@ app.post("/triagem", (req, res) => {
     db.triagens.push(triagem);
     res.json(triagem);
   } catch (error) {
-    console.error("Erro no processamento da triagem:", error);
-    res.status(500).json({ erro: "Erro ao processar triagem no servidor." });
+    res.status(500).json({ erro: "Erro ao processar triagem." });
   }
 });
 
-// LISTAR TRIAGENS
 app.get("/triagens", (req, res) => {
   res.json(db.triagens);
 });
 
-// ============ MÍDIA INDOOR - TV ============
-
+// TV - CHAMADAS
 app.post("/tv/chamar", (req, res) => {
   const chamada = {
     id: Date.now().toString(),
@@ -147,30 +143,31 @@ app.get("/tv/chamada", (req, res) => {
   });
 });
 
-// LISTA DE MEDICAÇÕES
 app.get("/lista-medicacoes", (req, res) => {
   res.json([
-    "Dipirona",
-    "Paracetamol",
-    "Ibuprofeno",
-    "Amoxicilina",
-    "Azitromicina",
-    "Loratadina",
-    "Omeprazol",
-    "Buscopan",
-    "Dramin",
-    "Soro fisiológico"
+    "Dipirona", "Paracetamol", "Ibuprofeno", "Amoxicilina",
+    "Azitromicina", "Loratadina", "Omeprazol", "Buscopan", "Dramin", "Soro fisiológico"
   ]);
 });
 
-// CONSULTA
+// CONSULTA (Corrigido para dar baixa na fila)
 app.post("/consulta", (req, res) => {
+  const { triagemId, paciente, diagnostico, medicacao, obs } = req.body;
+
+  if (triagemId) {
+    const triagem = db.triagens.find(t => String(t.id) === String(triagemId));
+    if (triagem) {
+      triagem.status = "finalizado";
+    }
+  }
+
   const consulta = {
     id: Date.now(),
-    paciente: req.body.paciente,
-    diagnostico: req.body.diagnostico,
-    medicacao: req.body.medicacao,
-    obs: req.body.obs,
+    triagemId,
+    paciente,
+    diagnostico,
+    medicacao,
+    obs,
     createdAt: new Date()
   };
 
@@ -178,12 +175,9 @@ app.post("/consulta", (req, res) => {
   res.json(consulta);
 });
 
-// MEDICAÇÕES
 app.get("/medicacoes", (req, res) => {
   res.json(db.consultas);
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
