@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Médico</title>
 <link rel="stylesheet" href="/css/medico.css">
+  <link rel="stylesheet" href="/theme.css">
 </head>
 <body>
+<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
 
 <div class="container">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -23,6 +25,11 @@
   <div class="medico-grid">
     <div class="coluna-fila">
       <h3 style="margin-top:0; color:#2d3748;">Fila de Espera</h3>
+      <div class="emergencia-card">
+        <strong>🚨 Paciente de Emergência</strong>
+        <p style="font-size:12px; margin-top:4px;">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+        <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
+      </div>
       <div id="triagens"><p style="color:#888; text-align:center;">Carregando...</p></div>
       <button onclick="carregar()" style="margin-top:10px; width:100%; background:#6c757d; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">🔄 Atualizar Fila</button>
     </div>
@@ -105,6 +112,16 @@ function carregar() {
       });
     })
     .catch(err => console.error("Erro ao carregar fila:", err));
+}
+
+function selecionarPacienteEmergencia() {
+  pacienteSelecionado = { id: null, nome: "Paciente de Emergência", sintoma: "", temperatura: "", alergia: "" };
+  document.getElementById("paciente").value = "Paciente de Emergência";
+  document.getElementById("diagnostico").value = "";
+  document.getElementById("medicacao").value = "";
+  document.getElementById("obs").value = "";
+  document.getElementById("alertaAlergia").style.display = "none";
+  fetch("/tv/chamar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ localTipo: "CONSULTÓRIO", localNumero: document.getElementById("consultorio-num").value || "01", paciente: "Paciente de Emergência" }) });
 }
 
 function chamarESelecionar(index) {
@@ -225,7 +242,8 @@ function gerarPDFNativoNavegador(dados) {
       </div>
       <div class="signature">Dr. Médico Responsável</div>
       <script>window.onload = function() { window.print(); };<\/script>
-    </body>
+    <script src="/js/theme.js"></script>
+</body>
     </html>
   `);
   win.document.close();

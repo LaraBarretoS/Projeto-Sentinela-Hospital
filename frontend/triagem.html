@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Triagem Hospitalar</title>
 <link rel="stylesheet" href="/css/triagem.css">
+  <link rel="stylesheet" href="/theme.css">
 </head>
 <body>
+<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
 <div class="container">
 
   <!-- Cabeçalho -->
@@ -24,6 +26,12 @@
       </h3>
       <p style="font-size:12px; color:#718096; margin-bottom:12px;">Clique em "Chamar na TV" para iniciar o atendimento do paciente.</p>
       
+      <div class="emergencia-card">
+        <strong>🚨 Paciente de Emergência</strong>
+        <p style="font-size:12px; margin-top:4px;">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+        <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
+      </div>
+
       <div id="fila-pacientes">
         <p style="color:#888; text-align:center;">Carregando...</p>
       </div>
@@ -152,6 +160,16 @@ function selecionarEChamar(paciente) {
   .catch(err => console.error("Erro ao chamar na TV:", err));
 }
 
+function selecionarPacienteEmergencia() {
+  pacienteAtual = { id: null, nome: "Paciente de Emergência", pacienteEmBranco: true };
+  document.getElementById("nome").value = "Paciente de Emergência";
+  document.getElementById("sintoma").value = "";
+  document.getElementById("temp").value = "";
+  document.getElementById("alergia").value = "";
+  document.getElementById("observacao").value = "";
+  fetch("/tv/chamar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ localTipo: "GUICHÊ", localNumero: "01", paciente: "Paciente de Emergência" }) });
+}
+
 function classificarRisco(sintoma, temperatura) {
   const vermelhos = ["infarto","avc","convulsao","hemorragia","falta_ar_grave"];
   const amarelos = ["febre","vomito","diarreia","falta_ar_moderada"];
@@ -168,8 +186,8 @@ function salvar() {
   const alergia = document.getElementById("alergia").value;
   const observacao = document.getElementById("observacao").value;
 
-  if (!pacienteAtual || !pacienteAtual.id) {
-    alert("Por favor, selecione um paciente da lista clicando em 'Chamar na TV'.");
+  if (!pacienteAtual) {
+    alert("Por favor, selecione um paciente da lista ou o Paciente de Emergência.");
     return;
   }
 
@@ -184,7 +202,7 @@ function salvar() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
-      pacienteId: pacienteAtual.id,
+      pacienteId: pacienteAtual.id || null,
       nome, 
       sintoma, 
       temperatura, 
@@ -232,5 +250,6 @@ carregarPacientes();
 setInterval(carregarPacientes, 10000);
 </script>
 
+<script src="/js/theme.js"></script>
 </body>
 </html>

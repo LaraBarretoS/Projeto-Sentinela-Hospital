@@ -120,8 +120,10 @@
     }
     .flash { animation: flash 0.5s ease 3; }
   </style>
+  <link rel="stylesheet" href="/theme.css">
 </head>
 <body>
+<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
 
 <!-- Estrutura da tela da TV criada para exibir o local e o nome do paciente chamado -->
 <div class="tv-container">
@@ -190,5 +192,6 @@ atualizar();
 setInterval(atualizar, 2000);
 </script>
 
+<script src="/js/theme.js"></script>
 </body>
 </html>
