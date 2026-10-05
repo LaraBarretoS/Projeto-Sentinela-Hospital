@@ -1,197 +1,1228 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Mídia Indoor - TV</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 
-    body {
-      background-color: #5c4033;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8">
 
-    .tv-container {
-      display: flex;
-      width: 95vw;
-      height: 90vh;
-      gap: 18px;
-    }
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    .left-panel {
-      display: flex;
-      flex-direction: column;
-      width: 35%;
-      gap: 18px;
-    }
+    <title>Painel de Atendimento</title>
 
-    .right-panel {
-      display: flex;
-      flex-direction: column;
-      width: 65%;
-      gap: 18px;
-    }
 
-    .box {
-      background-color: #63d4f4;
-      border: 6px solid #b39b82;
-      border-radius: 15px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
+    <style>
 
-    .box-title {
-      color: #ffffff;
-      font-size: 2.2vw;
-      font-weight: bold;
-      text-transform: uppercase;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-      margin-bottom: 12px;
-    }
-
-    /* Painel esquerdo - local (guichê ou consultório) */
-    .local-box { flex: 1; }
-    .local-number {
-      color: #d12c2c;
-      font-size: 9vw;
-      font-weight: bold;
-      line-height: 1;
-    }
-    .local-type {
-      color: #555;
-      font-size: 1.8vw;
-      font-weight: bold;
-      margin-top: 6px;
-    }
-
-    /* Histórico */
-    .history-box {
-      flex: 1;
-      justify-content: flex-start;
-      align-items: flex-start;
-    }
-    .history-box .box-title { font-size: 1.8vw; align-self: center; }
-    #history-list {
-      list-style: none;
-      width: 100%;
-      color: #d12c2c;
-      font-size: 1.5vw;
-      font-weight: bold;
-      text-align: left;
-    }
-    #history-list li {
-      margin-bottom: 8px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      padding-bottom: 5px;
-    }
-
-    /* Painel direito - nome do paciente */
-    .patient-box { flex: 3; }
-    .patient-name {
-      color: #d12c2c;
-      font-size: 6.5vw;
-      font-weight: bold;
-      line-height: 1.2;
-      word-break: break-word;
-    }
-
-    /* Logo */
-    .logo-box { flex: 1; }
-    .logo-text {
-      color: #8c3b7a;
-      font-size: 3.5vw;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    /* Animação de flash quando chama */
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-    .flash { animation: flash 0.5s ease 3; }
-  </style>
-  <link rel="stylesheet" href="/theme.css">
-</head>
-<body>
-<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
-
-<!-- Estrutura da tela da TV criada para exibir o local e o nome do paciente chamado -->
-<div class="tv-container">
-  <div class="left-panel">
-    <div class="box local-box">
-      <div class="box-title" id="local-tipo">GUICHÊ</div>
-      <div class="local-number" id="local-numero">--</div>
-    </div>
-    <div class="box history-box">
-      <div class="box-title">ÚLTIMAS CHAMADAS</div>
-      <ul id="history-list"></ul>
-    </div>
-  </div>
-  <div class="right-panel">
-    <div class="box patient-box">
-      <div class="box-title">PACIENTE</div>
-      <div class="patient-name" id="patient-name">AGUARDANDO...</div>
-    </div>
-    <div class="box logo-box">
-      <div class="logo-text">🏥 Sistema Hospitalar</div>
-    </div>
-  </div>
-</div>
-
-<script>
-let ultimoId = null;
-
-// Função criada para buscar a chamada atual e o histórico da TV em tempo real.
-function atualizar() {
-  fetch("/tv/chamada")
-    .then(r => r.json())
-    .then(data => {
-      const chamada = data.chamada;
-      const historico = data.historico || [];
-
-      if (chamada) {
-        document.getElementById("local-tipo").innerText = chamada.localTipo || "GUICHÊ";
-        document.getElementById("local-numero").innerText = chamada.localNumero || "--";
-        document.getElementById("patient-name").innerText = chamada.paciente || "AGUARDANDO...";
-
-        // Flash visual quando há chamada nova
-        if (chamada.id !== ultimoId) {
-          ultimoId = chamada.id;
-          const patientBox = document.querySelector(".patient-box");
-          patientBox.classList.remove("flash");
-          void patientBox.offsetWidth; // reflow
-          patientBox.classList.add("flash");
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-      }
 
-      // Histórico
-      const list = document.getElementById("history-list");
-      list.innerHTML = "";
-      historico.slice(0, 4).forEach(h => {
-        const li = document.createElement("li");
-        const tipo = h.localTipo ? h.localTipo.substring(0,4) : "GUIC";
-        li.innerText = `${tipo}. ${h.localNumero} - ${h.paciente}`;
-        list.appendChild(li);
-      });
-    })
-    .catch(err => console.log("Erro ao buscar chamada:", err));
-}
 
-// Polling a cada 2 segundos
-atualizar();
-setInterval(atualizar, 2000);
-</script>
+        body {
 
-<script src="/js/theme.js"></script>
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            min-height: 100vh;
+
+            background:
+                #eef2f5;
+
+            color:
+                #263238;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =====================================================
+           CABEÇALHO
+           ===================================================== */
+
+        .header {
+
+            height: 13vh;
+
+            min-height: 85px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #087f8c,
+                    #0097a7
+                );
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 4vw;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.12);
+
+        }
+
+
+        .hospital {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+        }
+
+
+        .hospital-icon {
+
+            width: 58px;
+
+            height: 58px;
+
+            background: white;
+
+            color: #00838f;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 32px;
+
+            font-weight: bold;
+
+        }
+
+
+        .hospital-text h1 {
+
+            font-size: clamp(
+                22px,
+                2.4vw,
+                36px
+            );
+
+            font-weight: 700;
+
+            letter-spacing: .3px;
+
+        }
+
+
+        .hospital-text p {
+
+            margin-top: 3px;
+
+            font-size: clamp(
+                12px,
+                1vw,
+                17px
+            );
+
+            opacity: .9;
+
+        }
+
+
+        .relogio {
+
+            text-align: right;
+
+        }
+
+
+        #hora {
+
+            font-size: clamp(
+                22px,
+                2.2vw,
+                34px
+            );
+
+            font-weight: 700;
+
+        }
+
+
+        #data {
+
+            font-size: clamp(
+                11px,
+                1vw,
+                16px
+            );
+
+            opacity: .9;
+
+            margin-top: 2px;
+
+        }
+
+
+        /* =====================================================
+           CONTEÚDO
+           ===================================================== */
+
+        .conteudo {
+
+            height: 87vh;
+
+            padding:
+                3vh 4vw;
+
+            display: grid;
+
+            grid-template-columns:
+                28% 72%;
+
+            gap: 24px;
+
+        }
+
+
+        /* =====================================================
+           PAINEL ESQUERDO
+           ===================================================== */
+
+        .painel-esquerdo {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 20px;
+
+        }
+
+
+        .card {
+
+            background: white;
+
+            border-radius: 14px;
+
+            border:
+                1px solid #dce3e7;
+
+            box-shadow:
+                0 5px 18px
+                rgba(38, 50, 56, .07);
+
+            overflow: hidden;
+
+        }
+
+
+        .card-titulo {
+
+            background:
+                #f5f8fa;
+
+            border-bottom:
+                1px solid #e0e6e9;
+
+            padding:
+                14px 20px;
+
+            color:
+                #00695c;
+
+            font-size:
+                clamp(14px, 1.2vw, 20px);
+
+            font-weight:
+                700;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .5px;
+
+        }
+
+
+        /* =====================================================
+           LOCAL
+           ===================================================== */
+
+        .local-card {
+
+            flex:
+                0 0 43%;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+        }
+
+
+        .local-conteudo {
+
+            flex:
+                1;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                15px;
+
+        }
+
+
+        .local-tipo {
+
+            color:
+                #546e7a;
+
+            font-size:
+                clamp(15px, 1.5vw, 25px);
+
+            font-weight:
+                700;
+
+            text-transform:
+                uppercase;
+
+            margin-bottom:
+                4px;
+
+        }
+
+
+        .local-numero {
+
+            color:
+                #00838f;
+
+            font-size:
+                clamp(
+                    70px,
+                    8vw,
+                    145px
+                );
+
+            line-height:
+                .9;
+
+            font-weight:
+                800;
+
+        }
+
+
+        .local-label {
+
+            margin-top:
+                12px;
+
+            color:
+                #78909c;
+
+            font-size:
+                clamp(12px, 1vw, 16px);
+
+        }
+
+
+        /* =====================================================
+           HISTÓRICO
+           ===================================================== */
+
+        .historico-card {
+
+            flex:
+                1;
+
+            min-height:
+                0;
+
+        }
+
+
+        #history-list {
+
+            list-style:
+                none;
+
+            padding:
+                7px 20px;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        #history-list li {
+
+            padding:
+                12px 4px;
+
+            border-bottom:
+                1px solid #edf1f3;
+
+            color:
+                #455a64;
+
+            font-size:
+                clamp(12px, 1vw, 17px);
+
+            font-weight:
+                600;
+
+            white-space:
+                nowrap;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+
+        }
+
+
+        #history-list li:last-child {
+
+            border-bottom:
+                none;
+
+        }
+
+
+        /* =====================================================
+           PAINEL PRINCIPAL
+           ===================================================== */
+
+        .painel-principal {
+
+            background:
+                white;
+
+            border-radius:
+                16px;
+
+            border:
+                1px solid #dce3e7;
+
+            box-shadow:
+                0 5px 20px
+                rgba(38, 50, 56, .08);
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        .chamada-header {
+
+            background:
+                #f5f8fa;
+
+            border-bottom:
+                1px solid #e0e6e9;
+
+            padding:
+                18px 28px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+        }
+
+
+        .chamada-header span:first-child {
+
+            color:
+                #00695c;
+
+            font-size:
+                clamp(16px, 1.5vw, 25px);
+
+            font-weight:
+                800;
+
+            text-transform:
+                uppercase;
+
+        }
+
+
+        .status {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                8px;
+
+            color:
+                #388e3c;
+
+            font-size:
+                clamp(11px, .9vw, 15px);
+
+            font-weight:
+                700;
+
+        }
+
+
+        .status-ponto {
+
+            width:
+                10px;
+
+            height:
+                10px;
+
+            border-radius:
+                50%;
+
+            background:
+                #43a047;
+
+        }
+
+
+        /* =====================================================
+           CHAMADA
+           ===================================================== */
+
+        .chamada {
+
+            flex:
+                1;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                30px;
+
+            text-align:
+                center;
+
+        }
+
+
+        .chamada-legenda {
+
+            color:
+                #607d8b;
+
+            font-size:
+                clamp(
+                    16px,
+                    1.5vw,
+                    26px
+                );
+
+            font-weight:
+                700;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                1px;
+
+        }
+
+
+        .patient-name {
+
+            margin-top:
+                18px;
+
+            color:
+                #00796b;
+
+            font-size:
+                clamp(
+                    42px,
+                    6vw,
+                    100px
+                );
+
+            line-height:
+                1.05;
+
+            font-weight:
+                800;
+
+            max-width:
+                95%;
+
+            word-break:
+                break-word;
+
+        }
+
+
+        .chamada-local {
+
+            margin-top:
+                30px;
+
+            padding:
+                15px 34px;
+
+            background:
+                #e8f5e9;
+
+            border:
+                2px solid #a5d6a7;
+
+            border-radius:
+                10px;
+
+            color:
+                #2e7d32;
+
+            font-size:
+                clamp(
+                    18px,
+                    2vw,
+                    32px
+                );
+
+            font-weight:
+                800;
+
+            text-transform:
+                uppercase;
+
+        }
+
+
+        .aguardando {
+
+            color:
+                #90a4ae;
+
+            font-size:
+                clamp(
+                    28px,
+                    4vw,
+                    65px
+                );
+
+            font-weight:
+                700;
+
+        }
+
+
+        /* =====================================================
+           RODAPÉ
+           ===================================================== */
+
+        .rodape {
+
+            border-top:
+                1px solid #e0e6e9;
+
+            background:
+                #fafcfd;
+
+            padding:
+                13px 25px;
+
+            display:
+                flex;
+
+            justify-content:
+                center;
+
+            color:
+                #78909c;
+
+            font-size:
+                clamp(
+                    11px,
+                    .9vw,
+                    15px
+                );
+
+        }
+
+
+        /* =====================================================
+           FLASH DA NOVA CHAMADA
+           ===================================================== */
+
+        @keyframes novaChamada {
+
+            0% {
+
+                background:
+                    white;
+
+            }
+
+            25% {
+
+                background:
+                    #e0f2f1;
+
+            }
+
+            50% {
+
+                background:
+                    #b2dfdb;
+
+            }
+
+            75% {
+
+                background:
+                    #e0f2f1;
+
+            }
+
+            100% {
+
+                background:
+                    white;
+
+            }
+
+        }
+
+
+        .flash {
+
+            animation:
+                novaChamada
+                1s ease
+                3;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVO
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .conteudo {
+
+                grid-template-columns:
+                    1fr;
+
+                height:
+                    auto;
+
+            }
+
+
+            body {
+
+                overflow:
+                    auto;
+
+            }
+
+
+            .painel-esquerdo {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .local-card {
+
+                min-height:
+                    250px;
+
+            }
+
+
+            .painel-principal {
+
+                min-height:
+                    500px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         CABEÇALHO
+         ===================================================== -->
+
+    <header class="header">
+
+        <div class="hospital">
+
+            <div class="hospital-icon">
+                ✚
+            </div>
+
+            <div class="hospital-text">
+
+                <h1>
+                    HOSPITAL SENTINELA
+                </h1>
+
+                <p>
+                    Painel de Atendimento
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="relogio">
+
+            <div id="hora">
+                --:--
+            </div>
+
+            <div id="data">
+                --
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CONTEÚDO
+         ===================================================== -->
+
+    <main class="conteudo">
+
+
+        <!-- =================================================
+             ESQUERDO
+             ================================================= -->
+
+        <aside class="painel-esquerdo">
+
+
+            <!-- LOCAL -->
+
+            <section class="card local-card">
+
+                <div class="card-titulo">
+                    Local de atendimento
+                </div>
+
+                <div class="local-conteudo">
+
+                    <div
+                        class="local-tipo"
+                        id="local-tipo"
+                    >
+                        AGUARDANDO
+                    </div>
+
+                    <div
+                        class="local-numero"
+                        id="local-numero"
+                    >
+                        --
+                    </div>
+
+                    <div class="local-label">
+                        Guichê / Consultório
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- HISTÓRICO -->
+
+            <section class="card historico-card">
+
+                <div class="card-titulo">
+                    Últimas chamadas
+                </div>
+
+                <ul id="history-list"></ul>
+
+            </section>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             CHAMADA PRINCIPAL
+             ================================================= -->
+
+        <section
+            class="painel-principal"
+            id="painel-chamada"
+        >
+
+            <div class="chamada-header">
+
+                <span>
+                    Chamada atual
+                </span>
+
+                <span class="status">
+
+                    <span class="status-ponto"></span>
+
+                    Atendimento
+
+                </span>
+
+            </div>
+
+
+            <div class="chamada">
+
+                <div class="chamada-legenda">
+                    Paciente
+                </div>
+
+
+                <div
+                    class="patient-name aguardando"
+                    id="patient-name"
+                >
+                    AGUARDANDO...
+                </div>
+
+
+                <div
+                    class="chamada-local"
+                    id="chamada-local"
+                >
+                    AGUARDANDO CHAMADA
+                </div>
+
+            </div>
+
+
+            <div class="rodape">
+
+                Aguarde sua chamada e dirija-se ao local indicado.
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <script>
+
+        let ultimoId = null;
+
+
+        // =====================================================
+        // RELÓGIO
+        // =====================================================
+
+        function atualizarRelogio() {
+
+            const agora =
+                new Date();
+
+
+            document.getElementById(
+                "hora"
+            ).textContent =
+                agora.toLocaleTimeString(
+                    "pt-BR",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                );
+
+
+            document.getElementById(
+                "data"
+            ).textContent =
+                agora.toLocaleDateString(
+                    "pt-BR",
+                    {
+                        weekday: "long",
+                        day: "2-digit",
+                        month: "long"
+                    }
+                );
+
+        }
+
+
+        atualizarRelogio();
+
+        setInterval(
+            atualizarRelogio,
+            1000
+        );
+
+
+
+        // =====================================================
+        // ATUALIZAR CHAMADA
+        // =====================================================
+
+        function atualizar() {
+
+            fetch("/tv/chamada")
+
+                .then(
+                    response =>
+                        response.json()
+                )
+
+                .then(data => {
+
+                    const chamada =
+                        data.chamada;
+
+                    const historico =
+                        data.historico || [];
+
+
+                    // -----------------------------------------
+                    // CHAMADA ATUAL
+                    // -----------------------------------------
+
+                    if (chamada) {
+
+                        const localTipo =
+                            chamada.localTipo ||
+                            "GUICHÊ";
+
+
+                        const localNumero =
+                            chamada.localNumero ||
+                            "--";
+
+
+                        const paciente =
+                            chamada.paciente ||
+                            "AGUARDANDO...";
+
+
+                        document.getElementById(
+                            "local-tipo"
+                        ).textContent =
+                            localTipo;
+
+
+                        document.getElementById(
+                            "local-numero"
+                        ).textContent =
+                            localNumero;
+
+
+                        const nome =
+                            document.getElementById(
+                                "patient-name"
+                            );
+
+
+                        nome.textContent =
+                            paciente;
+
+
+                        nome.classList.remove(
+                            "aguardando"
+                        );
+
+
+                        document.getElementById(
+                            "chamada-local"
+                        ).textContent =
+                            `${localTipo} ${localNumero}`;
+
+
+                        // -------------------------------------
+                        // NOVA CHAMADA
+                        // -------------------------------------
+
+                        if (
+                            chamada.id !==
+                            ultimoId
+                        ) {
+
+                            ultimoId =
+                                chamada.id;
+
+
+                            const painel =
+                                document.getElementById(
+                                    "painel-chamada"
+                                );
+
+
+                            painel.classList.remove(
+                                "flash"
+                            );
+
+
+                            void painel.offsetWidth;
+
+
+                            painel.classList.add(
+                                "flash"
+                            );
+
+                        }
+
+                    }
+
+
+
+                    // =================================================
+                    // HISTÓRICO
+                    // =================================================
+
+                    const lista =
+                        document.getElementById(
+                            "history-list"
+                        );
+
+
+                    lista.innerHTML = "";
+
+
+                    historico
+                        .slice(0, 5)
+                        .forEach(h => {
+
+                            const li =
+                                document.createElement(
+                                    "li"
+                                );
+
+
+                            const tipo =
+                                h.localTipo ||
+                                "GUICHÊ";
+
+
+                            const numero =
+                                h.localNumero ||
+                                "--";
+
+
+                            li.textContent =
+                                `${tipo} ${numero} — ${h.paciente}`;
+
+
+                            lista.appendChild(
+                                li
+                            );
+
+                        });
+
+                })
+
+                .catch(error => {
+
+                    console.log(
+                        "Erro ao buscar chamada:",
+                        error
+                    );
+
+                });
+
+        }
+
+
+        atualizar();
+
+
+        setInterval(
+            atualizar,
+            2000
+        );
+
+    </script>
+
+
 </body>
+
 </html>
