@@ -1,0 +1,32 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { min-height: 100vh; padding: 30px; display: flex; justify-content: center; }
+.container { width: 100%; max-width: 1250px; }
+.medico-grid { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
+.coluna-fila, .coluna-form, .consultorio-box { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,.04); }
+.coluna-fila { padding: 24px; height: fit-content; max-height: 85vh; overflow-y: auto; }
+.coluna-form { padding: 35px; }
+.consultorio-box { padding: 15px; margin-bottom: 20px; }
+.consultorio-box input { width: 80px; margin: 0 10px; }
+.form-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 6px; color: #4a5568; font-weight: 600; font-size: 14px; }
+input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; background: #f8fafc; color: #2d3748; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #3182ce; background: #fff; box-shadow: 0 0 0 3px rgba(49,130,206,.15); }
+textarea { height: 110px; resize: none; }
+.card-paciente { background: #fff; border: 1px solid #e2e8f0; border-left: 6px solid #cbd5e1; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+.card-paciente.selecionado { border-color: #3182ce; background: #ebf8ff; }
+.botoes-card, .botoes-acao { display: flex; gap: 8px; }
+button { width: 100%; padding: 14px; background: #3182ce; color: #fff; border: 0; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
+button:hover { background: #2b6cb0; }
+.botoes-card button { margin-top: 8px; padding: 8px; font-size: 12px; }
+.btn-atender { background: #38a169; }
+.btn-atender:hover { background: #2f855a; }
+.btn-pdf { background: #805ad5; }
+.btn-pdf:hover { background: #6b46c1; }
+.alerta-alergia { display: none; padding: 12px; margin-bottom: 15px; border-radius: 6px; background: #fed7d7; color: #9b2c2c; border: 1px solid #e53e3e; }
+.badge-risco { display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; text-transform: uppercase; }
+.badge-risco.vermelho { background: #fed7d7; color: #9b2c2c; }
+.badge-risco.amarelo { background: #feebc8; color: #c05621; }
+.badge-risco.verde { background: #c6f6d5; color: #22543d; }
+.emergencia-card { border: 2px dashed #e53e3e; background: #fff5f5; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+.emergencia-card button { background: #e53e3e; }
+@media (max-width: 900px) { .medico-grid { grid-template-columns: 1fr; } body { padding: 15px; } }

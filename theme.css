@@ -1,0 +1,103 @@
+/* Tema global do Sistema Hospitalar */
+:root {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --text: #2d3748;
+  --muted: #718096;
+  --heading: #1a365d;
+  --border: #cbd5e1;
+  --primary: #3182ce;
+  --primary-hover: #2b6cb0;
+  --shadow: rgba(0,0,0,.06);
+}
+
+body {
+  background-color: var(--bg) !important;
+  color: var(--text);
+}
+
+body.dark-mode {
+  --bg: #111827;
+  --surface: #1f2937;
+  --surface-2: #374151;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --heading: #93c5fd;
+  --border: #4b5563;
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --shadow: rgba(0,0,0,.30);
+}
+
+body.dark-mode .container,
+body.dark-mode .sidebar,
+body.dark-mode .main-content,
+body.dark-mode .coluna-fila,
+body.dark-mode .coluna-form,
+body.dark-mode .consultorio-box,
+body.dark-mode .card,
+body.dark-mode .fila-item,
+body.dark-mode .card-paciente {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+body.dark-mode input[readonly] {
+  background-color: #4b5563 !important;
+  color: #f3f4f6 !important;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode label,
+body.dark-mode strong,
+body.dark-mode .card b,
+body.dark-mode .sidebar h3 {
+  color: var(--text) !important;
+}
+
+body.dark-mode h2,
+body.dark-mode .sidebar h3 {
+  color: var(--heading) !important;
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode small {
+  color: var(--muted);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 9999;
+  width: 44px !important;
+  height: 44px;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  box-shadow: 0 3px 12px var(--shadow);
+  font-size: 21px !important;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  background: var(--surface-2) !important;
+  transform: scale(1.05);
+}
