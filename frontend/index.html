@@ -45,10 +45,12 @@ function login() {
     return response.json();
   })
   .then(data => {
+    localStorage.setItem("sentinelaUser", JSON.stringify(data));
     // Redireciona de acordo com o tipo do usuário retornado
-    if (data.tipo === "triagem") location.href = "triagem.html";
+    if (data.tipo === "admin") location.href = "admin.html";
+    else if (data.tipo === "farmacia") location.href = "farmacia.html";
+    else if (data.tipo === "triagem") location.href = "triagem.html";
     else if (data.tipo === "medico") location.href = "medico.html";
-    else if (data.tipo === "atendimento") location.href = "atendimento.html";
     else location.href = "atendimento.html";
   })
   .catch(err => {

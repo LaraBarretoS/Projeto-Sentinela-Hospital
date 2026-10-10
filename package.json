@@ -1,6 +1,6 @@
 {
   "name": "hospital-system",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "api/index.js",
   "scripts": {
     "start": "node backend/server.js"
@@ -10,7 +10,7 @@
     "express": "^5.2.1",
     "pdfkit": "^0.15.0"
   },
-  "description": "",
+  "description": "Hospital Sentinela - sistema de gestão hospitalar com atendimento, frequência, farmácia e administração",
   "keywords": [],
   "author": "",
   "license": "ISC",

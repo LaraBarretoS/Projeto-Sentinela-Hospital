@@ -46,30 +46,53 @@ const db = {
     {
       usuario: "admin",
       senha: "123",
-      tipo: "atendimento"
+      tipo: "admin",
+      nome: "Administrador"
     },
     {
       usuario: "atendimento",
       senha: "123",
-      tipo: "atendimento"
+      tipo: "atendimento",
+      nome: "Recepção"
     },
     {
       usuario: "triagem",
       senha: "123",
-      tipo: "triagem"
+      tipo: "triagem",
+      nome: "Enfermagem"
     },
     {
       usuario: "medico",
       senha: "123",
-      tipo: "medico"
-    }
+      tipo: "medico",
+      nome: "Dr. Médico"
+    },
+    { usuario: "farmacia", senha: "123", tipo: "farmacia", nome: "Farmácia" },
+    { usuario: "enfermeira2", senha: "123", tipo: "triagem", nome: "Enfermeira Ana" },
+    { usuario: "medico2", senha: "123", tipo: "medico", nome: "Dr. Carlos" }
   ],
 
   pacientes: [],
   triagens: [],
   consultas: [],
+  prescricoes: [],
+  ponto: [],
+  auditoria: [],
+  movimentacoesEstoque: [],
+  medicamentosEstoque: [
+    { id: 1, nome: "Dipirona", quantidade: 120, minimo: 20, unidade: "comprimidos" },
+    { id: 2, nome: "Paracetamol", quantidade: 80, minimo: 20, unidade: "comprimidos" },
+    { id: 3, nome: "Ibuprofeno", quantidade: 50, minimo: 15, unidade: "comprimidos" },
+    { id: 4, nome: "Amoxicilina", quantidade: 30, minimo: 10, unidade: "cápsulas" },
+    { id: 5, nome: "Soro fisiológico", quantidade: 25, minimo: 5, unidade: "unidades" }
+  ],
   tv_chamada: null,
-  tv_historico: []
+  tv_historico: [],
+  tv_conteudos: [
+    { tipo: "dica", titulo: "Higienize as mãos", texto: "Lave as mãos com frequência e utilize álcool em gel quando necessário." },
+    { tipo: "aviso", titulo: "Hospital Sentinela", texto: "Mantenha seus documentos e informações de saúde atualizados." },
+    { tipo: "dica", titulo: "Atenção aos sinais", texto: "Em caso de piora importante dos sintomas, procure atendimento imediatamente." }
+  ]
 };
 
 // ======================================================
@@ -93,6 +116,7 @@ app.post("/login", (req, res) => {
 
   res.json({
     usuario: user.usuario,
+    nome: user.nome || user.usuario,
     tipo: user.tipo
   });
 });
@@ -323,7 +347,10 @@ app.post("/consulta", (req, res) => {
     paciente,
     diagnostico,
     medicacao,
-    obs
+    obs,
+    medicoUsuario,
+    medicoNome,
+    pacienteId
   } = req.body;
 
   if (triagemId) {
@@ -342,13 +369,19 @@ app.post("/consulta", (req, res) => {
     id: Date.now(),
     triagemId,
     paciente,
+    pacienteId: pacienteId || null,
     diagnostico,
     medicacao,
     obs,
+    medicoUsuario: medicoUsuario || "medico",
+    medicoNome: medicoNome || "Profissional não informado",
     createdAt: new Date()
   };
 
   db.consultas.push(consulta);
+  if (medicacao) {
+    db.prescricoes.push({ ...consulta, tipo: "prescricao" });
+  }
 
   res.json(consulta);
 });
@@ -360,6 +393,129 @@ app.post("/consulta", (req, res) => {
 app.get("/medicacoes", (req, res) => {
   res.json(db.consultas);
 });
+
+// ======================================================
+// CONTROLE DE FREQUÊNCIA / PONTO
+// ======================================================
+function agoraISO() { return new Date().toISOString(); }
+function horaBR(data = new Date()) { return data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); }
+
+app.get("/ponto", (req, res) => {
+  const usuario = String(req.query.usuario || "");
+  const hoje = new Date().toISOString().slice(0, 10);
+  const registro = db.ponto.find(p => p.usuario === usuario && p.data === hoje);
+  res.json(registro || null);
+});
+
+app.post("/ponto/entrada", (req, res) => {
+  const { usuario, nome, horaInformada } = req.body;
+  if (!usuario) return res.status(400).json({ erro: "Usuário não informado." });
+  const data = new Date().toISOString().slice(0, 10);
+  let registro = db.ponto.find(p => p.usuario === usuario && p.data === data);
+  if (!registro) {
+    registro = { id: Date.now(), usuario, nome: nome || usuario, data, horaSistemaEntrada: horaBR(), horaEntrada: horaInformada || horaBR(), saida: null, status: "presente" };
+    db.ponto.push(registro);
+  }
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: usuario, acao: "Registrou entrada", alvo: usuario, dataHora: agoraISO() });
+  res.json(registro);
+});
+
+app.post("/ponto/saida", (req, res) => {
+  const { usuario } = req.body;
+  const data = new Date().toISOString().slice(0, 10);
+  const registro = db.ponto.find(p => p.usuario === usuario && p.data === data);
+  if (!registro) return res.status(404).json({ erro: "Entrada não registrada." });
+  if (!registro.saida) registro.saida = horaBR();
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: usuario, acao: "Registrou saída", alvo: usuario, dataHora: agoraISO() });
+  res.json(registro);
+});
+
+app.get("/admin/frequencia", (req, res) => {
+  const hoje = new Date().toISOString().slice(0, 10);
+  const registros = db.usuarios.filter(u => u.tipo !== "admin").map(u => ({
+    usuario: u.usuario, nome: u.nome || u.usuario, tipo: u.tipo,
+    registro: db.ponto.find(p => p.usuario === u.usuario && p.data === hoje) || null
+  }));
+  res.json(registros);
+});
+
+app.get("/admin/auditoria", (req, res) => res.json(db.auditoria.slice(0, 100)));
+
+// ======================================================
+// HISTÓRICO DO PACIENTE
+// ======================================================
+app.get("/pacientes/:id/historico", (req, res) => {
+  const id = String(req.params.id);
+  const paciente = db.pacientes.find(p => String(p.id) === id);
+  const triagens = db.triagens.filter(t => String(t.pacienteId) === id);
+  const consultas = db.consultas.filter(c => String(c.pacienteId) === id);
+  res.json({ paciente: paciente || null, triagens, consultas });
+});
+
+app.get("/historico-paciente", (req, res) => {
+  const nome = String(req.query.nome || "").toLowerCase();
+  const pacientes = db.pacientes.filter(p => String(p.nome || "").toLowerCase().includes(nome));
+  res.json(pacientes.map(p => ({
+    ...p,
+    consultas: db.consultas.filter(c => String(c.pacienteId) === String(p.id) || String(c.paciente).toLowerCase() === String(p.nome).toLowerCase())
+  })));
+});
+
+// ======================================================
+// FARMÁCIA / ESTOQUE
+// ======================================================
+app.get("/farmacia/estoque", (req, res) => res.json(db.medicamentosEstoque));
+app.get("/farmacia/movimentacoes", (req, res) => res.json(db.movimentacoesEstoque.slice(0, 100)));
+app.get("/farmacia/alertas", (req, res) => res.json(db.medicamentosEstoque.filter(m => m.quantidade <= m.minimo)));
+
+app.post("/farmacia/entrada", (req, res) => {
+  const { medicamentoId, quantidade, usuario } = req.body;
+  const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
+  if (!med || Number(quantidade) <= 0) return res.status(400).json({ erro: "Dados inválidos." });
+  med.quantidade += Number(quantidade);
+  const mov = { id: Date.now(), tipo: "entrada", medicamento: med.nome, quantidade: Number(quantidade), usuario: usuario || "farmacia", dataHora: agoraISO() };
+  db.movimentacoesEstoque.unshift(mov);
+  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Entrada de ${quantidade} ${med.nome}`, alvo: med.nome, dataHora: agoraISO() });
+  res.json(med);
+});
+
+app.post("/farmacia/saida", (req, res) => {
+  const { medicamentoId, quantidade, usuario, paciente } = req.body;
+  const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
+  if (!med || Number(quantidade) <= 0 || med.quantidade < Number(quantidade)) return res.status(400).json({ erro: "Estoque insuficiente ou dados inválidos." });
+  med.quantidade -= Number(quantidade);
+  const mov = { id: Date.now(), tipo: "saida", medicamento: med.nome, quantidade: Number(quantidade), paciente: paciente || "Não informado", usuario: usuario || "farmacia", dataHora: agoraISO() };
+  db.movimentacoesEstoque.unshift(mov);
+  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Saída de ${quantidade} ${med.nome}`, alvo: paciente || med.nome, dataHora: agoraISO() });
+  res.json(med);
+});
+
+app.post("/farmacia/ajuste", (req, res) => {
+  const { medicamentoId, quantidade, usuario, motivo } = req.body;
+  const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
+  if (!med || Number(quantidade) < 0) return res.status(400).json({ erro: "Dados inválidos." });
+  const anterior = med.quantidade;
+  med.quantidade = Number(quantidade);
+  db.movimentacoesEstoque.unshift({ id: Date.now(), tipo: "ajuste", medicamento: med.nome, quantidade: Number(quantidade), quantidadeAnterior: anterior, motivo: motivo || "Correção de estoque", usuario: usuario || "farmacia", dataHora: agoraISO() });
+  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Ajustou estoque de ${med.nome}`, alvo: motivo || "Correção", dataHora: agoraISO() });
+  res.json(med);
+});
+
+// ======================================================
+// ADMIN / RESUMO
+// ======================================================
+app.get("/admin/resumo", (req, res) => {
+  const risco = { verde: 0, amarelo: 0, vermelho: 0 };
+  db.triagens.forEach(t => { if (risco[t.risco] !== undefined) risco[t.risco]++; });
+  const hoje = new Date().toISOString().slice(0, 10);
+  const pontosHoje = db.ponto.filter(p => p.data === hoje);
+  res.json({ pacientes: db.pacientes.length, triagens: db.triagens.length, consultas: db.consultas.length, risco, presentes: pontosHoje.length, funcionarios: db.usuarios.filter(u => u.tipo !== "admin").length, estoqueBaixo: db.medicamentosEstoque.filter(m => m.quantidade <= m.minimo).length });
+});
+
+// ======================================================
+// TV MULTIMÍDIA
+// ======================================================
+app.get("/tv/conteudo", (req, res) => res.json(db.tv_conteudos));
 
 // ======================================================
 // GERAR PDF DA ALTA MÉDICA
