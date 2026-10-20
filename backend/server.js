@@ -96,6 +96,28 @@ const db = {
 };
 
 // ======================================================
+// PERSISTÊNCIA DE USUÁRIOS CRIADOS PELO ADMIN
+// ======================================================
+const USERS_FILE = path.join(__dirname, "users.json");
+try {
+  if (fs.existsSync(USERS_FILE)) {
+    const savedUsers = JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+    if (Array.isArray(savedUsers)) {
+      for (const saved of savedUsers) {
+        const index = db.usuarios.findIndex(u => u.usuario.toLowerCase() === String(saved.usuario).toLowerCase());
+        if (index >= 0) db.usuarios[index] = { ...db.usuarios[index], ...saved };
+        else db.usuarios.push(saved);
+      }
+    }
+  }
+} catch (error) {
+  console.error("Não foi possível carregar usuários salvos:", error.message);
+}
+function salvarUsuarios() {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(db.usuarios, null, 2), "utf8");
+}
+
+// ======================================================
 // LOGIN
 // ======================================================
 
@@ -119,6 +141,38 @@ app.post("/login", (req, res) => {
     nome: user.nome || user.usuario,
     tipo: user.tipo
   });
+});
+
+// ======================================================
+// ADMIN: GERENCIAMENTO DE USUÁRIOS
+// ======================================================
+function requisicaoAdmin(req) {
+  const solicitante = String(req.headers["x-sentinela-user"] || "");
+  return db.usuarios.some(u => u.usuario === solicitante && u.tipo === "admin");
+}
+app.get("/admin/usuarios", (req, res) => {
+  if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode gerenciar usuários." });
+  res.json(db.usuarios.map(({ usuario, nome, tipo }) => ({ usuario, nome: nome || usuario, tipo })));
+});
+app.post("/admin/usuarios", (req, res) => {
+  if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode criar usuários." });
+  const usuario = String(req.body.usuario || "").trim();
+  const senha = String(req.body.senha || "");
+  const nome = String(req.body.nome || usuario).trim();
+  const tipo = String(req.body.tipo || "");
+  const tiposPermitidos = ["triagem", "atendimento", "medico", "farmacia"];
+  if (usuario.length < 3 || usuario.length > 40 || !/^[a-zA-Z0-9._-]+$/.test(usuario)) return res.status(400).json({ erro: "O login deve ter de 3 a 40 caracteres e usar apenas letras, números, ponto, hífen ou underline." });
+  if (senha.length < 3 || senha.length > 100) return res.status(400).json({ erro: "A senha deve ter pelo menos 3 caracteres." });
+  if (!tiposPermitidos.includes(tipo)) return res.status(400).json({ erro: "Selecione uma função válida." });
+  if (db.usuarios.some(u => u.usuario.toLowerCase() === usuario.toLowerCase())) return res.status(409).json({ erro: "Já existe um usuário com esse login." });
+  const novoUsuario = { usuario, senha, nome: nome || usuario, tipo };
+  db.usuarios.push(novoUsuario);
+  try { salvarUsuarios(); } catch (error) {
+    db.usuarios.pop(); console.error("Erro ao salvar usuário:", error);
+    return res.status(500).json({ erro: "Não foi possível salvar o usuário." });
+  }
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: `Criou usuário (${tipo})`, alvo: usuario, dataHora: new Date().toISOString() });
+  res.status(201).json({ usuario, nome: novoUsuario.nome, tipo });
 });
 
 // ======================================================

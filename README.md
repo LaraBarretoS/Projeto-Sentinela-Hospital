@@ -21,6 +21,16 @@ Sistema demonstrativo de gestão hospitalar com painéis de atendimento, triagem
 
 As contas definidas pelo servidor incluem `admin / 123`, `atendimento / 123`, `triagem / 123`, `medico / 123`, `medico2 / 123` e `farmacia / 123`.
 
+## Gerenciamento de usuários pelo administrador
+
+- Entre com `admin / 123` e abra a aba **Adicionar user** no painel administrativo.
+- Informe nome (opcional), login, senha e área de acesso: Médico, Triagem, Atendimento ou Farmácia.
+- Os usuários criados ficam salvos em `backend/users.json` e continuam disponíveis após reiniciar o servidor.
+- A aba **Usuários** mostra os logins e a área atribuída. Logins duplicados são recusados.
+- O controle de sessão do navegador redireciona cada perfil para sua página autorizada.
+
+> **Segurança:** este projeto é demonstrativo. O controle de página é aplicado no navegador e não substitui autenticação/autorização robusta em todas as rotas da API. Senhas também estão em texto simples, então não utilize credenciais reais em produção.
+
 ## Correções no painel médico
 
 - Tratamento de falhas HTTP e respostas inválidas ao carregar a fila, o histórico e o estoque.

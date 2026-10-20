@@ -2,6 +2,20 @@
   const user = JSON.parse(localStorage.getItem("sentinelaUser") || "null");
   if (!user) { window.location.href = "/index.html"; return; }
 
+  const paginaPorTipo = {
+    admin: "/admin.html",
+    medico: "/medico.html",
+    triagem: "/triagem.html",
+    atendimento: "/atendimento.html",
+    farmacia: "/farmacia.html"
+  };
+  const paginaAtual = window.location.pathname.toLowerCase();
+  const paginaPermitida = paginaPorTipo[user.tipo];
+  if (!paginaPermitida || paginaAtual !== paginaPermitida) {
+    window.location.replace(paginaPermitida || "/index.html");
+    return;
+  }
+
   const style = document.createElement("style");
   style.textContent = `
   .sentinela-topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
