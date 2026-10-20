@@ -34,13 +34,14 @@
   }
   document.getElementById('userForm').addEventListener('submit', async event => {
     event.preventDefault();
-    const message = document.getElementById('userMessage'); const submit = event.currentTarget.querySelector('button[type="submit"]');
+    const form = event.currentTarget; // capture before await; currentTarget becomes null after dispatch
+    const message = document.getElementById('userMessage'); const submit = form.querySelector('button[type="submit"]');
     message.className = 'status-msg'; message.textContent = 'Criando usuário...'; submit.disabled = true;
     const payload = { nome: document.getElementById('novoNome').value.trim(), usuario: document.getElementById('novoUsuario').value.trim(), senha: document.getElementById('novaSenha').value, tipo: document.getElementById('novoTipo').value };
     try {
       const created = await api('/admin/usuarios', { method: 'POST', body: JSON.stringify(payload) });
       message.className = 'status-msg success'; message.textContent = `Usuário “${created.usuario}” criado com acesso à área ${roleNames[created.tipo]}.`;
-      event.currentTarget.reset(); document.getElementById('novoTipo').value = 'medico'; await carregarUsuarios();
+      form.reset(); document.getElementById('novoTipo').value = 'medico'; await carregarUsuarios();
     } catch (error) { message.className = 'status-msg error'; message.textContent = error.message; }
     finally { submit.disabled = false; }
   });
