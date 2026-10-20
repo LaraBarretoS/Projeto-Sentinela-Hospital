@@ -103,11 +103,9 @@ try {
   if (fs.existsSync(USERS_FILE)) {
     const savedUsers = JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
     if (Array.isArray(savedUsers)) {
-      for (const saved of savedUsers) {
-        const index = db.usuarios.findIndex(u => u.usuario.toLowerCase() === String(saved.usuario).toLowerCase());
-        if (index >= 0) db.usuarios[index] = { ...db.usuarios[index], ...saved };
-        else db.usuarios.push(saved);
-      }
+      // O arquivo é a lista completa, não apenas usuários extras: assim, usuários excluídos
+      // não reaparecem depois que o servidor é reiniciado.
+      db.usuarios = savedUsers;
     }
   }
 } catch (error) {
@@ -115,6 +113,19 @@ try {
 }
 function salvarUsuarios() {
   fs.writeFileSync(USERS_FILE, JSON.stringify(db.usuarios, null, 2), "utf8");
+}
+
+// Solicitações de redefinição de senha: persistidas entre reinicializações.
+const PASSWORD_REQUESTS_FILE = path.join(__dirname, "password_requests.json");
+let solicitacoesSenha = [];
+try {
+  if (fs.existsSync(PASSWORD_REQUESTS_FILE)) {
+    const savedRequests = JSON.parse(fs.readFileSync(PASSWORD_REQUESTS_FILE, "utf8"));
+    if (Array.isArray(savedRequests)) solicitacoesSenha = savedRequests;
+  }
+} catch (error) { console.error("Não foi possível carregar notificações:", error.message); }
+function salvarSolicitacoesSenha() {
+  fs.writeFileSync(PASSWORD_REQUESTS_FILE, JSON.stringify(solicitacoesSenha, null, 2), "utf8");
 }
 
 // ======================================================
@@ -173,6 +184,85 @@ app.post("/admin/usuarios", (req, res) => {
   }
   db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: `Criou usuário (${tipo})`, alvo: usuario, dataHora: new Date().toISOString() });
   res.status(201).json({ usuario, nome: novoUsuario.nome, tipo });
+});
+
+// Excluir usuário (não permite excluir contas administrativas nem a própria conta admin).
+app.delete("/admin/usuarios/:usuario", (req, res) => {
+  if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode excluir usuários." });
+  const alvo = decodeURIComponent(req.params.usuario);
+  const existente = db.usuarios.find(u => u.usuario.toLowerCase() === alvo.toLowerCase());
+  if (!existente) return res.status(404).json({ erro: "Usuário não encontrado." });
+  if (existente.tipo === "admin" || existente.usuario === String(req.headers["x-sentinela-user"] || "")) return res.status(400).json({ erro: "Por segurança, contas administrativas não podem ser excluídas por esta tela." });
+  db.usuarios = db.usuarios.filter(u => u !== existente);
+  try { salvarUsuarios(); } catch (error) { db.usuarios.push(existente); return res.status(500).json({ erro: "Não foi possível salvar a exclusão." }); }
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Excluiu usuário", alvo: existente.usuario, dataHora: new Date().toISOString() });
+  res.json({ sucesso: true });
+});
+
+// Alteração direta exige a senha atual do usuário selecionado.
+app.post("/admin/usuarios/:usuario/senha", (req, res) => {
+  if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode gerenciar senhas." });
+  const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === decodeURIComponent(req.params.usuario).toLowerCase());
+  if (!alvo) return res.status(404).json({ erro: "Usuário não encontrado." });
+  const senhaAntiga = String(req.body.senhaAntiga || "");
+  const novaSenha = String(req.body.novaSenha || "");
+  if (senhaAntiga !== alvo.senha) return res.status(401).json({ erro: "A senha antiga não confere. Se ela foi esquecida, envie uma solicitação para o administrador aprovar." });
+  if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "A nova senha deve ter entre 3 e 100 caracteres." });
+  const anterior = alvo.senha; alvo.senha = novaSenha;
+  try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Alterou senha de usuário", alvo: alvo.usuario, dataHora: new Date().toISOString() });
+  res.json({ sucesso: true });
+});
+
+// Usuário autenticado na interface altera a própria senha informando a senha atual.
+app.post("/senha/alterar", (req, res) => {
+  const usuario = String(req.body.usuario || "").trim();
+  const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === usuario.toLowerCase());
+  if (!alvo) return res.status(404).json({ erro: "Usuário não encontrado." });
+  if (String(req.body.senhaAntiga || "") !== alvo.senha) return res.status(401).json({ erro: "Senha antiga incorreta. Se você a esqueceu, solicite redefinição ao administrador." });
+  const novaSenha = String(req.body.novaSenha || "");
+  if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "A nova senha deve ter entre 3 e 100 caracteres." });
+  const anterior = alvo.senha; alvo.senha = novaSenha;
+  try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: alvo.usuario, acao: "Alterou a própria senha", alvo: alvo.usuario, dataHora: new Date().toISOString() });
+  res.json({ sucesso: true });
+});
+
+// Usuário que esqueceu a senha pode pedir redefinição; a mudança só ocorre após aprovação do admin.
+app.post("/senha/solicitar-redefinicao", (req, res) => {
+  const usuario = String(req.body.usuario || "").trim();
+  const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === usuario.toLowerCase());
+  if (!alvo) return res.status(404).json({ erro: "Usuário não encontrado." });
+  if (alvo.tipo === "admin") return res.status(400).json({ erro: "A redefinição de conta administrativa deve ser tratada diretamente pelo responsável pelo sistema." });
+  if (solicitacoesSenha.some(n => n.usuario.toLowerCase() === alvo.usuario.toLowerCase() && n.status === "pendente")) return res.status(409).json({ erro: "Já existe uma solicitação pendente para este usuário." });
+  const solicitacao = { id: Date.now(), usuario: alvo.usuario, nome: alvo.nome || alvo.usuario, tipo: alvo.tipo, status: "pendente", dataHora: new Date().toISOString() };
+  solicitacoesSenha.unshift(solicitacao);
+  try { salvarSolicitacoesSenha(); } catch (error) { solicitacoesSenha = solicitacoesSenha.filter(n => n.id !== solicitacao.id); return res.status(500).json({ erro: "Não foi possível enviar a notificação." }); }
+  res.status(201).json({ sucesso: true, mensagem: "Solicitação enviada ao administrador." });
+});
+app.get("/admin/notificacoes", (req, res) => {
+  if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode ver notificações." });
+  res.json(solicitacoesSenha);
+});
+app.post("/admin/notificacoes/:id/decidir", (req, res) => {
+  if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode decidir solicitações." });
+  const pedido = solicitacoesSenha.find(n => String(n.id) === String(req.params.id));
+  if (!pedido || pedido.status !== "pendente") return res.status(404).json({ erro: "Solicitação pendente não encontrada." });
+  const aprovar = req.body.aprovar === true;
+  if (aprovar) {
+    const novaSenha = String(req.body.novaSenha || "");
+    if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "Informe uma nova senha de 3 a 100 caracteres." });
+    const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === pedido.usuario.toLowerCase());
+    if (!alvo) return res.status(404).json({ erro: "Este usuário não existe mais." });
+    const anterior = alvo.senha; alvo.senha = novaSenha;
+    try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
+    pedido.status = "aprovada"; pedido.decididaPor = String(req.headers["x-sentinela-user"]); pedido.decisaodataHora = new Date().toISOString();
+    db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Aprovou redefinição de senha", alvo: pedido.usuario, dataHora: new Date().toISOString() });
+  } else {
+    pedido.status = "recusada"; pedido.decididaPor = String(req.headers["x-sentinela-user"]); pedido.decisaodataHora = new Date().toISOString();
+  }
+  try { salvarSolicitacoesSenha(); } catch (error) { return res.status(500).json({ erro: "A decisão foi aplicada, mas não foi possível salvar a notificação." }); }
+  res.json({ sucesso: true, status: pedido.status });
 });
 
 // ======================================================

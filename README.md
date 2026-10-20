@@ -44,3 +44,12 @@ As contas definidas pelo servidor incluem `admin / 123`, `atendimento / 123`, `t
 - Limpeza dos campos após finalizar e atualização da fila e do estoque.
 
 > **Importante:** este projeto é demonstrativo/escolar. Não deve ser usado para decisões clínicas ou dados reais de pacientes sem revisão profissional, segurança, autenticação e persistência adequadas. A versão atual do servidor mantém dados em memória e pode perdê-los quando for reiniciada.
+
+## Senhas, notificações e tema
+
+- Na aba **Usuários**, o administrador pode excluir contas de equipe e alterar a senha de uma conta informando a senha antiga.
+- Se a senha antiga foi esquecida, use **Esqueci a senha antiga**. O pedido fica pendente até o administrador abrir **Notificações** e aprovar ou recusar; ao aprovar, o administrador define a nova senha.
+- Nas telas de trabalho, o botão **Minha senha** permite alterar a própria senha com a senha atual ou solicitar redefinição ao administrador.
+- O sino no canto superior direito mostra a quantidade de solicitações pendentes e atualiza automaticamente.
+- O botão 🌙/☀️ de modo escuro está disponível em todas as telas HTML e a preferência fica salva no navegador.
+- A exclusão de contas administrativas é bloqueada nesta interface para evitar remover a conta principal.

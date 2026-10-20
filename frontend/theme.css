@@ -101,3 +101,42 @@ body.dark-mode small {
   background: var(--surface-2) !important;
   transform: scale(1.05);
 }
+
+/* Ajustes gerais para manter o modo escuro legível em todas as telas. */
+body.dark-mode .wrap,
+body.dark-mode .container,
+body.dark-mode main,
+body.dark-mode section,
+body.dark-mode .content,
+body.dark-mode .main,
+body.dark-mode .painel,
+body.dark-mode .panel,
+body.dark-mode .modal,
+body.dark-mode .modal-content,
+body.dark-mode .box,
+body.dark-mode .card,
+body.dark-mode .table-container,
+body.dark-mode .historico,
+body.dark-mode .form-container {
+  color: var(--text) !important;
+}
+body.dark-mode table { color: var(--text) !important; }
+body.dark-mode th,
+body.dark-mode td { border-color: var(--border) !important; }
+body.dark-mode th { background-color: var(--surface-2) !important; color: var(--text) !important; }
+body.dark-mode tr:nth-child(even) { background-color: rgba(255,255,255,.025); }
+body.dark-mode button:not(.theme-toggle),
+body.dark-mode .btn,
+body.dark-mode input[type="button"],
+body.dark-mode input[type="submit"] { color: inherit; }
+body.dark-mode textarea,
+body.dark-mode input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),
+body.dark-mode select {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder { color: #9ca3af !important; }
+body.dark-mode .theme-toggle { background: var(--surface) !important; color: var(--text) !important; }
+body.dark-mode .sentinela-password-modal { background: var(--surface) !important; color: var(--text) !important; }
