@@ -18,13 +18,12 @@
 
   const style = document.createElement("style");
   style.textContent = `
-  .sentinela-topbar{position:fixed;top:12px;right:16px;z-index:9998;display:flex;justify-content:flex-end;align-items:center;gap:10px;margin:0;flex-wrap:wrap;max-width:calc(100vw - 90px)}
-  body{padding-top:62px!important}
-  .theme-toggle{left:16px!important;right:auto!important;top:12px!important}
-  @media(max-width:600px){.sentinela-topbar{left:68px;right:8px;top:8px;gap:5px;max-width:none}.sentinela-btn{padding:7px 8px;font-size:12px}.sentinela-user{display:none}body{padding-top:58px!important}.theme-toggle{left:10px!important;top:8px!important;width:40px!important;height:40px!important}}
-  .sentinela-user{font-size:13px;color:#4a5568}.sentinela-actions{display:flex;gap:7px;flex-wrap:wrap}
-  .sentinela-btn{border:0;border-radius:7px;padding:8px 11px;cursor:pointer;background:#edf2f7;color:#2d3748;font-weight:600}
+  .sentinela-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 16px;padding:10px 0;flex-wrap:wrap;width:100%;box-sizing:border-box}
+  .sentinela-left,.sentinela-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}.sentinela-actions{margin-left:auto;justify-content:flex-end}
+  .sentinela-user{font-size:13px;color:#4a5568;margin-left:4px}
+  .sentinela-btn{border:0;border-radius:7px;padding:9px 12px;min-height:38px;white-space:nowrap;cursor:pointer;background:#edf2f7;color:#2d3748;font-weight:600;line-height:1.2}
   .sentinela-btn.primary{background:#2b6cb0;color:white}.sentinela-btn.danger{background:#c53030;color:white}
+  @media(max-width:520px){.sentinela-topbar{align-items:stretch}.sentinela-left,.sentinela-actions{width:100%}.sentinela-actions{margin-left:0;justify-content:flex-start}.sentinela-btn{flex:0 0 auto}}
   body.dark-mode .sentinela-user{color:#cbd5e1}body.dark-mode .sentinela-btn{background:#374151;color:#f3f4f6;border:1px solid #4b5563}
   .sentinela-password-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;align-items:center;justify-content:center;z-index:10001;padding:18px}
   .sentinela-password-modal{background:var(--surface,#fff);color:var(--text,#1a202c);width:min(430px,100%);padding:22px;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -39,7 +38,8 @@
 
   const bar = document.createElement("div");
   bar.className = "sentinela-topbar";
-  bar.innerHTML = `<div class="sentinela-user">👤 <b>${user.nome || user.usuario}</b> · ${user.tipo}</div><div class="sentinela-actions"><button class="sentinela-btn" id="btnMinhaSenha" type="button">🔐 Minha senha</button><button class="sentinela-btn" onclick="location.href='/index.html'">← Trocar usuário</button><button class="sentinela-btn primary" id="btnPontoManual">🕐 Ponto</button></div>`;
+  bar.innerHTML = `<div class="sentinela-left"><button class="sentinela-btn" id="btnTrocarUsuario" type="button">← Trocar usuário</button><span class="sentinela-user">👤 <b>${user.nome || user.usuario}</b> · ${user.tipo}</span></div><div class="sentinela-actions"><button class="sentinela-btn" id="btnMinhaSenha" type="button">🔐 Minha senha</button><button class="sentinela-btn primary" id="btnPontoManual" type="button">🕐 Ponto</button></div>`;
+  bar.querySelector("#btnTrocarUsuario").addEventListener("click", () => { window.location.href = "/index.html"; });
   const first = document.body.firstElementChild;
   if (first) first.before(bar); else document.body.prepend(bar);
 

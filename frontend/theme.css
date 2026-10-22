@@ -81,8 +81,9 @@ body.dark-mode small {
 
 .theme-toggle {
   position: fixed;
-  top: 18px;
+  top: auto;
   right: 18px;
+  bottom: 18px;
   z-index: 9999;
   width: 44px !important;
   height: 44px;
