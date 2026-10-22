@@ -18,7 +18,10 @@
 
   const style = document.createElement("style");
   style.textContent = `
-  .sentinela-topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .sentinela-topbar{position:fixed;top:12px;right:16px;z-index:9998;display:flex;justify-content:flex-end;align-items:center;gap:10px;margin:0;flex-wrap:wrap;max-width:calc(100vw - 90px)}
+  body{padding-top:62px!important}
+  .theme-toggle{left:16px!important;right:auto!important;top:12px!important}
+  @media(max-width:600px){.sentinela-topbar{left:68px;right:8px;top:8px;gap:5px;max-width:none}.sentinela-btn{padding:7px 8px;font-size:12px}.sentinela-user{display:none}body{padding-top:58px!important}.theme-toggle{left:10px!important;top:8px!important;width:40px!important;height:40px!important}}
   .sentinela-user{font-size:13px;color:#4a5568}.sentinela-actions{display:flex;gap:7px;flex-wrap:wrap}
   .sentinela-btn{border:0;border-radius:7px;padding:8px 11px;cursor:pointer;background:#edf2f7;color:#2d3748;font-weight:600}
   .sentinela-btn.primary{background:#2b6cb0;color:white}.sentinela-btn.danger{background:#c53030;color:white}
