@@ -18,12 +18,12 @@
 
   const style = document.createElement("style");
   style.textContent = `
-  .sentinela-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 16px;padding:10px 0;flex-wrap:wrap;width:100%;box-sizing:border-box}
+  .sentinela-topbar{position:absolute;top:12px;left:16px;right:16px;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0;padding:0;flex-wrap:wrap;width:auto;box-sizing:border-box}
   .sentinela-left,.sentinela-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}.sentinela-actions{margin-left:auto;justify-content:flex-end}
   .sentinela-user{font-size:13px;color:#4a5568;margin-left:4px}
   .sentinela-btn{border:0;border-radius:7px;padding:9px 12px;min-height:38px;white-space:nowrap;cursor:pointer;background:#edf2f7;color:#2d3748;font-weight:600;line-height:1.2}
   .sentinela-btn.primary{background:#2b6cb0;color:white}.sentinela-btn.danger{background:#c53030;color:white}
-  @media(max-width:520px){.sentinela-topbar{align-items:stretch}.sentinela-left,.sentinela-actions{width:100%}.sentinela-actions{margin-left:0;justify-content:flex-start}.sentinela-btn{flex:0 0 auto}}
+  @media(max-width:520px){.sentinela-topbar{position:absolute;top:10px;left:10px;right:10px;align-items:flex-start}.sentinela-left,.sentinela-actions{width:auto;max-width:48%;flex-wrap:wrap}.sentinela-actions{margin-left:auto;justify-content:flex-end}.sentinela-btn{flex:0 1 auto;white-space:normal}}
   body.dark-mode .sentinela-user{color:#cbd5e1}body.dark-mode .sentinela-btn{background:#374151;color:#f3f4f6;border:1px solid #4b5563}
   .sentinela-password-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;align-items:center;justify-content:center;z-index:10001;padding:18px}
   .sentinela-password-modal{background:var(--surface,#fff);color:var(--text,#1a202c);width:min(430px,100%);padding:22px;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -40,8 +40,7 @@
   bar.className = "sentinela-topbar";
   bar.innerHTML = `<div class="sentinela-left"><button class="sentinela-btn" id="btnTrocarUsuario" type="button">← Trocar usuário</button><span class="sentinela-user">👤 <b>${user.nome || user.usuario}</b> · ${user.tipo}</span></div><div class="sentinela-actions"><button class="sentinela-btn" id="btnMinhaSenha" type="button">🔐 Minha senha</button><button class="sentinela-btn primary" id="btnPontoManual" type="button">🕐 Ponto</button></div>`;
   bar.querySelector("#btnTrocarUsuario").addEventListener("click", () => { window.location.href = "/index.html"; });
-  const first = document.body.firstElementChild;
-  if (first) first.before(bar); else document.body.prepend(bar);
+  document.body.prepend(bar);
 
   const overlay = document.createElement("div"); overlay.className="ponto-overlay"; overlay.id="pontoOverlay";
   overlay.innerHTML=`<div class="ponto-modal"><h3>🕐 Registrar ponto</h3><p>Olá, <b>${user.nome || user.usuario}</b>! Confirme o horário em que chegou.</p><label>Horário atual do computador</label><input id="pontoHora" type="time"><p style="font-size:12px;color:#718096">O sistema também guarda o horário em que o registro foi enviado.</p><div class="ponto-buttons"><button class="ponto-cancel" id="pontoCancelar">Agora não</button><button class="ponto-confirm" id="pontoConfirmar">Registrar entrada</button></div></div>`;
