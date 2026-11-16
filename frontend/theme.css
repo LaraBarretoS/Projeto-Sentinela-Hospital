@@ -141,3 +141,19 @@ body.dark-mode input::placeholder,
 body.dark-mode textarea::placeholder { color: #9ca3af !important; }
 body.dark-mode .theme-toggle { background: var(--surface) !important; color: var(--text) !important; }
 body.dark-mode .sentinela-password-modal { background: var(--surface) !important; color: var(--text) !important; }
+
+/* Design-system refinements shared by every module */
+:root { color-scheme: light; --radius-card: 14px; --focus-ring: 0 0 0 3px rgba(49,130,206,.2); }
+body.dark-mode { color-scheme: dark; }
+html { scroll-behavior:smooth; }
+body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; line-height:1.45; }
+button, input, select, textarea { font:inherit; }
+button { transition:transform .16s ease,filter .16s ease,box-shadow .16s ease; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:0; box-shadow:var(--focus-ring); }
+button:disabled { opacity:.6; cursor:not-allowed; }
+body.dark-mode a { color:#93c5fd; }
+body.dark-mode .emergencia-card { background:#3b2024 !important; border-color:#b4535b !important; color:#fee2e2 !important; }
+body.dark-mode .risco-vermelho { background:#54272d !important; color:#fecaca !important; }
+body.dark-mode .risco-amarelo { background:#514022 !important; color:#fde68a !important; }
+body.dark-mode .risco-verde { background:#1f4537 !important; color:#bbf7d0 !important; }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }

@@ -49,6 +49,20 @@
         <input id="diagnostico" placeholder="Informe o diagnóstico">
       </div>
 
+      <div class="form-group sintomas-editor">
+        <label>Sintomas do paciente</label>
+        <div class="sintoma-add-grid">
+          <input id="novoSintoma" placeholder="Sintoma (ex.: cefaleia)">
+          <input id="intensidadeSintoma" type="number" min="0" max="10" placeholder="Intensidade 0–10">
+          <input id="duracaoSintoma" placeholder="Duração (ex.: 2 dias)">
+          <input id="frequenciaSintoma" placeholder="Frequência">
+        </div>
+        <input id="observacaoSintoma" placeholder="Observação específica (opcional)">
+        <button type="button" class="btn-adicionar-sintoma" onclick="adicionarSintoma()">＋ Adicionar sintoma</button>
+        <div id="listaSintomas" class="lista-sintomas" aria-live="polite"></div>
+        <small>Os registros antigos com um único sintoma continuam sendo exibidos normalmente.</small>
+      </div>
+
       <div class="form-group">
         <label>Prescrição / Medicação *</label>
         <select id="medicacao">
@@ -76,6 +90,25 @@ let pacienteSelecionado = null;
 let carregandoFila = false;
 const $ = id => document.getElementById(id);
 const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let sintomasConsulta = [];
+function renderizarSintomas() {
+  const box = $("listaSintomas");
+  if (!box) return;
+  box.innerHTML = sintomasConsulta.length ? sintomasConsulta.map((item,i) => `<div class="sintoma-item"><span><b>${escapeHTML(item.nome)}</b> · Intensidade: ${item.intensidade || "—"}/10 · Duração: ${escapeHTML(item.duracao || "—")} · Frequência: ${escapeHTML(item.frequencia || "—")}<small>${escapeHTML(item.observacao || "")}</small></span><button type="button" data-remover-sintoma="${i}" aria-label="Remover sintoma">Remover</button></div>`).join("") : "<p>Nenhum sintoma adicional registrado.</p>";
+}
+function adicionarSintoma() {
+  const nome=$("novoSintoma").value.trim();
+  if (!nome) return alert("Informe o sintoma antes de adicionar.");
+  sintomasConsulta.push({nome, intensidade:$("intensidadeSintoma").value, duracao:$("duracaoSintoma").value.trim(), frequencia:$("frequenciaSintoma").value.trim(), observacao:$("observacaoSintoma").value.trim()});
+  ["novoSintoma","intensidadeSintoma","duracaoSintoma","frequenciaSintoma","observacaoSintoma"].forEach(id=>$(id).value="");
+  renderizarSintomas();
+}
+$("listaSintomas").addEventListener("click", event => {
+  const button=event.target.closest("button[data-remover-sintoma]");
+  if (!button) return;
+  sintomasConsulta.splice(Number(button.dataset.removerSintoma),1); renderizarSintomas();
+});
 
 async function requisicaoJSON(url, options = {}) {
   const response = await fetch(url, options);
@@ -107,6 +140,8 @@ async function carregar() {
       card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><strong>${escapeHTML(t.nome || "Paciente sem nome")}</strong><span class="badge-risco ${risco}">${escapeHTML(risco)}</span></div>
         <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>Sintoma:</b> ${escapeHTML(t.sintoma || "Não informado")}</p>
         <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>Temp:</b> ${t.temperatura ? escapeHTML(t.temperatura) + "°C" : "—"} | <b>Alergia:</b> ${escapeHTML(t.alergia || "Nenhuma")}</p>
+        <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>PA:</b> ${escapeHTML(t.sinaisVitais?.pressao || "—")} · <b>FC:</b> ${escapeHTML(t.sinaisVitais?.frequenciaCardiaca || "—")} · <b>FR:</b> ${escapeHTML(t.sinaisVitais?.frequenciaRespiratoria || "—")} · <b>SpO₂:</b> ${escapeHTML(t.sinaisVitais?.spo2 || "—")}%</p>
+        ${Array.isArray(t.sinaisAlerta) && t.sinaisAlerta.length ? `<p style="font-size:12px;color:#b83232"><b>⚠ Alertas:</b> ${escapeHTML(t.sinaisAlerta.join(", "))}</p>` : ""}
         <div class="botoes-card"><button type="button" class="btn-tv" data-action="chamar" data-index="${index}">📺 Chamar na TV</button><button type="button" class="btn-atender" data-action="selecionar" data-index="${index}">Apenas Selecionar</button></div>`;
       div.appendChild(card);
     });
@@ -137,6 +172,7 @@ function selecionarPacienteEmergencia() {
   pacienteSelecionado = { id:null, pacienteId:null, nome:"Paciente de Emergência", sintoma:"", temperatura:"", alergia:"" };
   $("paciente").value = pacienteSelecionado.nome;
   $("diagnostico").value = ""; $("medicacao").value = ""; $("obs").value = "";
+  sintomasConsulta = []; renderizarSintomas();
   $("alertaAlergia").style.display = "none"; $("historicoPaciente").style.display = "none";
   carregar();
   requisicaoJSON("/tv/chamar", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({localTipo:"CONSULTÓRIO",localNumero:$("consultorio-num").value.trim() || "01",paciente:pacienteSelecionado.nome})})
@@ -149,6 +185,8 @@ function selecionar(index) {
   pacienteSelecionado = t;
   $("paciente").value = t.nome || "";
   $("diagnostico").value = ""; $("medicacao").value = "";
+  sintomasConsulta = Array.isArray(t.sintomas) && t.sintomas.length ? t.sintomas.map(x => typeof x === "string" ? {nome:x} : x) : (t.sintoma ? [{nome:t.sintoma, origem:"triagem"}] : []);
+  renderizarSintomas();
   $("obs").value = t.observacao ? `[Triagem]: ${t.observacao}\n` : "";
   const alergia = String(t.alergia || "").trim();
   const alerta = $("alertaAlergia");
@@ -206,9 +244,10 @@ async function salvar() {
   if (!medicacao) { alert("Selecione uma medicação."); $("medicacao").focus(); return; }
   const button = document.querySelector(".btn-salvar"); button.disabled = true;
   try {
-    await requisicaoJSON("/consulta", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({triagemId:pacienteSelecionado.id ?? null,pacienteId:pacienteSelecionado.pacienteId ?? null,paciente:$("paciente").value.trim(),diagnostico,medicacao,obs:$("obs").value.trim(),medicoUsuario:window.sentinelaUser?.usuario,medicoNome:window.sentinelaUser?.nome})});
+    await requisicaoJSON("/consulta", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({triagemId:pacienteSelecionado.id ?? null,pacienteId:pacienteSelecionado.pacienteId ?? null,paciente:$("paciente").value.trim(),diagnostico,medicacao,obs:$("obs").value.trim(),medicoUsuario:window.sentinelaUser?.usuario,medicoNome:window.sentinelaUser?.nome,sintomas:sintomasConsulta})});
     alert("Consulta finalizada com sucesso!"); pacienteSelecionado = null;
     $("paciente").value = ""; $("diagnostico").value = ""; $("medicacao").value = ""; $("obs").value = "";
+    sintomasConsulta = []; renderizarSintomas();
     $("alertaAlergia").style.display = "none"; $("historicoPaciente").style.display = "none";
     await carregar(); await carregarMedicacoes();
   } catch (error) { alert(`Não foi possível finalizar a consulta: ${error.message}`); }

@@ -73,6 +73,35 @@
         <input id="temp" type="number" step="0.1" placeholder="Ex: 36.5">
       </div>
 
+      <div class="form-group grid-sinais">
+        <div><label for="pressao">Pressão arterial (mmHg)</label><input id="pressao" placeholder="Ex.: 120/80"></div>
+        <div><label for="fc">Frequência cardíaca (bpm)</label><input id="fc" type="number" min="0" placeholder="Ex.: 82"></div>
+        <div><label for="fr">Frequência respiratória (irpm)</label><input id="fr" type="number" min="0" placeholder="Ex.: 18"></div>
+        <div><label for="spo2">Saturação SpO₂ (%)</label><input id="spo2" type="number" min="0" max="100" placeholder="Ex.: 98"></div>
+        <div><label for="consciencia">Nível de consciência</label><select id="consciencia"><option value="">Não informado</option><option value="alerta">Alerta</option><option value="confuso">Confuso / desorientado</option><option value="rebaixado">Rebaixado / não responsivo</option></select></div>
+        <div><label for="dor">Intensidade da dor (0–10)</label><input id="dor" type="number" min="0" max="10" placeholder="0 a 10"></div>
+      </div>
+      <div class="form-group">
+        <label>Sinais de alerta observados</label>
+        <div class="alertas-grid">
+          <label><input type="checkbox" name="alerta" value="dificuldade respiratória grave"> Dificuldade respiratória grave</label>
+          <label><input type="checkbox" name="alerta" value="dor no peito"> Dor no peito</label>
+          <label><input type="checkbox" name="alerta" value="convulsão"> Convulsão</label>
+          <label><input type="checkbox" name="alerta" value="sangramento intenso"> Sangramento intenso</label>
+          <label><input type="checkbox" name="alerta" value="alteração importante de consciência"> Alteração importante de consciência</label>
+          <label><input type="checkbox" name="alerta" value="suspeita de AVC"> Suspeita de AVC</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="riscoManual">Classificação sugerida para revisão profissional</label>
+        <select id="riscoManual"><option value="amarelo">🟡 Amarelo — requer avaliação prioritária</option><option value="verde">🟢 Verde — menor prioridade</option><option value="vermelho">🔴 Vermelho — avaliação imediata</option></select>
+        <small id="avisoClassificacao">Ferramenta de apoio: não substitui protocolo validado nem avaliação clínica.</small>
+      </div>
+      <div class="form-group">
+        <label for="justificativa">Justificativa / revisão profissional</label>
+        <textarea id="justificativa" rows="2" placeholder="Registre os achados que fundamentam a classificação e eventuais ajustes"></textarea>
+      </div>
+
       <div class="form-group">
         <label>Alergias Conhecidas</label>
         <input id="alergia" placeholder="Ex: Dipirona, Penicilina, Nenhuma">
@@ -167,80 +196,60 @@ function selecionarPacienteEmergencia() {
   document.getElementById("temp").value = "";
   document.getElementById("alergia").value = "";
   document.getElementById("observacao").value = "";
+  ["pressao","fc","fr","spo2","consciencia","dor","justificativa"].forEach(id=>document.getElementById(id).value="");
+  document.querySelectorAll('input[name="alerta"]').forEach(el=>el.checked=false);
   fetch("/tv/chamar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ localTipo: "GUICHÊ", localNumero: "01", paciente: "Paciente de Emergência" }) });
 }
 
-function classificarRisco(sintoma, temperatura) {
-  const vermelhos = ["infarto","avc","convulsao","hemorragia","falta_ar_grave"];
-  const amarelos = ["febre","vomito","diarreia","falta_ar_moderada"];
-  if (temperatura >= 39) return "vermelho";
-  if (vermelhos.includes(sintoma)) return "vermelho";
-  if (amarelos.includes(sintoma)) return "amarelo";
+function classificarRisco(sintoma, sinaisAlerta, consciencia) {
+  const criticos = ["dificuldade respiratória grave", "dor no peito", "convulsão", "sangramento intenso", "alteração importante de consciência", "suspeita de AVC"];
+  if (sinaisAlerta.some(item => criticos.includes(item)) || consciencia === "rebaixado") return "vermelho";
+  // A sugestão é conservadora e educativa; não reproduz Manchester nem define conduta.
+  if (sinaisAlerta.length || ["falta_ar_moderada", "infarto", "avc", "hemorragia", "febre", "vomito", "diarreia"].includes(sintoma)) return "amarelo";
   return "verde";
 }
 
 function salvar() {
   const nome = document.getElementById("nome").value;
   const sintoma = document.getElementById("sintoma").value;
-  const temperatura = Number(document.getElementById("temp").value);
+  const temperatura = document.getElementById("temp").value;
   const alergia = document.getElementById("alergia").value;
   const observacao = document.getElementById("observacao").value;
-
-  if (!pacienteAtual) {
-    alert("Por favor, selecione um paciente da lista ou o Paciente de Emergência.");
-    return;
+  if (!pacienteAtual) return alert("Selecione um paciente da lista ou o Paciente de Emergência.");
+  if (!sintoma) return alert("Informe a queixa principal.");
+  const sinaisAlerta = [...document.querySelectorAll('input[name="alerta"]:checked')].map(el => el.value);
+  const consciencia = document.getElementById("consciencia").value;
+  const sugestao = classificarRisco(sintoma, sinaisAlerta, consciencia);
+  const risco = document.getElementById("riscoManual").value;
+  const justificativaInformada = document.getElementById("justificativa").value.trim();
+  if (sugestao === "vermelho" && risco !== "vermelho") {
+    if (!justificativaInformada) return alert("Há sinal(is) crítico(s). Para registrar uma classificação diferente de vermelho, documente a justificativa da decisão profissional.");
+    if (!confirm("ATENÇÃO: foram identificados sinais de alerta críticos. Confirma que, após avaliação presencial, a classificação escolhida deve ser diferente de vermelho?")) return;
   }
-
-  if (!sintoma || !temperatura) {
-    alert("Por favor, preencha o Sintoma e a Temperatura do paciente.");
-    return;
-  }
-
-  const risco = classificarRisco(sintoma, temperatura);
-
-  fetch("/triagem", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      pacienteId: pacienteAtual.id || null,
-      nome, 
-      sintoma, 
-      temperatura, 
-      alergia, 
-      observacao, 
-      risco 
-    })
-  })
-  .then(async response => {
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Erro HTTP ${response.status}`);
-    }
-    return response.json();
-  })
+  const justificativa = justificativaInformada || `Sugestão de apoio: ${sugestao}. Classificação confirmada pelo profissional responsável.`;
+  const sinaisVitais = {
+    pressao: document.getElementById("pressao").value.trim(),
+    frequenciaCardiaca: document.getElementById("fc").value,
+    frequenciaRespiratoria: document.getElementById("fr").value,
+    spo2: document.getElementById("spo2").value,
+    consciencia,
+    intensidadeDor: document.getElementById("dor").value
+  };
+  const ausentes = Object.entries(sinaisVitais).filter(([k,v]) => !v && k !== "consciencia").map(([k]) => k);
+  const justificativaCompleta = `${justificativa}${ausentes.length ? ` Dados não informados: ${ausentes.join(", ")}.` : ""}${risco !== sugestao ? ` Classificação revisada: sugestão ${sugestao}; decisão profissional ${risco}.` : ""}`;
+  fetch("/triagem", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
+    pacienteId:pacienteAtual.id || null, nome, sintoma, temperatura, alergia, observacao, risco, sinaisVitais, sinaisAlerta,
+    justificativaRisco:justificativaCompleta, riscoRevisadoPor:window.sentinelaUser?.nome || window.sentinelaUser?.usuario || "Profissional não identificado"
+  })})
+  .then(async response => { const data=await response.json().catch(()=>({})); if(!response.ok) throw new Error(data.erro || `Erro HTTP ${response.status}`); return data; })
   .then(data => {
-    const resultado = document.getElementById("resultado");
-    resultado.className = "risco-" + risco;
-    resultado.style.display = "block";
-    resultado.innerHTML = "Classificação de Risco: " + risco.toUpperCase();
-
-    alert("Triagem concluída com sucesso! Paciente encaminhado para o Médico.");
-
-    // Limpa o formulário
-    document.getElementById("nome").value = "";
-    document.getElementById("sintoma").value = "";
-    document.getElementById("temp").value = "";
-    document.getElementById("alergia").value = "";
-    document.getElementById("observacao").value = "";
-    pacienteAtual = null;
-
-    // Recarrega a lista
-    carregarPacientes();
-  })
-  .catch(err => {
-    console.error("Erro detalhado:", err);
-    alert("Erro ao salvar triagem: " + err.message);
-  });
+    const resultado=document.getElementById("resultado"); resultado.className="risco-"+data.risco; resultado.style.display="block";
+    resultado.textContent=`Classificação registrada: ${data.risco.toUpperCase()}. ${data.justificativaRisco}`;
+    alert("Triagem registrada e encaminhada para avaliação médica.");
+    ["nome","sintoma","temp","alergia","observacao","pressao","fc","fr","spo2","consciencia","dor","justificativa"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("riscoManual").value="amarelo"; document.querySelectorAll('input[name="alerta"]').forEach(el=>el.checked=false);
+    pacienteAtual=null; carregarPacientes();
+  }).catch(err=>alert("Erro ao salvar triagem: "+err.message));
 }
 
 // Carrega a fila inicial ao abrir

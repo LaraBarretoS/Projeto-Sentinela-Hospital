@@ -95,6 +95,37 @@ const db = {
   ]
 };
 
+// Persistência local dos dados operacionais. O arquivo é gravado de forma atômica
+// para reduzir o risco de corrupção caso o processo seja interrompido durante a gravação.
+const DATA_FILE = path.join(__dirname, "sentinela-data.json");
+try {
+  if (fs.existsSync(DATA_FILE)) {
+    const savedData = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+    for (const key of ["pacientes", "triagens", "consultas", "prescricoes", "ponto", "auditoria", "movimentacoesEstoque", "medicamentosEstoque", "tv_chamada", "tv_historico", "tv_conteudos"]) {
+      if (Object.prototype.hasOwnProperty.call(savedData, key)) db[key] = savedData[key];
+    }
+  }
+} catch (error) {
+  console.error("Não foi possível carregar os dados persistidos:", error.message);
+}
+function salvarDados() {
+  const temporario = `${DATA_FILE}.tmp`;
+  const { usuarios: _usuarios, ...dadosOperacionais } = db;
+  fs.writeFileSync(temporario, JSON.stringify(dadosOperacionais, null, 2), "utf8");
+  fs.renameSync(temporario, DATA_FILE);
+}
+// Todas as rotas mutáveis persistem o estado após uma resposta bem-sucedida.
+app.use((req, res, next) => {
+  if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) return next();
+  res.on("finish", () => {
+    if (res.statusCode >= 200 && res.statusCode < 400) {
+      try { salvarDados(); }
+      catch (error) { console.error("Falha ao persistir dados:", error.message); }
+    }
+  });
+  next();
+});
+
 // ======================================================
 // PERSISTÊNCIA DE USUÁRIOS CRIADOS PELO ADMIN
 // ======================================================
@@ -349,63 +380,35 @@ app.get("/pacientes", (req, res) => {
 
 app.post("/triagem", (req, res) => {
   try {
-    const {
-      pacienteId,
-      nome,
-      sintoma,
-      temperatura,
-      alergia,
-      observacao
-    } = req.body;
-
-    let risco = req.body.risco;
-
-    if (temperatura >= 39) {
-      risco = "vermelho";
-    } else if (temperatura >= 38) {
-      risco = "amarelo";
-    } else if (!risco) {
-      risco = "verde";
+    const { pacienteId, nome, sintoma, temperatura, alergia, observacao, sinaisVitais = {}, sintomas = [], sinaisAlerta = [], justificativaRisco = "", riscoRevisadoPor = "" } = req.body;
+    if (!String(nome || "").trim() || !String(sintoma || "").trim()) {
+      return res.status(400).json({ erro: "Informe o paciente e a queixa principal." });
     }
-
-    if (pacienteId) {
-      const paciente = db.pacientes.find(
-        p =>
-          String(p.id) ===
-          String(pacienteId)
-      );
-
-      if (paciente) {
-        paciente.status = "medico";
-      }
+    const temp = temperatura === "" || temperatura == null ? null : Number(temperatura);
+    if (temp !== null && (!Number.isFinite(temp) || temp < 25 || temp > 45)) {
+      return res.status(400).json({ erro: "Temperatura inválida. Confira o valor informado." });
     }
-
+    // Compatibilidade: conserva o risco enviado pelo formulário legado, mas não
+    // transforma limites isolados em protocolo clínico validado.
+    const riscosValidos = ["verde", "amarelo", "vermelho"];
+    const risco = riscosValidos.includes(req.body.risco) ? req.body.risco : "amarelo";
     const triagem = {
-      id: Date.now(),
-      pacienteId,
-      nome,
-      sintoma,
-      temperatura,
-      alergia,
-      observacao,
-      risco,
-      status: "aguardando_medico",
-      createdAt: new Date()
+      id: Date.now(), pacienteId: pacienteId || null, nome: String(nome).trim(), sintoma: String(sintoma),
+      sintomas: Array.isArray(sintomas) ? sintomas : [], temperatura: temp, sinaisVitais: sinaisVitais && typeof sinaisVitais === "object" ? sinaisVitais : {},
+      sinaisAlerta: Array.isArray(sinaisAlerta) ? sinaisAlerta : [], alergia: String(alergia || ""), observacao: String(observacao || ""),
+      risco, justificativaRisco: String(justificativaRisco || "Classificação registrada pelo profissional responsável."),
+      classificacaoApoio: true, protocoloValidado: false, revisadoPor: String(riscoRevisadoPor || ""),
+      status: "aguardando_medico", createdAt: new Date().toISOString()
     };
-
+    if (pacienteId) {
+      const paciente = db.pacientes.find(p => String(p.id) === String(pacienteId));
+      if (paciente) paciente.status = "medico";
+    }
     db.triagens.push(triagem);
-
-    res.json(triagem);
-
+    res.status(201).json(triagem);
   } catch (error) {
-    console.error(
-      "Erro na triagem:",
-      error
-    );
-
-    res.status(500).json({
-      erro: "Erro ao processar triagem."
-    });
+    console.error("Erro na triagem:", error);
+    res.status(500).json({ erro: "Erro ao processar triagem." });
   }
 });
 
@@ -494,7 +497,8 @@ app.post("/consulta", (req, res) => {
     obs,
     medicoUsuario,
     medicoNome,
-    pacienteId
+    pacienteId,
+    sintomas = []
   } = req.body;
 
   if (triagemId) {
@@ -517,6 +521,7 @@ app.post("/consulta", (req, res) => {
     diagnostico,
     medicacao,
     obs,
+    sintomas: Array.isArray(sintomas) ? sintomas : [],
     medicoUsuario: medicoUsuario || "medico",
     medicoNome: medicoNome || "Profissional não informado",
     createdAt: new Date()
