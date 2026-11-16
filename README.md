@@ -45,3 +45,18 @@ A classificação de risco não é Manchester, não foi validada clinicamente e 
 ## Testes
 
 Verificação sintática realizada com `node --check backend/server.js` e compilação dos scripts JavaScript embutidos nas páginas. O teste de execução HTTP depende da instalação das dependências (`npm install`); não foi possível concluir a instalação automática das dependências neste ambiente. Após instalar, valide login, fluxo de triagem, múltiplos sintomas, estoque, usuários e notificações antes de qualquer apresentação.
+
+
+## Deploy no Render (configuração corrigida)
+
+Para um Web Service conectado à raiz deste repositório:
+
+- **Root Directory:** deixe em branco.
+- **Build Command:** `npm install`.
+- **Start Command:** `npm start` (equivalente a `node backend/server.js`).
+- O servidor utiliza a porta fornecida por `process.env.PORT` pelo Render.
+- Após o deploy, acesse `/health`; a resposta esperada é `{"status":"ok","service":"sentinela-hospitalar"}`.
+
+O arquivo `api/index.js` agora é apenas um adaptador de compatibilidade que importa o mesmo aplicativo de `backend/server.js`. Assim, comandos antigos que iniciem `api/index.js` não carregam mais a implementação antiga. O único backend ativo fica em `backend/server.js`.
+
+O `package-lock.json` anterior estava inconsistente com `package.json` (não registrava a dependência `pdfkit` e tinha versão divergente). Ele foi removido para que `npm install` gere um lockfile coerente durante a instalação.

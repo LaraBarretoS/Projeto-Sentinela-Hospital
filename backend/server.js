@@ -23,6 +23,11 @@ if (!fs.existsSync(frontendPath)) {
 
 app.use(express.static(frontendPath));
 
+// Endpoint simples para verificar se o Render iniciou a aplicação correta.
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", service: "sentinela-hospitalar" });
+});
+
 // ======================================================
 // PÁGINA INICIAL
 // ======================================================
@@ -1259,14 +1264,13 @@ app.post("/gerar-pdf-alta", (req, res) => {
 // SERVIDOR
 // ======================================================
 
-const PORT =
-  process.env.PORT || 3000;
+// Permite iniciar pelo backend/server.js ou pelo adaptador api/index.js.
+// Ao importar este módulo, não abre uma segunda porta.
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Servidor Sentinela rodando na porta ${PORT}`);
+  });
+}
 
-app.listen(
-  PORT,
-  () => {
-    console.log(
-      `Servidor rodando na porta ${PORT}`
-    );
-  }
-);
+module.exports = app;
