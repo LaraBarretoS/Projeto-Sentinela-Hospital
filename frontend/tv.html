@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Mídia Indoor - TV</title>
-  
-  <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/css/tv.css">
-</head>
+
 <body>
 
 
@@ -78,7 +76,7 @@ setInterval(atualizar, 2000);
 </script>
 
 <script src="/js/theme.js"></script>
-<div id="conteudoMultimidia"><div><div>🏥</div><h1 id="conteudoTitulo"></h1><p id="conteudoTexto"></p></div></div>
+<div id="conteudoMultimidia" class="extracted-fe9c5e77"><div><div class="extracted-b148cec3">🏥</div><h1 id="conteudoTitulo"></h1><p id="conteudoTexto" class="extracted-29ca90cb"></p></div></div>
 <script>
 let conteudosTV=[];let indiceTV=0;async function carregarConteudosTV(){try{conteudosTV=await fetch('/tv/conteudo').then(r=>r.json());}catch(e){}}
 function mostrarConteudoTV(){if(!conteudosTV.length)return;const box=document.getElementById('conteudoMultimidia');document.getElementById('conteudoTitulo').textContent=conteudosTV[indiceTV].titulo;document.getElementById('conteudoTexto').textContent=conteudosTV[indiceTV].texto;box.style.display='flex';indiceTV=(indiceTV+1)%conteudosTV.length;setTimeout(()=>box.style.display='none',6500)}

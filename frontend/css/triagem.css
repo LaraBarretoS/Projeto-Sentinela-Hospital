@@ -35,9 +35,17 @@ button:hover { background: #2f855a; }
 body.dark-mode .alertas-grid { background:var(--surface-2); border-color:var(--border); }
 @media(max-width:560px){.grid-sinais,.alertas-grid{grid-template-columns:1fr}.coluna-fila,.coluna-form{padding:16px}.fila-item{align-items:flex-start;flex-direction:column}.fila-item .btn-tv{width:100%}}
 
-/* Refinamento visual Sentinela 2.0 */
 
-body{padding:12px}.container{max-width:1500px}.triagem-grid{gap:18px}.coluna-fila,.coluna-form{padding:18px}.grid-sinais{gap:12px}.fila-item{padding:13px;margin:9px 0;cursor:pointer}.btn-salvar{padding:12px 18px}.btn-abrir-tv{background:var(--primary);color:#fff;padding:9px 13px;border:0}
-
-
-body{padding:12px}.container{max-width:1500px}.triagem-grid{gap:18px}.coluna-fila,.coluna-form{padding:18px}.grid-sinais{gap:12px}.fila-item{padding:13px;margin:9px 0;cursor:pointer}.btn-salvar{padding:12px 18px}
+/* Estilos extraídos dos atributos inline da página. */
+.extracted-02dd0a00 { margin-top:0; color:#2d3748; margin-bottom:15px; }
+.extracted-0d3c39d5 { margin-top:10px; width:100%; background:#6c757d; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; font-size:13px; }
+.extracted-26c08ab1 { margin-top:0; color:#2d3748; }
+.extracted-2d31d2f4 { color:red; text-align:center; }
+.extracted-4fbc116c { background-color: #edf2f7; font-weight: bold; }
+.extracted-511f9c3e { color:#888; text-align:center; padding:20px 0; }
+.extracted-6447d4f7 { margin:0; color:#1a365d; }
+.extracted-778528eb { color:#888; text-align:center; }
+.extracted-abf942cf { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.extracted-c803fdde { font-size:12px; color:#718096; margin-bottom:12px; }
+.extracted-ce795241 { font-size:12px; margin-top:4px; }
+.extracted-d370dae4 { color:#718096; }

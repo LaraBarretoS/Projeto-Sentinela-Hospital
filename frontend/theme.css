@@ -1,34 +1,107 @@
-/* SENTINELA 2.0 — Design System compartilhado */
-:root{
- color-scheme:light;
- --bg:#f3f6fb;--surface:#fff;--surface-2:#f8fafd;--surface-3:#edf3f9;
- --text:#17283d;--muted:#63758b;--heading:#12365a;--border:#dce5ef;
- --primary:#1769aa;--primary-hover:#10578f;--primary-soft:#e8f3fc;
- --success:#16845b;--warning:#b7791f;--danger:#c43d4b;
- --shadow-sm:0 2px 8px rgba(20,45,75,.05);--shadow:0 10px 30px rgba(20,45,75,.08);
- --radius:14px;--radius-sm:10px;--focus:0 0 0 3px rgba(23,105,170,.18);
+/* SENTINELA — camada global de design. Estilos específicos ficam em /css/*.css. */
+:root {
+  color-scheme: light;
+  --bg: #f3f6fb;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --text: #182536;
+  --muted: #64748b;
+  --heading: #12345a;
+  --border: #dce4ee;
+  --primary: #1769aa;
+  --primary-hover: #10578f;
+  --success: #16845b;
+  --warning: #a96708;
+  --danger: #c03945;
+  --shadow: 0 8px 28px rgba(20,45,75,.07);
+  --radius-card: 14px;
+  --focus-ring: 0 0 0 3px rgba(23,105,170,.2);
 }
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg)!important;color:var(--text);font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;line-height:1.5;font-size:14px}
-h1,h2,h3,h4{color:var(--heading);letter-spacing:-.025em;line-height:1.2}h1{font-size:clamp(1.55rem,2.5vw,2.1rem)}h2{font-size:1.2rem}p{color:inherit}small,.hint{color:var(--muted)}
-a{color:var(--primary)}button,input,select,textarea{font:inherit}button{cursor:pointer;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}button:hover{filter:brightness(.97);transform:translateY(-1px)}button:disabled{opacity:.55;cursor:not-allowed;transform:none}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:0;box-shadow:var(--focus)}
-input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{max-width:100%;width:100%;padding:11px 12px;border:1px solid var(--border)!important;border-radius:var(--radius-sm)!important;background:var(--surface)!important;color:var(--text)!important;transition:border-color .15s,box-shadow .15s}
-input::placeholder,textarea::placeholder{color:#91a0b2}input:focus,select:focus,textarea:focus{border-color:var(--primary)!important;outline:0;box-shadow:var(--focus)!important}label{font-weight:650;color:var(--text)}
-.container,.wrap{max-width:1440px;margin:28px auto;padding:clamp(16px,2.4vw,30px);border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow-sm)}
-.card,.coluna-fila,.coluna-form,.consultorio-box,.fila-item,.card-paciente,.pharmacy-card,.pharmacy-stat,.notice,.modal,.panel.active{border:1px solid var(--border)!important;border-radius:var(--radius)!important;background:var(--surface);box-shadow:var(--shadow-sm)}
-button,.btn,.sentinela-btn{border-radius:10px;font-weight:650;min-height:38px}button:not(.theme-toggle):not(.tab):not(.bell-button){border-color:transparent}
-.btn,.btn-salvar,.btn-pdf,.sentinela-btn.primary{background:var(--primary);color:#fff;border:1px solid var(--primary);padding:9px 14px}
-.btn.secondary,.sentinela-btn{background:var(--surface-2);color:var(--text);border:1px solid var(--border);padding:9px 13px}
-.btn.danger{background:var(--danger);color:#fff}
-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;color:var(--text)}th{background:var(--surface-2);color:var(--heading);font-weight:750}th,td{padding:11px 13px;border-bottom:1px solid var(--border);text-align:left}tr:last-child td{border-bottom:0}tbody tr:hover{background:var(--surface-2)}
-.theme-toggle{position:fixed!important;top:14px!important;right:16px!important;bottom:auto!important;z-index:10002;width:42px!important;height:42px!important;padding:0!important;border:1px solid var(--border)!important;border-radius:12px!important;background:var(--surface)!important;color:var(--text)!important;box-shadow:var(--shadow-sm);font-size:19px!important}
-.sentinela-topbar{position:relative!important;inset:auto!important;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;max-width:1440px;width:calc(100% - 32px);margin:14px auto 18px!important;padding:10px 14px!important;border:1px solid var(--border)!important;border-radius:14px!important;background:var(--surface)!important;box-shadow:var(--shadow-sm)}
-.sentinela-left,.sentinela-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.sentinela-user{color:var(--muted)!important;font-size:13px}
-.form-group{margin-bottom:16px}.form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-body.dark-mode{color-scheme:dark;--bg:#0b1422;--surface:#121f31;--surface-2:#192a40;--surface-3:#20344d;--text:#e6edf6;--muted:#a6b6ca;--heading:#d5e7fb;--border:#2c4059;--primary:#55a6e8;--primary-hover:#368bd0;--primary-soft:#183b59;--success:#4bc18b;--warning:#e5b65c;--danger:#f0717d;--shadow-sm:0 2px 10px rgba(0,0,0,.18);--shadow:0 12px 32px rgba(0,0,0,.24)}
-body.dark-mode .container,body.dark-mode .wrap,body.dark-mode .card,body.dark-mode .coluna-fila,body.dark-mode .coluna-form,body.dark-mode .consultorio-box,body.dark-mode .fila-item,body.dark-mode .card-paciente,body.dark-mode .pharmacy-card,body.dark-mode .pharmacy-stat,body.dark-mode .notice,body.dark-mode .modal,body.dark-mode .sentinela-topbar,body.dark-mode .panel.active{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
-body.dark-mode input:not([type=checkbox]):not([type=radio]):not([type=file]),body.dark-mode select,body.dark-mode textarea{background:var(--surface-2)!important;color:var(--text)!important;border-color:var(--border)!important}body.dark-mode input::placeholder,body.dark-mode textarea::placeholder{color:#91a4ba}body.dark-mode th{background:var(--surface-2)!important;color:var(--heading)!important}body.dark-mode td,body.dark-mode th{border-color:var(--border)!important}body.dark-mode h1,body.dark-mode h2,body.dark-mode h3,body.dark-mode h4,body.dark-mode label,body.dark-mode strong{color:var(--text)}body.dark-mode .theme-toggle{background:var(--surface)!important;color:var(--text)!important}
-body.dark-mode .emergencia-card{background:#3b2024!important;border-color:#b4535b!important;color:#fee2e2!important}body.dark-mode .risco-vermelho{background:#54272d!important;color:#fecaca!important}body.dark-mode .risco-amarelo{background:#514022!important;color:#fde68a!important}body.dark-mode .risco-verde{background:#1f4537!important;color:#bbf7d0!important}
-@media(max-width:760px){.container,.wrap{width:auto!important;margin:12px!important;padding:15px!important}.form-row{grid-template-columns:1fr}.sentinela-topbar{width:calc(100% - 24px);margin:10px 12px 14px!important}.sentinela-left,.sentinela-actions{width:100%;max-width:100%}.sentinela-actions{justify-content:flex-start}table{min-width:600px}.pharmacy-table-wrap{overflow-x:auto}}
-@media(max-width:420px){.theme-toggle{top:10px!important;right:10px!important}.sentinela-user{width:100%}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+body.dark-mode {
+  color-scheme: dark;
+  --bg: #0b1422;
+  --surface: #121f31;
+  --surface-2: #1a2a40;
+  --text: #e6edf6;
+  --muted: #a6b6ca;
+  --heading: #d5e7fb;
+  --border: #2c4059;
+  --primary: #55a6e8;
+  --primary-hover: #368bd0;
+  --success: #55c99a;
+  --warning: #f2c36d;
+  --danger: #ff8790;
+  --shadow: 0 10px 30px rgba(0,0,0,.22);
+}
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+h1,h2,h3,h4 { color: var(--heading); }
+button,input,select,textarea { font: inherit; }
+button { cursor: pointer; transition: filter .16s ease, box-shadow .16s ease; }
+button:hover { filter: brightness(.97); }
+button:disabled { opacity: .6; cursor: not-allowed; }
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible {
+  outline: 0; box-shadow: var(--focus-ring);
+}
+input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),
+select,textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+}
+input::placeholder,textarea::placeholder { color: var(--muted); }
+table { color: var(--text); }
+th { color: var(--heading); }
+.theme-toggle {
+  position: fixed; top: 14px; right: 16px; z-index: 9999;
+  width: 42px; height: 42px; padding: 0;
+  border: 1px solid var(--border); border-radius: 50%;
+  background: var(--surface); color: var(--text);
+  box-shadow: 0 3px 12px var(--shadow); font-size: 20px; line-height: 1;
+}
+.sentinela-topbar {
+  position: relative; margin: 12px auto 20px; max-width: 1440px;
+  padding: 10px 14px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow);
+}
+.sentinela-user { color: var(--muted); }
+.form-group { margin-bottom: 16px; }
+.form-group small,#avisoClassificacao { display: block; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+#resultado { border-radius: 12px; padding: 14px; margin: 14px 0; line-height: 1.5; }
+body.dark-mode .container,body.dark-mode .wrap,body.dark-mode .card,
+body.dark-mode .coluna-fila,body.dark-mode .coluna-form,body.dark-mode .consultorio-box,
+body.dark-mode .card-paciente,body.dark-mode .fila-item,body.dark-mode .sentinela-topbar {
+  background-color: var(--surface); color: var(--text); border-color: var(--border);
+}
+body.dark-mode input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),
+body.dark-mode select,body.dark-mode textarea { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+body.dark-mode th { background: var(--surface-2); color: var(--heading); }
+body.dark-mode td,body.dark-mode th { border-color: var(--border); }
+body.dark-mode .theme-toggle { background: var(--surface); color: var(--text); border-color: var(--border); }
+body.dark-mode .emergencia-card { background: #3b2024; border-color: #b4535b; color: #fee2e2; }
+body.dark-mode .risco-vermelho { background: #54272d; color: #fecaca; }
+body.dark-mode .risco-amarelo { background: #514022; color: #fde68a; }
+body.dark-mode .risco-verde { background: #1f4537; color: #bbf7d0; }
+@media (max-width: 760px) {
+  .container,.wrap { max-width: 100%; box-sizing: border-box; margin: 10px; padding: 14px; }
+  .triagem-grid { grid-template-columns: 1fr; }
+  .grid-sinais { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  table { display: block; max-width: 100%; overflow-x: auto; }
+}
+@media (max-width: 420px) {
+  .grid-sinais { grid-template-columns: 1fr; }
+  .sentinela-left,.sentinela-actions { max-width: 100%; width: 100%; }
+  .sentinela-actions { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}

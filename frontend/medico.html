@@ -11,37 +11,37 @@
 <button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
 
 <div class="container">
-  <div>
-    <h2>🩺 Painel Médico</h2>
-    <button onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button>
+  <div class="extracted-ccc5e8e6">
+    <h2 class="extracted-6447d4f7">🩺 Painel Médico</h2>
+    <button onclick="window.open('tv.html','_blank')" class="extracted-b0d6d29b">📺 Abrir Tela da TV</button>
   </div>
 
   <div class="consultorio-box">
     <label for="consultorio-num"><strong>Meu Consultório:</strong></label>
     <input type="text" id="consultorio-num" value="01">
-    <span>Número enviado para a TV ao chamar.</span>
+    <span class="extracted-3aa0d1aa">Número enviado para a TV ao chamar.</span>
   </div>
 
   <div class="medico-grid">
     <div class="coluna-fila">
-      <h3>Fila de Espera</h3>
+      <h3 class="extracted-26c08ab1">Fila de Espera</h3>
       <div class="emergencia-card">
         <strong>🚨 Paciente de Emergência</strong>
-        <p>Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+        <p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
         <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
       </div>
-      <div id="triagens"><p>Carregando...</p></div>
-      <button onclick="carregar()">🔄 Atualizar Fila</button>
+      <div id="triagens"><p class="extracted-778528eb">Carregando...</p></div>
+      <button onclick="carregar()" class="extracted-db383b1c">🔄 Atualizar Fila</button>
     </div>
 
     <div class="coluna-form">
-      <h3>Atendimento Médico</h3>
+      <h3 class="extracted-02dd0a00">Atendimento Médico</h3>
       <div id="alertaAlergia" class="alerta-alergia"></div>
-      <div id="historicoPaciente"></div>
+      <div id="historicoPaciente" class="extracted-c57d05b9"></div>
 
       <div class="form-group">
         <label>Paciente Selecionado *</label>
-        <input id="paciente" placeholder="Selecione um paciente na lista" readonly>
+        <input id="paciente" placeholder="Selecione um paciente na lista" readonly class="extracted-4fbc116c">
       </div>
 
       <div class="form-group">
@@ -149,7 +149,7 @@ async function carregar() {
       .sort((a,b) => (peso[a.risco] || 4) - (peso[b.risco] || 4));
     div.replaceChildren();
     if (!triagensCarregadas.length) {
-      div.innerHTML = "<p>Nenhum paciente na fila de espera.</p>";
+      div.innerHTML = "<p class="extracted-5b52d149">Nenhum paciente na fila de espera.</p>";
       return;
     }
     triagensCarregadas.forEach((t, index) => {
@@ -157,16 +157,16 @@ async function carregar() {
       const selecionado = pacienteSelecionado && String(pacienteSelecionado.id ?? "") === String(t.id ?? "");
       const risco = ["vermelho", "amarelo", "verde"].includes(t.risco) ? t.risco : "verde";
       card.className = `card-paciente ${selecionado ? "selecionado" : ""}`;
-      card.innerHTML = `<div><strong>${escapeHTML(t.nome || "Paciente sem nome")}</strong><span class="badge-risco ${risco}">${escapeHTML(risco)}</span></div>
-        <p><b>Sintoma:</b> ${escapeHTML(t.sintoma || "Não informado")}</p>
-        <p><b>Temp:</b> ${t.temperatura ? escapeHTML(t.temperatura) + "°C" : "—"} | <b>Alergia:</b> ${escapeHTML(t.alergia || "Nenhuma")}</p>
-        <p><b>PA:</b> ${escapeHTML(t.sinaisVitais?.pressao || "—")} · <b>FC:</b> ${escapeHTML(t.sinaisVitais?.frequenciaCardiaca || "—")} · <b>FR:</b> ${escapeHTML(t.sinaisVitais?.frequenciaRespiratoria || "—")} · <b>SpO₂:</b> ${escapeHTML(t.sinaisVitais?.spo2 || "—")}%</p>
-        ${Array.isArray(t.sinaisAlerta) && t.sinaisAlerta.length ? `<p><b>⚠ Alertas:</b> ${escapeHTML(t.sinaisAlerta.join(", "))}</p>` : ""}
+      card.innerHTML = `<div class="extracted-1fadc7d7"><strong>${escapeHTML(t.nome || "Paciente sem nome")}</strong><span class="badge-risco ${risco}">${escapeHTML(risco)}</span></div>
+        <p class="extracted-fa201034"><b>Sintoma:</b> ${escapeHTML(t.sintoma || "Não informado")}</p>
+        <p class="extracted-fa201034"><b>Temp:</b> ${t.temperatura ? escapeHTML(t.temperatura) + "°C" : "—"} | <b>Alergia:</b> ${escapeHTML(t.alergia || "Nenhuma")}</p>
+        <p class="extracted-fa201034"><b>PA:</b> ${escapeHTML(t.sinaisVitais?.pressao || "—")} · <b>FC:</b> ${escapeHTML(t.sinaisVitais?.frequenciaCardiaca || "—")} · <b>FR:</b> ${escapeHTML(t.sinaisVitais?.frequenciaRespiratoria || "—")} · <b>SpO₂:</b> ${escapeHTML(t.sinaisVitais?.spo2 || "—")}%</p>
+        ${Array.isArray(t.sinaisAlerta) && t.sinaisAlerta.length ? `<p class="extracted-5977a114"><b>⚠ Alertas:</b> ${escapeHTML(t.sinaisAlerta.join(", "))}</p>` : ""}
         <div class="botoes-card"><button type="button" class="btn-tv" data-action="chamar" data-index="${index}">📺 Chamar na TV</button><button type="button" class="btn-atender" data-action="selecionar" data-index="${index}">Apenas Selecionar</button></div>`;
       div.appendChild(card);
     });
   } catch (error) {
-    div.innerHTML = `<p role="alert">Não foi possível carregar a fila. ${escapeHTML(error.message)}</p>`;
+    div.innerHTML = `<p role="alert" class="extracted-3c7371bb">Não foi possível carregar a fila. ${escapeHTML(error.message)}</p>`;
   } finally { carregandoFila = false; }
 }
 
@@ -224,7 +224,7 @@ async function carregarHistoricoPaciente(pacienteId) {
     const data = await requisicaoJSON(`/pacientes/${encodeURIComponent(pacienteId)}/historico`);
     const consultas = Array.isArray(data.consultas) ? data.consultas : [];
     box.style.display = "block";
-    box.innerHTML = `<b>📋 Histórico do paciente</b><br><span>${consultas.length ? consultas.map(c => `${c.createdAt && !Number.isNaN(new Date(c.createdAt).getTime()) ? new Date(c.createdAt).toLocaleDateString("pt-BR") : "Data não informada"} — ${escapeHTML(c.medicoNome || "Médico")} — ${escapeHTML(c.diagnostico || "Sem diagnóstico")} — ${escapeHTML(c.medicacao || "Sem medicação")}`).join("<br>") : "Nenhuma consulta anterior registrada."}</span>`;
+    box.innerHTML = `<b>📋 Histórico do paciente</b><br><span class="extracted-a27ad5cf">${consultas.length ? consultas.map(c => `${c.createdAt && !Number.isNaN(new Date(c.createdAt).getTime()) ? new Date(c.createdAt).toLocaleDateString("pt-BR") : "Data não informada"} — ${escapeHTML(c.medicoNome || "Médico")} — ${escapeHTML(c.diagnostico || "Sem diagnóstico")} — ${escapeHTML(c.medicacao || "Sem medicação")}`).join("<br>") : "Nenhuma consulta anterior registrada."}</span>`;
   } catch (error) { box.style.display = "block"; box.textContent = "Não foi possível carregar o histórico deste paciente."; }
 }
 

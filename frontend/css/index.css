@@ -71,10 +71,3 @@ button {
 button:hover {
     background-color: #2b6cb0;
 }
-
-/* Refinamento visual Sentinela 2.0 */
-
-body{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 12% 10%,#dcecf9 0,transparent 34%),var(--bg)!important}.login-container,.login-box,.container{width:min(440px,100%);padding:34px!important;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:var(--shadow)}.login-container h1,.login-box h1,.container h1{text-align:center;margin:0 0 8px}.login-container button,.login-box button{width:100%;margin-top:14px;background:var(--primary);color:#fff;padding:12px;border:0;border-radius:10px}.theme-toggle{position:fixed!important}
-
-
-body{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 12% 10%,#dcecf9 0,transparent 34%),var(--bg)!important}.container{width:min(440px,100%);padding:34px!important;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:var(--shadow)}.container h2{text-align:center;margin:0 0 22px}.container input{margin:8px 0}.container button{width:100%;margin-top:14px;background:var(--primary);color:#fff;padding:12px;border:0;border-radius:10px}

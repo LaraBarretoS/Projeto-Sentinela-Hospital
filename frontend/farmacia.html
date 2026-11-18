@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Farmácia | Sentinela Hospitalar</title>
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/css/farmacia.css">
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/css/farmacia.css">
 </head>
 <body>
 <button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button" aria-label="Alternar tema">🌙</button>
@@ -28,7 +29,7 @@
   <div><label for="validade">Validade do lote (entrada)</label><input id="validade" type="date"></div>
  </div>
  <p><button class="btn" onclick="mov('entrada')">＋ Registrar entrada</button> <button class="btn" onclick="mov('saida')">− Registrar saída</button></p>
- <small>A validade é informativa e deve ser conferida com a embalagem/lote físico. O sistema não substitui o controle farmacêutico.</small>
+ <small class="extracted-57f9e31d">A validade é informativa e deve ser conferida com a embalagem/lote físico. O sistema não substitui o controle farmacêutico.</small>
 </section>
 <section class="pharmacy-card"><h2>Histórico de movimentações</h2><div class="pharmacy-table-wrap"><table><thead><tr><th>Data</th><th>Tipo</th><th>Medicamento</th><th>Quantidade</th><th>Paciente</th><th>Usuário</th></tr></thead><tbody id="hist"></tbody></table></div></section>
 </main>

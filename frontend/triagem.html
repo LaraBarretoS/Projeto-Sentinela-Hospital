@@ -12,8 +12,8 @@
 <div class="container">
 
   <!-- Cabeçalho -->
-  <div>
-    <h2>🏥 Triagem Hospitalar</h2>
+  <div class="extracted-abf942cf">
+    <h2 class="extracted-6447d4f7">🏥 Triagem Hospitalar</h2>
     <button class="btn-abrir-tv" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button>
   </div>
 
@@ -21,31 +21,31 @@
     
     <!-- Coluna Esquerda: Lista de Pacientes -->
     <div class="coluna-fila">
-      <h3>
+      <h3 class="extracted-26c08ab1">
         Fila do Atendimento
       </h3>
-      <p>Clique em "Chamar na TV" para iniciar o atendimento do paciente.</p>
+      <p class="extracted-c803fdde">Clique em "Chamar na TV" para iniciar o atendimento do paciente.</p>
       
       <div class="emergencia-card">
         <strong>🚨 Paciente de Emergência</strong>
-        <p>Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+        <p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
         <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
       </div>
 
       <div id="fila-pacientes">
-        <p>Carregando...</p>
+        <p class="extracted-778528eb">Carregando...</p>
       </div>
 
-      <button onclick="carregarPacientes()">🔄 Atualizar Fila</button>
+      <button onclick="carregarPacientes()" class="extracted-0d3c39d5">🔄 Atualizar Fila</button>
     </div>
 
     <!-- Coluna Direita: Formulário do Enfermeiro -->
     <div class="coluna-form">
-      <h3>Ficha de Avaliação da Triagem</h3>
+      <h3 class="extracted-02dd0a00">Ficha de Avaliação da Triagem</h3>
       
       <div class="form-group">
         <label>Paciente Selecionado *</label>
-        <input id="nome" placeholder="Selecione um paciente na lista ao lado" readonly>
+        <input id="nome" placeholder="Selecione um paciente na lista ao lado" readonly class="extracted-4fbc116c">
       </div>
 
       <div class="form-group">
@@ -139,7 +139,7 @@ function carregarPacientes() {
       const fila = pacientes.filter(p => p.status === "triagem");
 
       if (fila.length === 0) {
-        div.innerHTML = "<p>Nenhum paciente aguardando.</p>";
+        div.innerHTML = "<p class="extracted-511f9c3e">Nenhum paciente aguardando.</p>";
         return;
       }
 
@@ -154,7 +154,7 @@ function carregarPacientes() {
         item.innerHTML = `
           <div>
             <strong>${p.nome}</strong><br>
-            <small>CPF: ${p.cpf || "—"} | ${p.tipo || "Geral"}</small>
+            <small class="extracted-d370dae4">CPF: ${p.cpf || "—"} | ${p.tipo || "Geral"}</small>
           </div>
           <button class="btn-tv" onclick='selecionarEChamar(${JSON.stringify(p)})'>📺 Chamar na TV</button>
         `;
@@ -163,7 +163,7 @@ function carregarPacientes() {
     })
     .catch(() => {
       document.getElementById("fila-pacientes").innerHTML =
-        "<p>Erro ao carregar pacientes.</p>";
+        "<p class="extracted-2d31d2f4">Erro ao carregar pacientes.</p>";
     });
 }
 

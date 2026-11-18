@@ -41,9 +41,22 @@ button:hover { background: #2b6cb0; }
 body.dark-mode .sintoma-item{background:var(--surface-2);border-color:var(--border);color:var(--text)}
 @media(max-width:600px){.sintoma-add-grid{grid-template-columns:1fr}.sintoma-item{align-items:flex-start;flex-direction:column}.sintoma-item button{width:100%}}
 
-/* Refinamento visual Sentinela 2.0 */
 
-body{padding:12px}.container{max-width:1500px}.coluna-fila,.coluna-form,.consultorio-box{padding:18px}.fila-item,.card-paciente{padding:13px;margin:9px 0;cursor:pointer}.lista-sintomas{display:grid;gap:10px;margin:12px 0}.btn-adicionar-sintoma{background:var(--primary-soft);color:var(--primary);border:1px solid var(--border);padding:9px 13px}.alerta-alergia{border-radius:11px}.historico-paciente{border-radius:12px}
-
-
-body{padding:12px}.container{max-width:1500px}.coluna-fila,.coluna-form,.consultorio-box{padding:18px}.fila-item,.card-paciente{padding:13px;margin:9px 0;cursor:pointer}.lista-sintomas{display:grid;gap:10px;margin:12px 0}.btn-adicionar-sintoma{background:var(--primary-soft);color:var(--primary);border:1px solid var(--border);padding:9px 13px}
+/* Estilos extraídos dos atributos inline da página. */
+.extracted-02dd0a00 { margin-top:0; color:#2d3748; margin-bottom:15px; }
+.extracted-1fadc7d7 { display:flex;justify-content:space-between;align-items:flex-start;gap:8px }
+.extracted-26c08ab1 { margin-top:0; color:#2d3748; }
+.extracted-3aa0d1aa { color:#4a5568; font-size:13px; }
+.extracted-3c7371bb { color:#c53030;text-align:center }
+.extracted-4fbc116c { background-color: #edf2f7; font-weight: bold; }
+.extracted-5977a114 { font-size:12px;color:#b83232 }
+.extracted-5b52d149 { color:#888;text-align:center;padding:20px 0 }
+.extracted-6447d4f7 { margin:0; color:#1a365d; }
+.extracted-778528eb { color:#888; text-align:center; }
+.extracted-a27ad5cf { font-size:12px;color:#4a5568 }
+.extracted-b0d6d29b { background:#3182ce; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; }
+.extracted-c57d05b9 { display:none;margin-bottom:12px;padding:12px;border-radius:8px;background:#eef6ff;border:1px solid #bfd7f5; }
+.extracted-ccc5e8e6 { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+.extracted-ce795241 { font-size:12px; margin-top:4px; }
+.extracted-db383b1c { margin-top:10px; width:100%; background:#6c757d; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; }
+.extracted-fa201034 { font-size:12px;margin:4px 0;color:#4a5568 }

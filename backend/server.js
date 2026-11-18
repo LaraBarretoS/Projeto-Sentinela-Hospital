@@ -21,7 +21,16 @@ if (!fs.existsSync(frontendPath)) {
     : path.join(__dirname, "../");
 }
 
-app.use(express.static(frontendPath));
+app.use(express.static(frontendPath, {
+  etag: true,
+  lastModified: true,
+  maxAge: 0,
+  setHeaders(res, filePath) {
+    if (/\.(?:css|html)$/i.test(filePath)) {
+      res.setHeader("Cache-Control", "no-cache, must-revalidate");
+    }
+  }
+}));
 
 // Endpoint simples para verificar se o Render iniciou a aplicação correta.
 app.get("/health", (req, res) => {
@@ -527,55 +536,38 @@ app.post("/consulta", (req, res) => {
     sintomas = []
   } = req.body;
 
-  if (!String(paciente || "").trim()) {
-    return res.status(400).json({ erro: "Selecione ou informe o paciente da consulta." });
-  }
-  if (!String(diagnostico || "").trim()) {
-    return res.status(400).json({ erro: "Informe o diagnóstico ou hipótese diagnóstica." });
-  }
-  if (!Array.isArray(sintomas) || sintomas.length > 50) {
-    return res.status(400).json({ erro: "A lista de sintomas deve ser válida e conter no máximo 50 registros." });
-  }
-  const sintomasNormalizados = [];
-  for (const item of sintomas) {
-    // Mantém compatibilidade com registros antigos que armazenavam sintomas como texto.
-    const sintoma = typeof item === "string" ? { nome: item } : item;
-    if (!sintoma || typeof sintoma !== "object" || !String(sintoma.nome || "").trim()) {
-      return res.status(400).json({ erro: "Cada sintoma precisa ter um nome válido." });
+  if (triagemId) {
+    const triagem = db.triagens.find(
+      t =>
+        String(t.id) ===
+        String(triagemId)
+    );
+
+    if (triagem) {
+      triagem.status = "finalizado";
     }
-    const intensidade = sintoma.intensidade === "" || sintoma.intensidade == null ? null : Number(sintoma.intensidade);
-    if (intensidade !== null && (!Number.isFinite(intensidade) || intensidade < 0 || intensidade > 10)) {
-      return res.status(400).json({ erro: "A intensidade dos sintomas deve estar entre 0 e 10." });
-    }
-    sintomasNormalizados.push({
-      nome: String(sintoma.nome).trim().slice(0, 120),
-      intensidade,
-      duracao: String(sintoma.duracao || "").trim().slice(0, 120),
-      frequencia: String(sintoma.frequencia || "").trim().slice(0, 120),
-      observacao: String(sintoma.observacao || "").trim().slice(0, 1000)
-    });
   }
 
-  const triagemAssociada = triagemId ? db.triagens.find(t => String(t.id) === String(triagemId)) : null;
   const consulta = {
     id: Date.now(),
-    triagemId: triagemId || null,
-    paciente: String(paciente).trim().slice(0, 160),
+    triagemId,
+    paciente,
     pacienteId: pacienteId || null,
-    diagnostico: String(diagnostico || "").trim().slice(0, 2000),
-    medicacao: String(medicacao || "").trim().slice(0, 500),
-    obs: String(obs || "").trim().slice(0, 5000),
-    sintomas: sintomasNormalizados,
-    medicoUsuario: String(medicoUsuario || "medico").slice(0, 80),
-    medicoNome: String(medicoNome || "Profissional não informado").slice(0, 120),
-    createdAt: new Date().toISOString()
+    diagnostico,
+    medicacao,
+    obs,
+    sintomas: Array.isArray(sintomas) ? sintomas : [],
+    medicoUsuario: medicoUsuario || "medico",
+    medicoNome: medicoNome || "Profissional não informado",
+    createdAt: new Date()
   };
-  if (triagemAssociada) triagemAssociada.status = "finalizado";
 
   db.consultas.push(consulta);
-  if (medicacao) db.prescricoes.push({ ...consulta, tipo: "prescricao" });
-  db.auditoria.unshift({ id: Date.now() + 1, usuarioAcao: consulta.medicoUsuario, acao: "Finalizou consulta", alvo: consulta.paciente, dataHora: new Date().toISOString() });
-  res.status(201).json(consulta);
+  if (medicacao) {
+    db.prescricoes.push({ ...consulta, tipo: "prescricao" });
+  }
+
+  res.json(consulta);
 });
 
 // ======================================================
