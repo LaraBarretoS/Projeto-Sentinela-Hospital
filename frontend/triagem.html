@@ -80,6 +80,7 @@
         <div><label for="spo2">Saturação SpO₂ (%)</label><input id="spo2" type="number" min="0" max="100" placeholder="Ex.: 98"></div>
         <div><label for="consciencia">Nível de consciência</label><select id="consciencia"><option value="">Não informado</option><option value="alerta">Alerta</option><option value="confuso">Confuso / desorientado</option><option value="rebaixado">Rebaixado / não responsivo</option></select></div>
         <div><label for="dor">Intensidade da dor (0–10)</label><input id="dor" type="number" min="0" max="10" placeholder="0 a 10"></div>
+        <div><label for="glicemia">Glicemia (mg/dL), quando indicada</label><input id="glicemia" type="number" min="0" max="2000" placeholder="Não obrigatório"></div>
       </div>
       <div class="form-group">
         <label>Sinais de alerta observados</label>
@@ -90,12 +91,16 @@
           <label><input type="checkbox" name="alerta" value="sangramento intenso"> Sangramento intenso</label>
           <label><input type="checkbox" name="alerta" value="alteração importante de consciência"> Alteração importante de consciência</label>
           <label><input type="checkbox" name="alerta" value="suspeita de AVC"> Suspeita de AVC</label>
+          <label><input type="checkbox" name="alerta" value="sangramento ativo importante"> Sangramento ativo importante</label>
+          <label><input type="checkbox" name="alerta" value="cianose"> Cianose</label>
+          <label><input type="checkbox" name="alerta" value="reação alérgica grave"> Reação alérgica grave</label>
+          <label><input type="checkbox" name="alerta" value="risco imediato identificado pelo profissional"> Outro sinal crítico identificado</label>
         </div>
       </div>
       <div class="form-group">
         <label for="riscoManual">Classificação sugerida para revisão profissional</label>
         <select id="riscoManual"><option value="amarelo">🟡 Amarelo — requer avaliação prioritária</option><option value="verde">🟢 Verde — menor prioridade</option><option value="vermelho">🔴 Vermelho — avaliação imediata</option></select>
-        <small id="avisoClassificacao">Ferramenta de apoio: não substitui protocolo validado nem avaliação clínica.</small>
+        <small id="avisoClassificacao">Ferramenta de registro e alerta, não é Protocolo de Manchester e não determina prioridade automaticamente. A classificação final é responsabilidade do profissional.</small>
       </div>
       <div class="form-group">
         <label for="justificativa">Justificativa / revisão profissional</label>
@@ -196,7 +201,7 @@ function selecionarPacienteEmergencia() {
   document.getElementById("temp").value = "";
   document.getElementById("alergia").value = "";
   document.getElementById("observacao").value = "";
-  ["pressao","fc","fr","spo2","consciencia","dor","justificativa"].forEach(id=>document.getElementById(id).value="");
+  ["pressao","fc","fr","spo2","consciencia","dor","glicemia","justificativa"].forEach(id=>document.getElementById(id).value="");
   document.querySelectorAll('input[name="alerta"]').forEach(el=>el.checked=false);
   fetch("/tv/chamar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ localTipo: "GUICHÊ", localNumero: "01", paciente: "Paciente de Emergência" }) });
 }
@@ -204,9 +209,9 @@ function selecionarPacienteEmergencia() {
 function classificarRisco(sintoma, sinaisAlerta, consciencia) {
   const criticos = ["dificuldade respiratória grave", "dor no peito", "convulsão", "sangramento intenso", "alteração importante de consciência", "suspeita de AVC"];
   if (sinaisAlerta.some(item => criticos.includes(item)) || consciencia === "rebaixado") return "vermelho";
-  // A sugestão é conservadora e educativa; não reproduz Manchester nem define conduta.
-  if (sinaisAlerta.length || ["falta_ar_moderada", "infarto", "avc", "hemorragia", "febre", "vomito", "diarreia"].includes(sintoma)) return "amarelo";
-  return "verde";
+  // Não há inferência automática de verde/amarelo: sem protocolo validado,
+  // o sistema apenas sinaliza os alertas críticos e exige decisão profissional.
+  return "amarelo";
 }
 
 function salvar() {
@@ -233,7 +238,8 @@ function salvar() {
     frequenciaRespiratoria: document.getElementById("fr").value,
     spo2: document.getElementById("spo2").value,
     consciencia,
-    intensidadeDor: document.getElementById("dor").value
+    intensidadeDor: document.getElementById("dor").value,
+    glicemia: document.getElementById("glicemia").value
   };
   const ausentes = Object.entries(sinaisVitais).filter(([k,v]) => !v && k !== "consciencia").map(([k]) => k);
   const justificativaCompleta = `${justificativa}${ausentes.length ? ` Dados não informados: ${ausentes.join(", ")}.` : ""}${risco !== sugestao ? ` Classificação revisada: sugestão ${sugestao}; decisão profissional ${risco}.` : ""}`;
@@ -246,7 +252,7 @@ function salvar() {
     const resultado=document.getElementById("resultado"); resultado.className="risco-"+data.risco; resultado.style.display="block";
     resultado.textContent=`Classificação registrada: ${data.risco.toUpperCase()}. ${data.justificativaRisco}`;
     alert("Triagem registrada e encaminhada para avaliação médica.");
-    ["nome","sintoma","temp","alergia","observacao","pressao","fc","fr","spo2","consciencia","dor","justificativa"].forEach(id=>document.getElementById(id).value="");
+    ["nome","sintoma","temp","alergia","observacao","pressao","fc","fr","spo2","consciencia","dor","glicemia","justificativa"].forEach(id=>document.getElementById(id).value="");
     document.getElementById("riscoManual").value="amarelo"; document.querySelectorAll('input[name="alerta"]').forEach(el=>el.checked=false);
     pacienteAtual=null; carregarPacientes();
   }).catch(err=>alert("Erro ao salvar triagem: "+err.message));

@@ -60,3 +60,12 @@ Para um Web Service conectado à raiz deste repositório:
 O arquivo `api/index.js` agora é apenas um adaptador de compatibilidade que importa o mesmo aplicativo de `backend/server.js`. Assim, comandos antigos que iniciem `api/index.js` não carregam mais a implementação antiga. O único backend ativo fica em `backend/server.js`.
 
 O `package-lock.json` anterior estava inconsistente com `package.json` (não registrava a dependência `pdfkit` e tinha versão divergente). Ele foi removido para que `npm install` gere um lockfile coerente durante a instalação.
+
+
+## Observações de segurança e implantação
+
+- Esta aplicação permanece um projeto acadêmico/demonstrativo; não deve ser utilizada para decisões clínicas reais nem armazenar dados reais de pacientes sem uma revisão de segurança, privacidade e conformidade.
+- O armazenamento atual em arquivos JSON no diretório `backend/` não é um banco de dados gerenciado. Em hospedagens efêmeras, como o Render sem Persistent Disk, os dados podem ser perdidos em reinicializações/deploys. Para persistência real, configure um banco de dados gerenciado e migração apropriada.
+- O módulo de triagem registra sinais e alertas para revisão humana. Não implementa o Protocolo de Manchester e não fornece classificação clínica automatizada validada.
+- A validade cadastrada na farmácia é informativa por medicamento/lote e requer conferência física. O modelo atual de estoque não é um controle completo por lote.
+- Antes de produção, implemente autenticação por sessão/token assinado, hash de senhas, autorização de cada rota no servidor, proteção contra força bruta, HTTPS, backups e trilha de auditoria imutável.

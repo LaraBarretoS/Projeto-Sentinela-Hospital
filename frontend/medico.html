@@ -95,7 +95,7 @@ let sintomasConsulta = [];
 function renderizarSintomas() {
   const box = $("listaSintomas");
   if (!box) return;
-  box.innerHTML = sintomasConsulta.length ? sintomasConsulta.map((item,i) => `<div class="sintoma-item"><span><b>${escapeHTML(item.nome)}</b> · Intensidade: ${item.intensidade || "—"}/10 · Duração: ${escapeHTML(item.duracao || "—")} · Frequência: ${escapeHTML(item.frequencia || "—")}<small>${escapeHTML(item.observacao || "")}</small></span><button type="button" data-remover-sintoma="${i}" aria-label="Remover sintoma">Remover</button></div>`).join("") : "<p>Nenhum sintoma adicional registrado.</p>";
+  box.innerHTML = sintomasConsulta.length ? sintomasConsulta.map((item,i) => `<div class="sintoma-item"><span><b>${escapeHTML(item.nome)}</b> · Intensidade: ${item.intensidade || "—"}/10 · Duração: ${escapeHTML(item.duracao || "—")} · Frequência: ${escapeHTML(item.frequencia || "—")}<small>${escapeHTML(item.observacao || "")}</small></span><button type="button" data-editar-sintoma="${i}" aria-label="Editar sintoma">Editar</button><button type="button" data-remover-sintoma="${i}" aria-label="Remover sintoma">Remover</button></div>`).join("") : "<p>Nenhum sintoma adicional registrado.</p>";
 }
 function adicionarSintoma() {
   const nome=$("novoSintoma").value.trim();
@@ -105,6 +105,26 @@ function adicionarSintoma() {
   renderizarSintomas();
 }
 $("listaSintomas").addEventListener("click", event => {
+  const edit = event.target.closest("button[data-editar-sintoma]");
+  if (edit) {
+    const index = Number(edit.dataset.editarSintoma);
+    const item = sintomasConsulta[index];
+    if (!item) return;
+    const nome = prompt("Nome do sintoma:", item.nome);
+    if (nome === null) return;
+    const intensidade = prompt("Intensidade (0 a 10):", item.intensidade || "");
+    if (intensidade === null) return;
+    if (intensidade && !/^([0-9]|10)$/.test(intensidade)) return alert("Intensidade deve estar entre 0 e 10.");
+    const duracao = prompt("Duração:", item.duracao || "");
+    if (duracao === null) return;
+    const frequencia = prompt("Frequência:", item.frequencia || "");
+    if (frequencia === null) return;
+    const observacao = prompt("Observações:", item.observacao || "");
+    if (observacao === null) return;
+    sintomasConsulta[index] = { nome: nome.trim(), intensidade, duracao: duracao.trim(), frequencia: frequencia.trim(), observacao: observacao.trim() };
+    renderizarSintomas();
+    return;
+  }
   const button=event.target.closest("button[data-remover-sintoma]");
   if (!button) return;
   sintomasConsulta.splice(Number(button.dataset.removerSintoma),1); renderizarSintomas();

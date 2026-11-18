@@ -157,3 +157,59 @@ body.dark-mode .risco-vermelho { background:#54272d !important; color:#fecaca !i
 body.dark-mode .risco-amarelo { background:#514022 !important; color:#fde68a !important; }
 body.dark-mode .risco-verde { background:#1f4537 !important; color:#bbf7d0 !important; }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }
+
+
+/* SENTINELA 2.0 — shared clinical interface */
+:root{
+ --bg:#f3f6fb;--surface:#fff;--surface-2:#f8fafc;--text:#182536;--muted:#64748b;
+ --heading:#12345a;--border:#dce4ee;--primary:#1769aa;--primary-hover:#10578f;
+ --shadow:0 8px 28px rgba(20,45,75,.07);--radius-card:16px;
+}
+body{background:var(--bg)!important;color:var(--text);font-family:Inter,"Segoe UI",system-ui,sans-serif;line-height:1.5}
+h1,h2,h3,h4{color:var(--heading);letter-spacing:-.025em}
+.container,.wrap,.coluna-fila,.coluna-form,.consultorio-box,.card,.panel,.main-content,.sidebar{
+ border-color:var(--border)!important;
+}
+.container,.wrap{border-radius:18px}
+.card,.coluna-fila,.coluna-form,.consultorio-box,.emergencia-card,.card-paciente,.fila-item{
+ border:1px solid var(--border)!important;border-radius:15px!important;box-shadow:var(--shadow);
+}
+button,.btn,.sentinela-btn{border-radius:10px!important;font-weight:650;min-height:38px}
+button:hover,.btn:hover{filter:brightness(.97);transform:translateY(-1px)}
+input:not([type=checkbox]):not([type=radio]),select,textarea{
+ width:100%;max-width:100%;box-sizing:border-box;border:1px solid var(--border)!important;
+ border-radius:10px!important;padding:11px 12px!important;background:var(--surface)!important;
+ color:var(--text)!important;transition:border-color .15s,box-shadow .15s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(23,105,170,.13)!important;outline:0}
+label{font-weight:650;color:var(--text)}
+table{border-collapse:separate;border-spacing:0;width:100%;overflow:hidden;border:1px solid var(--border);border-radius:12px}
+th{background:var(--surface-2);color:var(--heading);font-weight:700}
+th,td{padding:11px 13px;border-bottom:1px solid var(--border);text-align:left}
+tr:last-child td{border-bottom:0}
+.theme-toggle{top:14px!important;bottom:auto!important;right:16px!important;width:42px!important;height:42px!important}
+.sentinela-topbar{position:relative!important;top:auto!important;left:auto!important;right:auto!important;margin:12px auto 20px!important;max-width:1440px!important;padding:10px 14px!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:14px!important;box-shadow:var(--shadow)}
+.sentinela-user{color:var(--muted)!important}
+.form-group{margin-bottom:16px}
+.form-group small,#avisoClassificacao{display:block;color:var(--muted);margin-top:6px;line-height:1.45}
+#resultado{border-radius:12px;padding:14px;margin:14px 0;line-height:1.5}
+body.dark-mode{
+ --bg:#0b1422;--surface:#121f31;--surface-2:#1a2a40;--text:#e6edf6;--muted:#a6b6ca;
+ --heading:#d5e7fb;--border:#2c4059;--primary:#55a6e8;--primary-hover:#368bd0;
+ --shadow:0 10px 30px rgba(0,0,0,.22)
+}
+body.dark-mode .container,body.dark-mode .wrap,body.dark-mode .card,body.dark-mode .coluna-fila,
+body.dark-mode .coluna-form,body.dark-mode .consultorio-box,body.dark-mode .card-paciente,
+body.dark-mode .fila-item,body.dark-mode .sentinela-topbar{background:var(--surface)!important;color:var(--text)!important}
+body.dark-mode input:not([type=checkbox]):not([type=radio]),body.dark-mode select,body.dark-mode textarea{background:var(--surface-2)!important;color:var(--text)!important}
+body.dark-mode th{background:var(--surface-2)!important;color:var(--heading)!important}
+body.dark-mode td,body.dark-mode th{border-color:var(--border)!important}
+body.dark-mode h1,body.dark-mode h2,body.dark-mode h3,body.dark-mode h4,body.dark-mode label,body.dark-mode strong{color:var(--text)!important}
+@media(max-width:760px){
+ .container,.wrap{width:auto!important;margin:10px!important;padding:14px!important}
+ .triagem-grid{grid-template-columns:1fr!important}
+ .grid-sinais{grid-template-columns:1fr 1fr!important}
+ .sentinela-topbar{gap:8px!important}
+ table{min-width:620px}
+}
+@media(max-width:420px){.grid-sinais{grid-template-columns:1fr!important}.sentinela-left,.sentinela-actions{max-width:100%!important;width:100%!important}.sentinela-actions{justify-content:flex-start!important}}

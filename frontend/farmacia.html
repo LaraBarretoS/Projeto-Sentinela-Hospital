@@ -1,2 +1,96 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Farmácia - Hospital Sentinela</title><link rel="stylesheet" href="/theme.css"><style>body{font-family:Arial,sans-serif;margin:0;background:#f4f7fb;color:#1a202c}.wrap{max-width:1100px;margin:auto;padding:20px}.card{background:white;padding:18px;border-radius:12px;margin:12px 0;box-shadow:0 3px 14px #0001}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}input,select{padding:10px;border:1px solid #cbd5e1;border-radius:7px;width:100%;box-sizing:border-box}.btn{padding:10px 13px;border:0;border-radius:7px;background:#2b6cb0;color:white;cursor:pointer}.baixo{color:#c53030;font-weight:700}.ok{color:#2f855a;font-weight:700}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:13px}</style></head><body><div class="wrap"><h1>💊 Farmácia</h1><p>Controle de estoque, dispensação e movimentações.</p><div class="card"><h2>Estoque</h2><div style="overflow:auto"><table class="table"><thead><tr><th>Medicamento</th><th>Quantidade</th><th>Mínimo</th><th>Status</th></tr></thead><tbody id="estoque"></tbody></table></div></div><div class="card"><h2>📦 Movimentar estoque</h2><div class="grid"><div><label>Medicamento</label><select id="med"></select></div><div><label>Quantidade</label><input id="qtd" type="number" min="1" value="1"></div><div><label>Paciente (saída)</label><input id="paciente" placeholder="Opcional"></div></div><p><button class="btn" onclick="mov('entrada')">➕ Entrada</button> <button class="btn" onclick="mov('saida')">➖ Saída/Dispensação</button></p></div><div class="card"><h2>🧾 Histórico de movimentação</h2><div style="overflow:auto"><table class="table"><thead><tr><th>Data</th><th>Tipo</th><th>Medicamento</th><th>Qtd.</th><th>Paciente</th><th>Usuário</th></tr></thead><tbody id="hist"></tbody></table></div></div></div><script>let meds=[];async function carregar(){meds=await fetch('/farmacia/estoque').then(r=>r.json());document.getElementById('estoque').innerHTML=meds.map(m=>`<tr><td>${m.nome}</td><td>${m.quantidade} ${m.unidade}</td><td>${m.minimo}</td><td class="${m.quantidade<=m.minimo?'baixo':'ok'}">${m.quantidade<=m.minimo?'⚠️ Estoque baixo':'✓ Normal'}</td></tr>`).join('');document.getElementById('med').innerHTML=meds.map(m=>`<option value="${m.id}">${m.nome}</option>`).join('');const h=await fetch('/farmacia/movimentacoes').then(r=>r.json());document.getElementById('hist').innerHTML=h.map(x=>`<tr><td>${new Date(x.dataHora).toLocaleString('pt-BR')}</td><td>${x.tipo}</td><td>${x.medicamento}</td><td>${x.quantidade}</td><td>${x.paciente||'—'}</td><td>${x.usuario}</td></tr>`).join('')||'<tr><td colspan="6">Nenhuma movimentação.</td></tr>'}async function mov(tipo){const body={medicamentoId:document.getElementById('med').value,quantidade:Number(document.getElementById('qtd').value),paciente:document.getElementById('paciente').value,usuario:window.sentinelaUser?.usuario};const r=await fetch('/farmacia/'+tipo,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)return alert(d.erro);alert('Movimentação registrada.');carregar()}carregar();setInterval(carregar,10000);</script><script src="/js/session.js"></script><script src="/js/theme.js"></script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farmácia | Sentinela Hospitalar</title>
+<link rel="stylesheet" href="/theme.css">
+<style>
+.pharmacy{max-width:1440px;margin:28px auto;padding:20px}
+.pharmacy-header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.pharmacy-header h1{margin:0;font-size:clamp(25px,3vw,34px)}
+.pharmacy-sub{color:var(--muted);margin:5px 0 0}
+.pharmacy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.pharmacy-stat,.pharmacy-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.pharmacy-stat small{color:var(--muted);display:block}.pharmacy-stat strong{font-size:27px;color:var(--heading)}
+.pharmacy-card{margin:14px 0}.pharmacy-card h2{margin:0 0 14px;font-size:18px}
+.pharmacy-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pharmacy-tools input{max-width:360px}
+.pharmacy-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
+.pharmacy-form label{display:block;font-size:13px;margin-bottom:5px}
+.pharmacy-form button{width:100%;background:var(--primary);color:white;border:0;padding:11px}
+.pharmacy-table-wrap{overflow:auto}
+.status{font-weight:700;font-size:12px;padding:5px 9px;border-radius:20px;display:inline-block}
+.status.ok{background:#dcfce7;color:#166534}.status.low{background:#fef3c7;color:#92400e}.status.expired{background:#fee2e2;color:#991b1b}
+@media(max-width:850px){.pharmacy-grid{grid-template-columns:1fr 1fr}.pharmacy-form{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.pharmacy{padding:12px;margin:12px auto}.pharmacy-grid,.pharmacy-form{grid-template-columns:1fr}}
+</style></head>
+<body>
+<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button" aria-label="Alternar tema">🌙</button>
+<main class="pharmacy">
+<header class="pharmacy-header"><div><h1>💊 Farmácia</h1><p class="pharmacy-sub">Controle de estoque, validade e movimentações.</p></div></header>
+<section class="pharmacy-grid">
+ <article class="pharmacy-stat"><small>Medicamentos cadastrados</small><strong id="totalMeds">—</strong></article>
+ <article class="pharmacy-stat"><small>Itens com estoque baixo</small><strong id="lowCount">—</strong></article>
+ <article class="pharmacy-stat"><small>Próximos do vencimento</small><strong id="expiryCount">—</strong></article>
+</section>
+<section class="pharmacy-card">
+ <h2>Estoque disponível</h2>
+ <div class="pharmacy-tools"><input id="searchMed" placeholder="Pesquisar medicamento..." aria-label="Pesquisar medicamento"><select id="filterStock" aria-label="Filtrar estoque"><option value="todos">Todos os itens</option><option value="baixo">Estoque baixo</option><option value="validade">Próximos do vencimento</option><option value="vencido">Vencidos</option></select></div>
+ <div class="pharmacy-table-wrap"><table><thead><tr><th>Medicamento</th><th>Quantidade</th><th>Mínimo</th><th>Validade</th><th>Situação</th></tr></thead><tbody id="estoque"><tr><td colspan="5">Carregando...</td></tr></tbody></table></div>
+</section>
+<section class="pharmacy-card">
+ <h2>Registrar movimentação</h2>
+ <div class="pharmacy-form">
+  <div><label for="med">Medicamento</label><select id="med"></select></div>
+  <div><label for="qtd">Quantidade</label><input id="qtd" type="number" min="1" step="1" value="1"></div>
+  <div><label for="paciente">Paciente (saída)</label><input id="paciente" placeholder="Opcional"></div>
+  <div><label for="validade">Validade do lote (entrada)</label><input id="validade" type="date"></div>
+ </div>
+ <p><button class="btn" onclick="mov('entrada')">＋ Registrar entrada</button> <button class="btn" onclick="mov('saida')">− Registrar saída</button></p>
+ <small style="color:var(--muted)">A validade é informativa e deve ser conferida com a embalagem/lote físico. O sistema não substitui o controle farmacêutico.</small>
+</section>
+<section class="pharmacy-card"><h2>Histórico de movimentações</h2><div class="pharmacy-table-wrap"><table><thead><tr><th>Data</th><th>Tipo</th><th>Medicamento</th><th>Quantidade</th><th>Paciente</th><th>Usuário</th></tr></thead><tbody id="hist"></tbody></table></div></section>
+</main>
+<script>
+let meds=[];
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dateLabel=v=>v?new Date(v+"T12:00:00").toLocaleDateString("pt-BR"):"Não informada";
+function statusMed(m){
+ const today=new Date();today.setHours(0,0,0,0);
+ const exp=m.validade?new Date(m.validade+"T00:00:00"):null;
+ if(exp&&exp<today)return ["Vencido","expired"];
+ if(exp){const days=(exp-today)/86400000;if(days<=90)return ["Vence em até 90 dias","low"];}
+ if(m.quantidade<=m.minimo)return ["Estoque baixo","low"];
+ return ["Normal","ok"];
+}
+function renderEstoque(){
+ const q=document.getElementById("searchMed").value.toLocaleLowerCase("pt-BR"),f=document.getElementById("filterStock").value;
+ const filtered=meds.filter(m=>{const st=statusMed(m)[1],matches=m.nome.toLocaleLowerCase("pt-BR").includes(q);return matches&&(f==="todos"||(f==="baixo"&&m.quantidade<=m.minimo)||(f==="validade"&&m.validade&&st==="low")||(f==="vencido"&&st==="expired"));});
+ document.getElementById("estoque").innerHTML=filtered.map(m=>{const [label,cls]=statusMed(m);return `<tr><td><b>${esc(m.nome)}</b></td><td>${esc(m.quantidade)} ${esc(m.unidade||"")}</td><td>${esc(m.minimo)}</td><td>${dateLabel(m.validade)}</td><td><span class="status ${cls}">${label}</span></td></tr>`}).join("")||'<tr><td colspan="5">Nenhum medicamento encontrado.</td></tr>';
+}
+async function carregar(){
+ try{
+  const [stock,hist]=await Promise.all([fetch("/farmacia/estoque"),fetch("/farmacia/movimentacoes")]);
+  if(!stock.ok||!hist.ok)throw new Error("Não foi possível carregar os dados da farmácia.");
+  meds=await stock.json();const h=await hist.json();
+  document.getElementById("totalMeds").textContent=meds.length;
+  document.getElementById("lowCount").textContent=meds.filter(m=>m.quantidade<=m.minimo).length;
+  document.getElementById("expiryCount").textContent=meds.filter(m=>{const s=statusMed(m)[1];return m.validade&&s==="low"||s==="expired"}).length;
+  document.getElementById("med").innerHTML=meds.map(m=>`<option value="${esc(m.id)}">${esc(m.nome)}</option>`).join("");
+  document.getElementById("hist").innerHTML=h.map(x=>`<tr><td>${new Date(x.dataHora).toLocaleString("pt-BR")}</td><td>${esc(x.tipo)}</td><td>${esc(x.medicamento)}</td><td>${esc(x.quantidade)}</td><td>${esc(x.paciente||"—")}</td><td>${esc(x.usuario||"—")}</td></tr>`).join("")||'<tr><td colspan="6">Nenhuma movimentação registrada.</td></tr>';
+  renderEstoque();
+ }catch(e){document.getElementById("estoque").innerHTML=`<tr><td colspan="5" role="alert">${esc(e.message)}</td></tr>`;}
+}
+async function mov(tipo){
+ const quantidade=Number(document.getElementById("qtd").value);
+ if(!Number.isInteger(quantidade)||quantidade<=0)return alert("Informe uma quantidade inteira maior que zero.");
+ const body={medicamentoId:document.getElementById("med").value,quantidade,paciente:document.getElementById("paciente").value,validade:document.getElementById("validade").value,usuario:window.sentinelaUser?.usuario};
+ try{const r=await fetch("/farmacia/"+tipo,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.erro||"Falha na movimentação.");alert("Movimentação registrada.");await carregar();}
+ catch(e){alert(e.message);}
+}
+document.getElementById("searchMed").addEventListener("input",renderEstoque);
+document.getElementById("filterStock").addEventListener("change",renderEstoque);
+carregar();setInterval(carregar,15000);
+</script>
+<script src="/js/session.js"></script><script src="/js/theme.js"></script>
 </body></html>

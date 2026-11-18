@@ -393,13 +393,34 @@ app.post("/triagem", (req, res) => {
     if (temp !== null && (!Number.isFinite(temp) || temp < 25 || temp > 45)) {
       return res.status(400).json({ erro: "Temperatura inválida. Confira o valor informado." });
     }
+    // Valida apenas formato e plausibilidade de entrada (não são limites clínicos
+    // de classificação). Valores fora dessas faixas são recusados para evitar erros de digitação.
+    const vitais = sinaisVitais && typeof sinaisVitais === "object" ? sinaisVitais : {};
+    const numericRanges = {
+      frequenciaCardiaca: [0, 300], frequenciaRespiratoria: [0, 100],
+      spo2: [0, 100], intensidadeDor: [0, 10], glicemia: [0, 2000]
+    };
+    for (const [campo, [min, max]] of Object.entries(numericRanges)) {
+      if (vitais[campo] !== "" && vitais[campo] != null) {
+        const valor = Number(vitais[campo]);
+        if (!Number.isFinite(valor) || valor < min || valor > max) {
+          return res.status(400).json({ erro: `Valor inválido no campo ${campo}. Confira a informação digitada.` });
+        }
+      }
+    }
+    if (vitais.pressao) {
+      const partesPA = String(vitais.pressao).split("/").map(parte => parte.trim());
+      if (partesPA.length !== 2 || partesPA.some(parte => !parte || !Number.isInteger(Number(parte)) || Number(parte) < 0 || Number(parte) > 999)) {
+        return res.status(400).json({ erro: "Pressão arterial inválida. Utilize o formato 120/80." });
+      }
+    }
     // Compatibilidade: conserva o risco enviado pelo formulário legado, mas não
     // transforma limites isolados em protocolo clínico validado.
     const riscosValidos = ["verde", "amarelo", "vermelho"];
     const risco = riscosValidos.includes(req.body.risco) ? req.body.risco : "amarelo";
     const triagem = {
       id: Date.now(), pacienteId: pacienteId || null, nome: String(nome).trim(), sintoma: String(sintoma),
-      sintomas: Array.isArray(sintomas) ? sintomas : [], temperatura: temp, sinaisVitais: sinaisVitais && typeof sinaisVitais === "object" ? sinaisVitais : {},
+      sintomas: Array.isArray(sintomas) ? sintomas : [], temperatura: temp, sinaisVitais: vitais,
       sinaisAlerta: Array.isArray(sinaisAlerta) ? sinaisAlerta : [], alergia: String(alergia || ""), observacao: String(observacao || ""),
       risco, justificativaRisco: String(justificativaRisco || "Classificação registrada pelo profissional responsável."),
       classificacaoApoio: true, protocoloValidado: false, revisadoPor: String(riscoRevisadoPor || ""),
@@ -620,14 +641,23 @@ app.get("/historico-paciente", (req, res) => {
 // ======================================================
 app.get("/farmacia/estoque", (req, res) => res.json(db.medicamentosEstoque));
 app.get("/farmacia/movimentacoes", (req, res) => res.json(db.movimentacoesEstoque.slice(0, 100)));
-app.get("/farmacia/alertas", (req, res) => res.json(db.medicamentosEstoque.filter(m => m.quantidade <= m.minimo)));
+app.get("/farmacia/alertas", (req, res) => {
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  res.json(db.medicamentosEstoque.filter(m => {
+    const baixo = m.quantidade <= m.minimo;
+    const vencido = m.validade && new Date(`${m.validade}T00:00:00`) < hoje;
+    const proximo = m.validade && !vencido && (new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 <= 90;
+    return baixo || vencido || proximo;
+  }).map(m => ({...m, alertaValidade: m.validade ? ((new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 < 0 ? "vencido" : ((new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 <= 90 ? "proximo" : null)) : null})));
+});
 
 app.post("/farmacia/entrada", (req, res) => {
   const { medicamentoId, quantidade, usuario } = req.body;
   const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
   if (!med || Number(quantidade) <= 0) return res.status(400).json({ erro: "Dados inválidos." });
   med.quantidade += Number(quantidade);
-  const mov = { id: Date.now(), tipo: "entrada", medicamento: med.nome, quantidade: Number(quantidade), usuario: usuario || "farmacia", dataHora: agoraISO() };
+  if (req.body.validade && /^\\d{4}-\\d{2}-\\d{2}$/.test(String(req.body.validade))) med.validade = String(req.body.validade);
+  const mov = { id: Date.now(), tipo: "entrada", medicamento: med.nome, quantidade: Number(quantidade), validade: med.validade || null, usuario: usuario || "farmacia", dataHora: agoraISO() };
   db.movimentacoesEstoque.unshift(mov);
   db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Entrada de ${quantidade} ${med.nome}`, alvo: med.nome, dataHora: agoraISO() });
   res.json(med);
