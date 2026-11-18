@@ -4,44 +4,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Médico</title>
-<link rel="stylesheet" href="/css/medico.css">
-  <link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/css/medico.css">
 </head>
 <body>
 <button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
 
 <div class="container">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-    <h2 style="margin:0; color:#1a365d;">🩺 Painel Médico</h2>
-    <button onclick="window.open('tv.html','_blank')" style="background:#3182ce; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">📺 Abrir Tela da TV</button>
+  <div>
+    <h2>🩺 Painel Médico</h2>
+    <button onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button>
   </div>
 
   <div class="consultorio-box">
     <label for="consultorio-num"><strong>Meu Consultório:</strong></label>
     <input type="text" id="consultorio-num" value="01">
-    <span style="color:#4a5568; font-size:13px;">Número enviado para a TV ao chamar.</span>
+    <span>Número enviado para a TV ao chamar.</span>
   </div>
 
   <div class="medico-grid">
     <div class="coluna-fila">
-      <h3 style="margin-top:0; color:#2d3748;">Fila de Espera</h3>
+      <h3>Fila de Espera</h3>
       <div class="emergencia-card">
         <strong>🚨 Paciente de Emergência</strong>
-        <p style="font-size:12px; margin-top:4px;">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+        <p>Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
         <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
       </div>
-      <div id="triagens"><p style="color:#888; text-align:center;">Carregando...</p></div>
-      <button onclick="carregar()" style="margin-top:10px; width:100%; background:#6c757d; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">🔄 Atualizar Fila</button>
+      <div id="triagens"><p>Carregando...</p></div>
+      <button onclick="carregar()">🔄 Atualizar Fila</button>
     </div>
 
     <div class="coluna-form">
-      <h3 style="margin-top:0; color:#2d3748; margin-bottom:15px;">Atendimento Médico</h3>
+      <h3>Atendimento Médico</h3>
       <div id="alertaAlergia" class="alerta-alergia"></div>
-      <div id="historicoPaciente" style="display:none;margin-bottom:12px;padding:12px;border-radius:8px;background:#eef6ff;border:1px solid #bfd7f5;"></div>
+      <div id="historicoPaciente"></div>
 
       <div class="form-group">
         <label>Paciente Selecionado *</label>
-        <input id="paciente" placeholder="Selecione um paciente na lista" readonly style="background-color: #edf2f7; font-weight: bold;">
+        <input id="paciente" placeholder="Selecione um paciente na lista" readonly>
       </div>
 
       <div class="form-group">
@@ -149,7 +149,7 @@ async function carregar() {
       .sort((a,b) => (peso[a.risco] || 4) - (peso[b.risco] || 4));
     div.replaceChildren();
     if (!triagensCarregadas.length) {
-      div.innerHTML = "<p style='color:#888;text-align:center;padding:20px 0'>Nenhum paciente na fila de espera.</p>";
+      div.innerHTML = "<p>Nenhum paciente na fila de espera.</p>";
       return;
     }
     triagensCarregadas.forEach((t, index) => {
@@ -157,16 +157,16 @@ async function carregar() {
       const selecionado = pacienteSelecionado && String(pacienteSelecionado.id ?? "") === String(t.id ?? "");
       const risco = ["vermelho", "amarelo", "verde"].includes(t.risco) ? t.risco : "verde";
       card.className = `card-paciente ${selecionado ? "selecionado" : ""}`;
-      card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><strong>${escapeHTML(t.nome || "Paciente sem nome")}</strong><span class="badge-risco ${risco}">${escapeHTML(risco)}</span></div>
-        <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>Sintoma:</b> ${escapeHTML(t.sintoma || "Não informado")}</p>
-        <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>Temp:</b> ${t.temperatura ? escapeHTML(t.temperatura) + "°C" : "—"} | <b>Alergia:</b> ${escapeHTML(t.alergia || "Nenhuma")}</p>
-        <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>PA:</b> ${escapeHTML(t.sinaisVitais?.pressao || "—")} · <b>FC:</b> ${escapeHTML(t.sinaisVitais?.frequenciaCardiaca || "—")} · <b>FR:</b> ${escapeHTML(t.sinaisVitais?.frequenciaRespiratoria || "—")} · <b>SpO₂:</b> ${escapeHTML(t.sinaisVitais?.spo2 || "—")}%</p>
-        ${Array.isArray(t.sinaisAlerta) && t.sinaisAlerta.length ? `<p style="font-size:12px;color:#b83232"><b>⚠ Alertas:</b> ${escapeHTML(t.sinaisAlerta.join(", "))}</p>` : ""}
+      card.innerHTML = `<div><strong>${escapeHTML(t.nome || "Paciente sem nome")}</strong><span class="badge-risco ${risco}">${escapeHTML(risco)}</span></div>
+        <p><b>Sintoma:</b> ${escapeHTML(t.sintoma || "Não informado")}</p>
+        <p><b>Temp:</b> ${t.temperatura ? escapeHTML(t.temperatura) + "°C" : "—"} | <b>Alergia:</b> ${escapeHTML(t.alergia || "Nenhuma")}</p>
+        <p><b>PA:</b> ${escapeHTML(t.sinaisVitais?.pressao || "—")} · <b>FC:</b> ${escapeHTML(t.sinaisVitais?.frequenciaCardiaca || "—")} · <b>FR:</b> ${escapeHTML(t.sinaisVitais?.frequenciaRespiratoria || "—")} · <b>SpO₂:</b> ${escapeHTML(t.sinaisVitais?.spo2 || "—")}%</p>
+        ${Array.isArray(t.sinaisAlerta) && t.sinaisAlerta.length ? `<p><b>⚠ Alertas:</b> ${escapeHTML(t.sinaisAlerta.join(", "))}</p>` : ""}
         <div class="botoes-card"><button type="button" class="btn-tv" data-action="chamar" data-index="${index}">📺 Chamar na TV</button><button type="button" class="btn-atender" data-action="selecionar" data-index="${index}">Apenas Selecionar</button></div>`;
       div.appendChild(card);
     });
   } catch (error) {
-    div.innerHTML = `<p role="alert" style="color:#c53030;text-align:center">Não foi possível carregar a fila. ${escapeHTML(error.message)}</p>`;
+    div.innerHTML = `<p role="alert">Não foi possível carregar a fila. ${escapeHTML(error.message)}</p>`;
   } finally { carregandoFila = false; }
 }
 
@@ -224,7 +224,7 @@ async function carregarHistoricoPaciente(pacienteId) {
     const data = await requisicaoJSON(`/pacientes/${encodeURIComponent(pacienteId)}/historico`);
     const consultas = Array.isArray(data.consultas) ? data.consultas : [];
     box.style.display = "block";
-    box.innerHTML = `<b>📋 Histórico do paciente</b><br><span style="font-size:12px;color:#4a5568">${consultas.length ? consultas.map(c => `${c.createdAt && !Number.isNaN(new Date(c.createdAt).getTime()) ? new Date(c.createdAt).toLocaleDateString("pt-BR") : "Data não informada"} — ${escapeHTML(c.medicoNome || "Médico")} — ${escapeHTML(c.diagnostico || "Sem diagnóstico")} — ${escapeHTML(c.medicacao || "Sem medicação")}`).join("<br>") : "Nenhuma consulta anterior registrada."}</span>`;
+    box.innerHTML = `<b>📋 Histórico do paciente</b><br><span>${consultas.length ? consultas.map(c => `${c.createdAt && !Number.isNaN(new Date(c.createdAt).getTime()) ? new Date(c.createdAt).toLocaleDateString("pt-BR") : "Data não informada"} — ${escapeHTML(c.medicoNome || "Médico")} — ${escapeHTML(c.diagnostico || "Sem diagnóstico")} — ${escapeHTML(c.medicacao || "Sem medicação")}`).join("<br>") : "Nenhuma consulta anterior registrada."}</span>`;
   } catch (error) { box.style.display = "block"; box.textContent = "Não foi possível carregar o histórico deste paciente."; }
 }
 

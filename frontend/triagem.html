@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Triagem Hospitalar</title>
-<link rel="stylesheet" href="/css/triagem.css">
-  <link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/css/triagem.css">
 </head>
 <body>
 <button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
 <div class="container">
 
   <!-- Cabeçalho -->
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-    <h2 style="margin:0; color:#1a365d;">🏥 Triagem Hospitalar</h2>
+  <div>
+    <h2>🏥 Triagem Hospitalar</h2>
     <button class="btn-abrir-tv" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button>
   </div>
 
@@ -21,31 +21,31 @@
     
     <!-- Coluna Esquerda: Lista de Pacientes -->
     <div class="coluna-fila">
-      <h3 style="margin-top:0; color:#2d3748;">
+      <h3>
         Fila do Atendimento
       </h3>
-      <p style="font-size:12px; color:#718096; margin-bottom:12px;">Clique em "Chamar na TV" para iniciar o atendimento do paciente.</p>
+      <p>Clique em "Chamar na TV" para iniciar o atendimento do paciente.</p>
       
       <div class="emergencia-card">
         <strong>🚨 Paciente de Emergência</strong>
-        <p style="font-size:12px; margin-top:4px;">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+        <p>Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
         <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
       </div>
 
       <div id="fila-pacientes">
-        <p style="color:#888; text-align:center;">Carregando...</p>
+        <p>Carregando...</p>
       </div>
 
-      <button onclick="carregarPacientes()" style="margin-top:10px; width:100%; background:#6c757d; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; font-size:13px;">🔄 Atualizar Fila</button>
+      <button onclick="carregarPacientes()">🔄 Atualizar Fila</button>
     </div>
 
     <!-- Coluna Direita: Formulário do Enfermeiro -->
     <div class="coluna-form">
-      <h3 style="margin-top:0; color:#2d3748; margin-bottom:15px;">Ficha de Avaliação da Triagem</h3>
+      <h3>Ficha de Avaliação da Triagem</h3>
       
       <div class="form-group">
         <label>Paciente Selecionado *</label>
-        <input id="nome" placeholder="Selecione um paciente na lista ao lado" readonly style="background-color: #edf2f7; font-weight: bold;">
+        <input id="nome" placeholder="Selecione um paciente na lista ao lado" readonly>
       </div>
 
       <div class="form-group">
@@ -139,7 +139,7 @@ function carregarPacientes() {
       const fila = pacientes.filter(p => p.status === "triagem");
 
       if (fila.length === 0) {
-        div.innerHTML = "<p style='color:#888; text-align:center; padding:20px 0;'>Nenhum paciente aguardando.</p>";
+        div.innerHTML = "<p>Nenhum paciente aguardando.</p>";
         return;
       }
 
@@ -154,7 +154,7 @@ function carregarPacientes() {
         item.innerHTML = `
           <div>
             <strong>${p.nome}</strong><br>
-            <small style="color:#718096;">CPF: ${p.cpf || "—"} | ${p.tipo || "Geral"}</small>
+            <small>CPF: ${p.cpf || "—"} | ${p.tipo || "Geral"}</small>
           </div>
           <button class="btn-tv" onclick='selecionarEChamar(${JSON.stringify(p)})'>📺 Chamar na TV</button>
         `;
@@ -163,7 +163,7 @@ function carregarPacientes() {
     })
     .catch(() => {
       document.getElementById("fila-pacientes").innerHTML =
-        "<p style='color:red; text-align:center;'>Erro ao carregar pacientes.</p>";
+        "<p>Erro ao carregar pacientes.</p>";
     });
 }
 

@@ -34,3 +34,10 @@ button:hover { background: #2f855a; }
 #avisoClassificacao { display:block; margin-top:7px; color:#718096; }
 body.dark-mode .alertas-grid { background:var(--surface-2); border-color:var(--border); }
 @media(max-width:560px){.grid-sinais,.alertas-grid{grid-template-columns:1fr}.coluna-fila,.coluna-form{padding:16px}.fila-item{align-items:flex-start;flex-direction:column}.fila-item .btn-tv{width:100%}}
+
+/* Refinamento visual Sentinela 2.0 */
+
+body{padding:12px}.container{max-width:1500px}.triagem-grid{gap:18px}.coluna-fila,.coluna-form{padding:18px}.grid-sinais{gap:12px}.fila-item{padding:13px;margin:9px 0;cursor:pointer}.btn-salvar{padding:12px 18px}.btn-abrir-tv{background:var(--primary);color:#fff;padding:9px 13px;border:0}
+
+
+body{padding:12px}.container{max-width:1500px}.triagem-grid{gap:18px}.coluna-fila,.coluna-form{padding:18px}.grid-sinais{gap:12px}.fila-item{padding:13px;margin:9px 0;cursor:pointer}.btn-salvar{padding:12px 18px}

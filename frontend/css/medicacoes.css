@@ -40,3 +40,9 @@ h2 {
 .card {
     line-height: 1.5;
 }
+/* Refinamento visual Sentinela 2.0 */
+
+body{padding:20px}.container{max-width:1100px}.medicacao-card,.consulta-card{border:1px solid var(--border);border-radius:13px;background:var(--surface);padding:16px;margin:12px 0;box-shadow:var(--shadow-sm)}
+
+
+body{padding:20px}.container{max-width:1100px}.medicacao-card,.consulta-card{border:1px solid var(--border);border-radius:13px;background:var(--surface);padding:16px;margin:12px 0;box-shadow:var(--shadow-sm)}

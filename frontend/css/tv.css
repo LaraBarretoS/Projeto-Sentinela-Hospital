@@ -1,1 +1,8 @@
 
+
+/* Refinamento visual Sentinela 2.0 */
+
+body{min-height:100vh;background:#081525!important;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}.tv-container,.container{width:min(1200px,100%);text-align:center}.patient-name{font-size:clamp(2.5rem,8vw,6rem);font-weight:850;letter-spacing:.02em}.local-number{font-size:clamp(3rem,10vw,8rem);font-weight:900;color:#72c4ff}.box-title{font-size:clamp(1.3rem,3vw,2.5rem);letter-spacing:.12em}
+
+
+body{min-height:100vh;background:#081525!important;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}.patient-name{font-size:clamp(2.5rem,8vw,6rem);font-weight:850}.local-number{font-size:clamp(3rem,10vw,8rem);font-weight:900;color:#72c4ff}.box-title{font-size:clamp(1.3rem,3vw,2.5rem);letter-spacing:.12em}
