@@ -6,6 +6,7 @@
 <title>Painel Médico</title>
 <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/css/medico.css">
+  <link rel="stylesheet" href="/design-overrides.css">
 </head>
 <body>
 <button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
@@ -149,7 +150,7 @@ async function carregar() {
       .sort((a,b) => (peso[a.risco] || 4) - (peso[b.risco] || 4));
     div.replaceChildren();
     if (!triagensCarregadas.length) {
-      div.innerHTML = "<p class="extracted-5b52d149">Nenhum paciente na fila de espera.</p>";
+      div.innerHTML = '<p class="extracted-5b52d149">Nenhum paciente na fila de espera.</p>';
       return;
     }
     triagensCarregadas.forEach((t, index) => {

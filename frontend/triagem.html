@@ -6,6 +6,7 @@
 <title>Triagem Hospitalar</title>
 <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/css/triagem.css">
+  <link rel="stylesheet" href="/design-overrides.css">
 </head>
 <body>
 <button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
@@ -139,7 +140,7 @@ function carregarPacientes() {
       const fila = pacientes.filter(p => p.status === "triagem");
 
       if (fila.length === 0) {
-        div.innerHTML = "<p class="extracted-511f9c3e">Nenhum paciente aguardando.</p>";
+        div.innerHTML = '<p class="extracted-511f9c3e">Nenhum paciente aguardando.</p>';
         return;
       }
 
@@ -163,7 +164,7 @@ function carregarPacientes() {
     })
     .catch(() => {
       document.getElementById("fila-pacientes").innerHTML =
-        "<p class="extracted-2d31d2f4">Erro ao carregar pacientes.</p>";
+        '<p class="extracted-2d31d2f4">Erro ao carregar pacientes.</p>';
     });
 }
 
