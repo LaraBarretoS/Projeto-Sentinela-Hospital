@@ -25,6 +25,7 @@ const workspace=document.createElement('div');workspace.className='sentinela-wor
 const title=document.createElement('div');title.className='sentinela-header-title';const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent='SENTINELA / '+current[0].toUpperCase();const h=document.createElement('h1');h.textContent=current[0];const subtitle=document.createElement('p');subtitle.textContent=current[1];title.append(eyebrow,h,subtitle);header.append(title);
 const actions=document.createElement('div');actions.className='sentinela-header-actions';header.append(actions);
 content.parentNode.insertBefore(shell,content);shell.append(rail,sidebar,workspace);workspace.append(header,content);
+const bell=document.querySelector('#notificationBell.v4-header-notification');if(bell)actions.append(bell);
 const bar=document.querySelector('.sentinela-topbar');if(bar)actions.append(bar);
 const theme=document.querySelector('#themeToggle');if(theme)actions.append(theme);
 menu.addEventListener('click',()=>{const open=shell.classList.toggle('sidebar-open');menu.setAttribute('aria-expanded',String(open));});

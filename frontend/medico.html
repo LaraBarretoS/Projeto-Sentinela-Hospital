@@ -9,16 +9,14 @@
 <link href="/css/medico.css" rel="stylesheet"/>
 <link href="/design-overrides.css" rel="stylesheet"/>
 <link href="/structural-layout.css" rel="stylesheet"/>
-<link href="/reference-layout.css" rel="stylesheet"/></head>
+<link href="/reference-layout.css" rel="stylesheet"/><link href="/design-final-v4.css" rel="stylesheet"/></head>
 <body>
 <button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
-<main class="container sentinela-content sector-content reference-v3" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Médico</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">⚕</div><div class="ref-hero-copy"><h2>Atendimento e prontuário</h2><p>Selecione o paciente, consulte o histórico e registre a conduta médica.</p></div><div aria-hidden="true" class="ref-hero-art"><svg role="presentation" viewbox="0 0 310 130" xmlns="http://www.w3.org/2000/svg"><circle cx="241" cy="62" fill="#DDF3EA" r="67"></circle><path d="M0 125 Q76 78 131 113 T310 109 V130 H0Z" fill="#D9EEE5"></path><rect fill="#C4DFEA" height="74" rx="3" width="110" x="134" y="50"></rect><rect fill="#F5FCFC" height="100" rx="3" stroke="#BDDCE2" stroke-width="3" width="75" x="153" y="24"></rect><path d="M183 37h14v12h12v13h-12v13h-14V62h-12V49h12z" fill="#2FA66C"></path><path d="M179 124v-30h23v30" fill="#A0C8D3"></path><g fill="#83BCCA"><rect height="18" width="13" x="144" y="66"></rect><rect height="18" width="13" x="218" y="66"></rect><rect height="18" width="13" x="144" y="92"></rect><rect height="18" width="13" x="218" y="92"></rect></g><path d="M45 127V87M39 95l-15-19M45 101l17-21M265 127V90" stroke="#3D9A71" stroke-linecap="round" stroke-width="5"></path><g fill="#55B87D"><circle cx="42" cy="79" r="18"></circle><circle cx="26" cy="92" r="12"></circle><circle cx="57" cy="93" r="12"></circle><circle cx="263" cy="85" r="15"></circle><circle cx="280" cy="95" r="11"></circle></g></svg></div></div></section><div class="ref-sector-controls"><div class="consultorio-box">
+<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Médico</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">⚕</div><div class="ref-hero-copy"><h2>Atendimento e prontuário</h2><p>Selecione o paciente, consulte o histórico e registre a conduta médica.</p></div><div aria-hidden="true" class="ref-hero-art"><img alt="" loading="eager" src="/assets/hospital-ilustracao.png"/></div></div></section><div class="ref-sector-controls v4-toolbar"><div class="consultorio-box">
 <label for="consultorio-num"><strong>Meu Consultório:</strong></label>
 <input id="consultorio-num" type="text" value="01"/>
 <span class="extracted-3aa0d1aa">Número enviado para a TV ao chamar.</span>
 </div><button class="extracted-b0d6d29b ref-subtle-action" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button></div>
-
-
 <div aria-label="Fila de pacientes e ficha de atendimento" class="medico-grid ref-clinical-grid">
 <div aria-label="Fila de pacientes" class="coluna-fila ref-card">
 <h3 class="extracted-26c08ab1 ref-section-heading">Fila de Espera</h3>
@@ -31,18 +29,13 @@
 <button class="extracted-db383b1c" onclick="carregar()">🔄 Atualizar Fila</button>
 </div>
 <div aria-label="Ficha de atendimento" class="coluna-form ref-card">
-<h3 class="extracted-02dd0a00 ref-section-heading">Atendimento Médico</h3>
-<div class="alerta-alergia" id="alertaAlergia"></div>
-<div class="extracted-c57d05b9" id="historicoPaciente"></div>
-<div class="form-group">
+<h3 class="extracted-02dd0a00 ref-section-heading">Atendimento Médico</h3><p class="v4-card-subtitle">Registre o diagnóstico, a conduta e atualize o prontuário do paciente.</p><div class="v4-doctor-form"><div class="v4-doctor-top"><div class="form-group">
 <label>Paciente Selecionado *</label>
 <input class="extracted-4fbc116c" id="paciente" placeholder="Selecione um paciente na lista" readonly=""/>
-</div>
-<div class="form-group">
+</div><div class="form-group">
 <label>Diagnóstico / Hipótese Diagnóstica *</label>
 <input id="diagnostico" placeholder="Informe o diagnóstico"/>
-</div>
-<div class="form-group sintomas-editor">
+</div></div><div class="form-group sintomas-editor">
 <label>Sintomas do paciente</label>
 <div class="sintoma-add-grid">
 <input id="novoSintoma" placeholder="Sintoma (ex.: cefaleia)"/>
@@ -54,17 +47,22 @@
 <button class="btn-adicionar-sintoma" onclick="adicionarSintoma()" type="button">＋ Adicionar sintoma</button>
 <div aria-live="polite" class="lista-sintomas" id="listaSintomas"></div>
 <small>Os registros antigos com um único sintoma continuam sendo exibidos normalmente.</small>
-</div>
-<div class="form-group">
+</div><div class="v4-doctor-bottom"><div class="form-group">
 <label>Prescrição / Medicação *</label>
 <select id="medicacao">
 <option value="">Selecione a medicação</option>
 </select>
-</div>
-<div class="form-group">
+</div><div class="form-group">
 <label>Observações / Recomendações Médicas</label>
 <textarea id="obs" placeholder="Anotações da consulta ou recomendações de alta..." rows="4"></textarea>
-</div>
+</div></div></div>
+<div class="alerta-alergia" id="alertaAlergia"></div>
+<div class="extracted-c57d05b9" id="historicoPaciente"></div>
+
+
+
+
+
 <div class="botoes-acao">
 <button class="btn-pdf" onclick="gerarPDFAlta()">📄 Gerar Alta (PDF)</button>
 <button class="btn-salvar" onclick="salvar()">Finalizar Consulta</button>

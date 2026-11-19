@@ -1,0 +1,132 @@
+/* Sentinela v4 — layout drawn from user-supplied UI references. No business-logic changes. */
+body.sentinela-app:has(.design-v4){background:var(--bg)!important}
+.sentinela-shell:has(.design-v4){grid-template-columns:70px minmax(0,1fr)}
+.sentinela-shell:has(.design-v4) .sentinela-rail{background:linear-gradient(180deg,#102b40 0%,#123e55 100%);padding:17px 7px;gap:12px}
+.sentinela-shell:has(.design-v4) .sentinela-brand,.sentinela-shell:has(.design-v4) .sentinela-rail-button{border-radius:14px;background:#ffffff0d;border:1px solid #ffffff12;color:#ecf9ff}
+.sentinela-shell:has(.design-v4) .sentinela-rail-button.is-active{outline:2px solid #48dba3;background:#ffffff25;box-shadow:none}
+.sentinela-shell:has(.design-v4) .sentinela-sidebar{left:70px}
+.sentinela-shell:has(.design-v4) .sentinela-header{min-height:93px;padding:13px clamp(22px,3vw,46px);background:var(--surface);box-shadow:0 2px 13px #102b4012}
+.sentinela-shell:has(.design-v4) .sentinela-header-title{position:relative;padding-left:58px}
+.sentinela-shell:has(.design-v4) .sentinela-header-title:before{content:'✚';position:absolute;left:0;top:8px;font-size:38px;line-height:1;color:#25af72;font-weight:800}
+.sentinela-shell:has(.design-v4) .sentinela-header-title .eyebrow{font-size:12px;letter-spacing:.04em;color:var(--heading)}
+.sentinela-shell:has(.design-v4) .sentinela-header-title h1{font-size:clamp(21px,1.6vw,28px);line-height:1.13;font-weight:800;color:var(--heading)}
+.sentinela-shell:has(.design-v4) .sentinela-header-title p{font-size:13px;color:var(--muted)}
+.sentinela-shell:has(.design-v4) .sentinela-header-actions .sentinela-user{display:none!important}
+.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-topbar{display:contents!important}
+.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-left,.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-btn{width:auto!important;min-width:144px!important;min-height:43px;border:1px solid var(--border)!important;border-radius:11px!important;color:var(--heading)!important;background:var(--surface-2)!important;box-shadow:0 3px 9px #102b4010!important;font-size:13px!important;margin:0!important}
+.sentinela-shell:has(.design-v4) .sentinela-header #btnPontoManual{background:#075e62!important;color:#fff!important}
+.sentinela-shell:has(.design-v4) .sentinela-header .theme-toggle{position:static!important;margin:0!important;width:45px!important;height:45px!important;border:1px solid var(--border)!important;border-radius:13px!important;box-shadow:0 3px 9px #102b4011!important}
+.sentinela-shell .sentinela-content.design-v4{max-width:none!important;padding:18px clamp(20px,2.2vw,44px) 50px!important}
+.design-v4 .ref-hero{min-height:155px;margin:0 0 16px}
+.design-v4 .ref-breadcrumb{margin:0 0 12px}
+.design-v4 .ref-hero-main{min-height:116px;padding-right:min(35%,500px)}
+.design-v4 .ref-hero-emblem{background:linear-gradient(140deg,#d5f7ea,#e5f7f9);color:#007b60}
+.design-v4 .ref-hero-copy{border-left:2px solid #0c9075;padding-left:19px}
+.design-v4 .ref-hero-copy h2{font-size:clamp(23px,2.3vw,35px);letter-spacing:-.025em}
+.design-v4 .ref-hero-art{width:min(535px,38%);height:auto;bottom:-3px;right:0;opacity:1}
+.design-v4 .ref-hero-art img{width:100%;height:auto;display:block;object-fit:contain;object-position:bottom right}
+.design-v4 .ref-card,.design-v4 .v4-admin-card{border:1px solid var(--border)!important;border-radius:19px!important;background:var(--surface)!important;box-shadow:0 6px 19px #1332480d!important}
+.design-v4 .ref-section-heading{font-size:19px!important;letter-spacing:-.015em!important;text-transform:none;color:var(--heading)!important;margin-bottom:4px!important}
+.design-v4 .ref-section-heading:before{content:none!important}
+.design-v4 .ref-section-heading::first-letter{color:#078d68}
+.design-v4 .v4-card-subtitle{margin:0 0 21px;color:var(--muted);font-size:12.5px;line-height:1.5}
+.design-v4 .ref-sector-controls{margin:0 0 14px}
+.design-v4 .ref-clinical-grid{grid-template-columns:minmax(270px,.73fr) minmax(0,1.83fr)!important;gap:16px!important}
+.design-v4 .ref-clinical-grid>.ref-card{padding:22px!important}
+.design-v4 label{font-size:12.5px;font-weight:700;color:var(--heading)}
+.design-v4 input:not([type=checkbox]):not([type=radio]),.design-v4 textarea,.design-v4 select{min-height:39px;padding:9px 13px;border-radius:9px!important}
+.design-v4 .coluna-fila{max-height:none!important;overflow:visible!important;position:static!important}
+.design-v4 .coluna-fila .emergencia-card{border-radius:12px;background:color-mix(in srgb,#fbe0e0 58%,var(--surface))!important;padding:16px!important;margin:13px 0 17px!important}
+.design-v4 .coluna-fila .emergencia-card button{background:#cf424b!important;color:white!important;border:0;border-radius:9px;padding:10px 12px}
+.design-v4 .coluna-fila #fila-pacientes,.design-v4 .coluna-fila #triagens{display:grid;gap:9px}
+.design-v4 .coluna-fila .fila-item{padding:11px;border:1px solid var(--border)!important;border-radius:11px!important;margin:0!important;background:var(--surface-2)!important}
+.design-v4 .coluna-fila>button:last-child{width:100%;background:#036565!important;color:#fff!important;border-radius:10px!important;min-height:44px}
+.design-v4 .btn-salvar{border-radius:9px!important;background:linear-gradient(120deg,#08656c,#00776f)!important;color:#fff!important;min-height:45px!important}
+/* Admin: match tab rail, landscape illustration and eight operational indicators */
+.sentinela-header .v4-header-notification{position:static;z-index:2;background:var(--surface)!important;min-width:49px;height:47px;order:3}
+.sentinela-shell:has(.design-v4) .sentinela-header-actions{padding-right:0}
+.design-v4 .tabs{margin:0 0 8px!important;display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:15px;background:var(--surface-2);padding:7px;overflow-x:auto;flex-wrap:nowrap}
+.design-v4 .tab{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:11px;background:transparent!important;color:var(--muted)!important;font-size:14px;font-weight:650;padding:11px 16px}
+.design-v4 .tab.active{color:#076345!important;background:linear-gradient(160deg,#e6faf0,#caf9e2)!important;border-color:transparent!important}
+.design-v4 .v4-tab-icon{font-weight:900;font-size:19px}
+.design-v4 .v4-admin-hero{position:relative;display:flex;align-items:center;justify-content:space-between;min-height:165px;margin:0 0 15px;overflow:hidden;padding:28px 26px 17px;background:linear-gradient(110deg,transparent 20%,color-mix(in srgb,#e4faf0 32%,transparent) 100%)}
+.design-v4 .v4-admin-hero .v4-admin-copy{position:relative;z-index:1;max-width:63%}
+.design-v4 .v4-admin-hero h2{font-size:clamp(25px,2.6vw,34px);font-weight:800;color:var(--heading);letter-spacing:-.025em;margin:7px 0 5px}
+.design-v4 .v4-admin-hero p{font-size:14px;color:var(--muted);margin:0}
+.design-v4 .v4-admin-hero img{width:min(520px,38%);object-fit:contain;position:absolute;right:0;bottom:0;pointer-events:none}
+.design-v4 .admin-metrics .grid{grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:11px!important}
+.design-v4 .admin-metrics .card{border-radius:17px!important;padding:16px 12px!important;min-width:0;border:1px solid var(--border);box-shadow:0 5px 16px #123b5010;background:var(--surface);text-align:center;min-height:103px}
+.design-v4 .admin-metrics .card b{display:block;font-size:12.5px;color:var(--heading);white-space:normal;line-height:1.25}
+.design-v4 .admin-metrics .card b:before{content:'◉';display:grid;place-items:center;margin:0 auto 8px;width:32px;height:32px;border-radius:10px;font-size:19px;color:#00975d;background:#e6f8ee}
+.design-v4 .admin-metrics .card:nth-child(2) b:before{content:'▤'}
+.design-v4 .admin-metrics .card:nth-child(3) b:before{content:'⚕'}
+.design-v4 .admin-metrics .card:nth-child(4) b:before{content:'●';color:#23b478}
+.design-v4 .admin-metrics .card:nth-child(5) b:before{content:'●';color:#ecae25;background:#fff7e4}
+.design-v4 .admin-metrics .card:nth-child(6) b:before{content:'●';color:#d34c5e;background:#fff0f0}
+.design-v4 .admin-metrics .card:nth-child(7) b:before{content:'♙'}
+.design-v4 .admin-metrics .card:nth-child(8) b:before{content:'⬡'}
+.design-v4 .admin-metrics .num{font-size:29px;color:var(--heading);margin-top:5px;line-height:1.1}
+.design-v4 .admin-columns{grid-template-columns:minmax(0,1.35fr) minmax(350px,1fr);gap:18px}
+.design-v4 .admin-columns .card{margin:0;border-radius:18px!important;border:1px solid var(--border);box-shadow:0 7px 20px #123b5011!important}
+.design-v4 .admin-primary .card,.design-v4 .admin-secondary .card{padding:22px!important}
+.design-v4 .admin-columns h2{font-size:22px;color:var(--heading);margin:0 0 17px}
+.design-v4 .admin-columns .table{border:1px solid var(--border);border-radius:10px;border-collapse:separate;border-spacing:0;overflow:hidden}
+.design-v4 .admin-columns .table th{background:color-mix(in srgb,#d3ece5 60%,var(--surface));font-weight:800;color:var(--heading)}
+.design-v4 .admin-columns .table td{color:var(--text)}
+.design-v4 .admin-quick-link{background:linear-gradient(120deg,#187b79,#00605b);color:#fff!important;border-radius:10px;box-shadow:0 3px 10px #075c5228}
+.design-v4 .v4-subpage-heading h2{font-size:26px}
+/* Triagem: queue + coherent evaluation form, never synthetic patient statistics. */
+.design-v4 .v4-triage-status{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px}
+.design-v4 .v4-status-summary{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--border);box-shadow:0 4px 14px #102b4010;border-radius:14px;padding:11px 20px;min-width:215px}
+.design-v4 .v4-status-icon{display:grid;place-items:center;width:43px;height:43px;background:#d9f5ee;border-radius:13px;color:#028d7a;font-size:26px}
+.design-v4 .v4-status-copy{display:flex;flex-direction:column;gap:2px}.design-v4 .v4-status-copy small{font-size:12px;font-weight:700;color:var(--heading)}.design-v4 .v4-status-copy strong{font-size:23px;color:#006d66}
+.design-v4 .v4-status-note{color:var(--muted);font-size:12px;margin:0;text-align:right}
+.design-v4 .v4-triage-form-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px}
+.design-v4 .v4-triage-main,.design-v4 .v4-triage-risk{min-width:0}.design-v4 .v4-triage-main>.form-group,.design-v4 .v4-triage-risk>.form-group{margin:0 0 15px!important}
+.design-v4 .v4-triage-main .grid-sinais{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.design-v4 .v4-triage-main .grid-sinais>div{min-width:0}
+.design-v4 .v4-triage-main .grid-sinais label{min-height:28px}
+.design-v4 .v4-risk-alerts{padding:13px;background:var(--surface-2);border:1px solid var(--border);border-radius:13px}
+.design-v4 .v4-risk-alerts .alertas-grid{background:none!important;border:0!important;padding:0!important;gap:6px}
+.design-v4 .v4-risk-alerts .alertas-grid label{margin:0!important;font-size:11.5px}
+.design-v4 .coluna-form>button.btn-salvar{width:100%;margin-top:10px}
+/* Médico: first row identity+diagnosis, symptoms and bottom panels. */
+.design-v4 .v4-doctor-top,.design-v4 .v4-doctor-bottom{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.design-v4 .v4-doctor-form{display:grid;gap:14px}
+.design-v4 .v4-doctor-form .form-group{margin:0!important;min-width:0}
+.design-v4 .v4-doctor-form .sintoma-add-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.design-v4 .v4-doctor-form .sintoma-add-grid>*{min-width:0}
+.design-v4 .v4-doctor-form .sintomas-editor{padding-bottom:12px;border-bottom:1px solid var(--border)}
+.design-v4 .v4-doctor-bottom textarea{min-height:85px}
+.design-v4 .botoes-acao{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.design-v4 .botoes-acao button{min-height:46px;margin:0!important;width:100%;border-radius:10px!important}
+.design-v4 .botoes-acao .btn-pdf{background:#7d68bc!important;color:#fff!important}
+/* Farmácia: stacked counters, stock grid and movements. */
+.design-v4 .pharmacy-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;margin-bottom:18px}
+.design-v4 .pharmacy-stat{min-height:83px;display:grid;grid-template-columns:54px 1fr;grid-template-rows:1fr 1fr;column-gap:14px;padding:12px 22px!important;align-items:center;background:var(--surface);border-radius:15px!important}
+.design-v4 .v4-stat-icon{grid-row:1 / 3;display:grid;place-items:center;width:51px;height:51px;border-radius:14px;background:#d8f8f1;color:#007c70;font-size:29px}
+.design-v4 .pharmacy-stat:nth-child(2) .v4-stat-icon{background:#e6f8e9;color:#00975f}.design-v4 .pharmacy-stat:nth-child(3) .v4-stat-icon{background:#fff4db;color:#da9b00}
+.design-v4 .pharmacy-stat small{font-size:12.5px;color:var(--heading);font-weight:700;align-self:end}
+.design-v4 .pharmacy-stat strong{font-size:29px;color:#00635f;line-height:1.1;align-self:start}
+.design-v4 .pharmacy-workspace{grid-template-columns:minmax(0,1.4fr) minmax(340px,.88fr)!important;gap:18px}
+.design-v4 .pharmacy-card{padding:21px!important;margin:0 0 16px!important}
+.design-v4 .v4-sector-heading{font-size:20px;color:var(--heading);margin:0 0 17px}
+.design-v4 .pharmacy-table-wrap{border-radius:11px;overflow-x:auto;border:1px solid var(--border)}
+.design-v4 .pharmacy-table-wrap table{border-collapse:collapse;width:100%;min-width:570px}
+.design-v4 .pharmacy-table-wrap th{background:color-mix(in srgb,#d7eaf0 65%,var(--surface));color:var(--heading);font-weight:750}
+.design-v4 .pharmacy-tools{display:grid;grid-template-columns:1.45fr .85fr;gap:12px}
+.design-v4 .pharmacy-form{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.design-v4 .pharmacy-form>div:nth-child(n+3){grid-column:1/-1}
+.design-v4 .pharmacy-secondary .pharmacy-card>p:has(button){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.design-v4 .pharmacy-secondary .btn{width:100%!important;min-height:43px!important;background:#006965!important;color:white!important}
+.design-v4 .pharmacy-secondary .btn:last-child{background:#dff2ee!important;color:#005d57!important;border:1px solid #27877c!important}
+/* Responsive and dark-mode parity */
+body.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(110deg,transparent,#103f3b30)}
+body.dark-mode .design-v4 .tab.active{background:#155f53!important;color:#effff7!important}
+body.dark-mode .design-v4 .v4-risk-alerts{background:var(--surface-2)}
+body.dark-mode .design-v4 .ref-hero-art img,body.dark-mode .design-v4 .v4-admin-hero img{opacity:.78}
+@media(max-width:1450px){.design-v4 .admin-metrics .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.design-v4 .v4-triage-main .grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1200px){.design-v4 .admin-columns,.design-v4 .pharmacy-workspace{grid-template-columns:1fr!important}.design-v4 .ref-clinical-grid{grid-template-columns:minmax(240px,.85fr) minmax(0,1.4fr)!important}.design-v4 .v4-triage-form-grid{grid-template-columns:1fr}.design-v4 .v4-risk-alerts .alertas-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:850px){.design-v4 .ref-clinical-grid{grid-template-columns:1fr!important}.design-v4 .v4-admin-hero img{opacity:.28}.design-v4 .v4-admin-hero .v4-admin-copy{max-width:100%}.design-v4 .ref-hero-main{padding-right:0}.design-v4 .ref-hero-art{opacity:.23;width:45%}.design-v4 .pharmacy-grid{grid-template-columns:1fr!important}.design-v4 .v4-triage-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.design-v4 .v4-triage-main .grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.sentinela-shell:has(.design-v4){grid-template-columns:56px minmax(0,1fr)}.sentinela-shell:has(.design-v4) .sentinela-sidebar{left:56px}.sentinela-shell .sentinela-content.design-v4{padding:15px!important}.design-v4 .admin-metrics .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.design-v4 .v4-admin-hero{padding:22px 6px}.design-v4 .v4-triage-form-grid,.design-v4 .v4-doctor-top,.design-v4 .v4-doctor-bottom{grid-template-columns:1fr}.design-v4 .v4-doctor-form .sintoma-add-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.design-v4 .v4-triage-status{flex-wrap:wrap}.design-v4 .v4-status-note{text-align:left}.design-v4 .ref-hero-art{display:none}.design-v4 .pharmacy-tools{grid-template-columns:1fr}.design-v4 .pharmacy-form{grid-template-columns:1fr!important}.design-v4 .pharmacy-form>div:nth-child(n+3){grid-column:auto}.design-v4 .tabs{gap:3px}.design-v4 .tab{font-size:12px;padding:8px 9px}.design-v4 .botoes-acao{grid-template-columns:1fr}}
