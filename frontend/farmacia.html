@@ -7,26 +7,23 @@
 <link href="/theme.css" rel="stylesheet"/>
 <link href="/css/farmacia.css" rel="stylesheet"/>
 <link href="/design-overrides.css" rel="stylesheet"/>
-<link rel="stylesheet" href="/structural-layout.css">
-</head>
+<link href="/structural-layout.css" rel="stylesheet"/>
+<link href="/reference-layout.css" rel="stylesheet"/></head>
 <body>
 <button aria-label="Alternar tema" class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
-<main class="pharmacy sentinela-content sector-content" id="conteudo-principal">
-<header class="pharmacy-header"><div><h1>💊 Farmácia</h1><p class="pharmacy-sub">Controle de estoque, validade e movimentações.</p></div></header>
-<section class="pharmacy-grid">
+<main class="pharmacy sentinela-content sector-content reference-v3" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Farmácia</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">✚</div><div class="ref-hero-copy"><h2>Estoque e movimentações</h2><p>Controle os medicamentos, acompanhe alertas e registre movimentações.</p></div><div aria-hidden="true" class="ref-hero-art"><svg role="presentation" viewbox="0 0 310 130" xmlns="http://www.w3.org/2000/svg"><circle cx="241" cy="62" fill="#DDF3EA" r="67"></circle><path d="M0 125 Q76 78 131 113 T310 109 V130 H0Z" fill="#D9EEE5"></path><rect fill="#C4DFEA" height="74" rx="3" width="110" x="134" y="50"></rect><rect fill="#F5FCFC" height="100" rx="3" stroke="#BDDCE2" stroke-width="3" width="75" x="153" y="24"></rect><path d="M183 37h14v12h12v13h-12v13h-14V62h-12V49h12z" fill="#2FA66C"></path><path d="M179 124v-30h23v30" fill="#A0C8D3"></path><g fill="#83BCCA"><rect height="18" width="13" x="144" y="66"></rect><rect height="18" width="13" x="218" y="66"></rect><rect height="18" width="13" x="144" y="92"></rect><rect height="18" width="13" x="218" y="92"></rect></g><path d="M45 127V87M39 95l-15-19M45 101l17-21M265 127V90" stroke="#3D9A71" stroke-linecap="round" stroke-width="5"></path><g fill="#55B87D"><circle cx="42" cy="79" r="18"></circle><circle cx="26" cy="92" r="12"></circle><circle cx="57" cy="93" r="12"></circle><circle cx="263" cy="85" r="15"></circle><circle cx="280" cy="95" r="11"></circle></g></svg></div></div></section>
+
+<section class="pharmacy-grid ref-kpi-row">
 <article class="pharmacy-stat"><small>Medicamentos cadastrados</small><strong id="totalMeds">—</strong></article>
 <article class="pharmacy-stat"><small>Itens com estoque baixo</small><strong id="lowCount">—</strong></article>
 <article class="pharmacy-stat"><small>Próximos do vencimento</small><strong id="expiryCount">—</strong></article>
 </section>
-
-
-
-<div class="pharmacy-workspace"><div class="pharmacy-primary"><section class="pharmacy-card">
-<h2>Estoque disponível</h2>
+<div class="pharmacy-workspace"><div class="pharmacy-primary"><section class="pharmacy-card ref-card">
+<h2 class="ref-section-heading">Estoque disponível</h2>
 <div class="pharmacy-tools"><input aria-label="Pesquisar medicamento" id="searchMed" placeholder="Pesquisar medicamento..."/><select aria-label="Filtrar estoque" id="filterStock"><option value="todos">Todos os itens</option><option value="baixo">Estoque baixo</option><option value="validade">Próximos do vencimento</option><option value="vencido">Vencidos</option></select></div>
 <div class="pharmacy-table-wrap"><table><thead><tr><th>Medicamento</th><th>Quantidade</th><th>Mínimo</th><th>Validade</th><th>Situação</th></tr></thead><tbody id="estoque"><tr><td colspan="5">Carregando...</td></tr></tbody></table></div>
-</section></div><aside class="pharmacy-secondary"><section class="pharmacy-card">
-<h2>Registrar movimentação</h2>
+</section></div><aside class="pharmacy-secondary"><section class="pharmacy-card ref-card">
+<h2 class="ref-section-heading">Registrar movimentação</h2>
 <div class="pharmacy-form">
 <div><label for="med">Medicamento</label><select id="med"></select></div>
 <div><label for="qtd">Quantidade</label><input id="qtd" min="1" step="1" type="number" value="1"/></div>
@@ -35,7 +32,7 @@
 </div>
 <p><button class="btn" onclick="mov('entrada')">＋ Registrar entrada</button> <button class="btn" onclick="mov('saida')">− Registrar saída</button></p>
 <small class="extracted-57f9e31d">A validade é informativa e deve ser conferida com a embalagem/lote físico. O sistema não substitui o controle farmacêutico.</small>
-</section></aside></div><section class="pharmacy-card"><h2>Histórico de movimentações</h2><div class="pharmacy-table-wrap"><table><thead><tr><th>Data</th><th>Tipo</th><th>Medicamento</th><th>Quantidade</th><th>Paciente</th><th>Usuário</th></tr></thead><tbody id="hist"></tbody></table></div></section></main>
+</section></aside></div><section class="pharmacy-card ref-card"><h2 class="ref-section-heading">Histórico de movimentações</h2><div class="pharmacy-table-wrap"><table><thead><tr><th>Data</th><th>Tipo</th><th>Medicamento</th><th>Quantidade</th><th>Paciente</th><th>Usuário</th></tr></thead><tbody id="hist"></tbody></table></div></section></main>
 <script>
 let meds=[];
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -79,4 +76,4 @@ carregar();setInterval(carregar,15000);
 </script>
 <script src="/js/session.js"></script><script src="/js/theme.js"></script>
 <script src="/js/layout.js"></script>
-</body></html>
+<script src="/js/reference-ui.js"></script></body></html>

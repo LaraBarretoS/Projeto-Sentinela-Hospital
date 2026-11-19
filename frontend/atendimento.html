@@ -8,69 +8,63 @@
 <link href="/theme.css" rel="stylesheet"/>
 <link href="/css/atendimento.css" rel="stylesheet"/>
 <link href="/design-overrides.css" rel="stylesheet"/>
-<link rel="stylesheet" href="/structural-layout.css">
-</head>
+<link href="/structural-layout.css" rel="stylesheet"/>
+<link href="/reference-layout.css" rel="stylesheet"/></head>
 <body>
 <button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
-<main class="container sentinela-content sector-content" id="conteudo-principal">
-<header class="sector-intro"><span class="eyebrow">ATENDIMENTO • RECEPÇÃO</span><h2>Cadastro e encaminhamento</h2><p>Identifique o paciente e encaminhe com segurança para a triagem.</p></header>
+<main class="container sentinela-content sector-content reference-v3" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Atendimento</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">♙</div><div class="ref-hero-copy"><h2>Cadastro e encaminhamento</h2><p>Identifique o paciente e encaminhe com segurança para a triagem.</p></div><div aria-hidden="true" class="ref-hero-art"><svg role="presentation" viewbox="0 0 310 130" xmlns="http://www.w3.org/2000/svg"><circle cx="241" cy="62" fill="#DDF3EA" r="67"></circle><path d="M0 125 Q76 78 131 113 T310 109 V130 H0Z" fill="#D9EEE5"></path><rect fill="#C4DFEA" height="74" rx="3" width="110" x="134" y="50"></rect><rect fill="#F5FCFC" height="100" rx="3" stroke="#BDDCE2" stroke-width="3" width="75" x="153" y="24"></rect><path d="M183 37h14v12h12v13h-12v13h-14V62h-12V49h12z" fill="#2FA66C"></path><path d="M179 124v-30h23v30" fill="#A0C8D3"></path><g fill="#83BCCA"><rect height="18" width="13" x="144" y="66"></rect><rect height="18" width="13" x="218" y="66"></rect><rect height="18" width="13" x="144" y="92"></rect><rect height="18" width="13" x="218" y="92"></rect></g><path d="M45 127V87M39 95l-15-19M45 101l17-21M265 127V90" stroke="#3D9A71" stroke-linecap="round" stroke-width="5"></path><g fill="#55B87D"><circle cx="42" cy="79" r="18"></circle><circle cx="26" cy="92" r="12"></circle><circle cx="57" cy="93" r="12"></circle><circle cx="263" cy="85" r="15"></circle><circle cx="280" cy="95" r="11"></circle></g></svg></div></div></section>
+
 <!-- Nome Completo -->
-<div class="form-group">
-<input id="nome" placeholder="Nome Completo *"/>
-</div>
+
 <!-- CPF e Data de Nascimento -->
-<div class="form-group form-row">
-<input id="cpf" placeholder="CPF (000.000.000-00)"/>
-<input id="dataNascimento" onchange="calcularIdade()" title="Data de Nascimento" type="date"/>
-</div>
+
 <!-- Sexo e Estado Civil -->
-<div class="form-group form-row">
-<select id="sexo">
+
+<!-- Campo para menores de idade -->
+
+<!-- Tipo de Atendimento -->
+
+<!-- Foto do Paciente -->
+
+<!-- Atendimento normal -->
+
+<!-- Paciente em branco / emergência -->
+
+<!-- Mensagem de retorno -->
+
+<section aria-labelledby="titulo-dados" class="ref-card ref-registration patient-registration"><h3 class="ref-section-heading" id="titulo-dados">Dados do paciente</h3><div class="ref-form-grid"><div class="form-group ref-full"><label for="nome">Nome completo *</label>
+<input id="nome" placeholder="Digite o nome completo do paciente"/>
+</div><div class="form-group form-row ref-pair">
+<div class="ref-field"><label for="cpf">CPF</label><input id="cpf" placeholder="Digite o CPF"/></div>
+<div class="ref-field"><label for="dataNascimento">Data de nascimento</label><input id="dataNascimento" onchange="calcularIdade()" title="Data de Nascimento" type="date"/></div>
+</div><div class="form-group form-row ref-pair">
+<div class="ref-field"><label for="sexo">Sexo</label><select id="sexo">
 <option value="">Selecione o Sexo</option>
 <option value="Masculino">Masculino</option>
 <option value="Feminino">Feminino</option>
 <option value="Outro">Outro</option>
 <option value="NaoInformado">Prefiro não informar</option>
-</select>
-<select id="estadoCivil">
+</select></div>
+<div class="ref-field"><label for="estadoCivil">Estado civil</label><select id="estadoCivil">
 <option value="">Selecione o Estado Civil</option>
 <option value="Solteiro(a)">Solteiro(a)</option>
 <option value="Casado(a)">Casado(a)</option>
 <option value="Divorciado(a)">Divorciado(a)</option>
 <option value="Viuvo(a)">Viúvo(a)</option>
 <option value="UniaoEstavel">União Estável</option>
-</select>
-</div>
-<!-- Campo para menores de idade -->
-<div class="menor-container" id="campoResponsavel">
-<label class="extracted-4571105d">
-      Paciente menor de idade:
-    </label>
+</select></div>
+</div><div class="menor-container" id="campoResponsavel">
+<label class="extracted-4571105d" for="responsavel">Paciente menor de idade</label>
 <input id="responsavel" placeholder="Nome do Responsável *"/>
-</div>
-<!-- Tipo de Atendimento -->
-<div class="form-group">
+</div><div class="form-group ref-full"><label for="tipo">Convênio / Tipo de atendimento</label>
 <select id="tipo">
 <option value="Convenio">Convênio</option>
 <option value="Particular">Particular</option>
 <option value="SUS">SUS</option>
 </select>
-</div>
-<!-- Foto do Paciente -->
-<div class="form-group">
+</div><div class="form-group ref-full"><label for="foto">Documento / Anexo</label>
 <input id="foto" type="file"/>
-</div>
-<!-- Atendimento normal -->
-<button id="btnCadastrar" onclick="cadastrar()">
-    Enviar para Triagem
-  </button>
-<!-- Paciente em branco / emergência -->
-<button id="btnPacienteEmergencia" onclick="cadastrarPacienteEmBranco()">
-    Paciente em Branco / Emergência
-  </button>
-<!-- Mensagem de retorno -->
-<div id="mensagem-status"></div>
-</main>
+</div></div><div class="ref-action-row patient-routing"><button class="ref-primary-action" id="btnCadastrar" onclick="cadastrar()">➤  Enviar para Triagem</button><button class="ref-danger-action" id="btnPacienteEmergencia" onclick="cadastrarPacienteEmBranco()">♧  Paciente em Branco / Emergência</button></div><div id="mensagem-status"></div></section></main>
 <script>
 
 let idadeCalculada = null;
@@ -412,5 +406,5 @@ function limparFormulario() {
 <script src="/js/theme.js"></script>
 <script src="/js/session.js"></script>
 <script src="/js/layout.js"></script>
-</body>
+<script src="/js/reference-ui.js"></script></body>
 </html>
