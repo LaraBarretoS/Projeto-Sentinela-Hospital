@@ -55,7 +55,7 @@
      }
     }
     const list=document.getElementById('history-list');list.replaceChildren();
-    historico.slice(0,4).forEach(h => {
+    historico.slice(0,3).forEach(h => {
      const li=document.createElement('li');
      const paciente=document.createElement('strong');paciente.textContent=h.paciente || 'Paciente';
      const local=document.createElement('span');local.textContent=`${h.localTipo || 'Guichê'} ${h.localNumero ?? '--'}`;
