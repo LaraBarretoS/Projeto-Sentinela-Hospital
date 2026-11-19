@@ -1,89 +1,80 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Painel Médico</title>
-<link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/css/medico.css">
-  <link rel="stylesheet" href="/design-overrides.css">
+<link href="/theme.css" rel="stylesheet"/>
+<link href="/css/medico.css" rel="stylesheet"/>
+<link href="/design-overrides.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/structural-layout.css">
 </head>
 <body>
-<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
-
-<div class="container">
-  <div class="extracted-ccc5e8e6">
-    <h2 class="extracted-6447d4f7">🩺 Painel Médico</h2>
-    <button onclick="window.open('tv.html','_blank')" class="extracted-b0d6d29b">📺 Abrir Tela da TV</button>
-  </div>
-
-  <div class="consultorio-box">
-    <label for="consultorio-num"><strong>Meu Consultório:</strong></label>
-    <input type="text" id="consultorio-num" value="01">
-    <span class="extracted-3aa0d1aa">Número enviado para a TV ao chamar.</span>
-  </div>
-
-  <div class="medico-grid">
-    <div class="coluna-fila">
-      <h3 class="extracted-26c08ab1">Fila de Espera</h3>
-      <div class="emergencia-card">
-        <strong>🚨 Paciente de Emergência</strong>
-        <p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
-        <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
-      </div>
-      <div id="triagens"><p class="extracted-778528eb">Carregando...</p></div>
-      <button onclick="carregar()" class="extracted-db383b1c">🔄 Atualizar Fila</button>
-    </div>
-
-    <div class="coluna-form">
-      <h3 class="extracted-02dd0a00">Atendimento Médico</h3>
-      <div id="alertaAlergia" class="alerta-alergia"></div>
-      <div id="historicoPaciente" class="extracted-c57d05b9"></div>
-
-      <div class="form-group">
-        <label>Paciente Selecionado *</label>
-        <input id="paciente" placeholder="Selecione um paciente na lista" readonly class="extracted-4fbc116c">
-      </div>
-
-      <div class="form-group">
-        <label>Diagnóstico / Hipótese Diagnóstica *</label>
-        <input id="diagnostico" placeholder="Informe o diagnóstico">
-      </div>
-
-      <div class="form-group sintomas-editor">
-        <label>Sintomas do paciente</label>
-        <div class="sintoma-add-grid">
-          <input id="novoSintoma" placeholder="Sintoma (ex.: cefaleia)">
-          <input id="intensidadeSintoma" type="number" min="0" max="10" placeholder="Intensidade 0–10">
-          <input id="duracaoSintoma" placeholder="Duração (ex.: 2 dias)">
-          <input id="frequenciaSintoma" placeholder="Frequência">
-        </div>
-        <input id="observacaoSintoma" placeholder="Observação específica (opcional)">
-        <button type="button" class="btn-adicionar-sintoma" onclick="adicionarSintoma()">＋ Adicionar sintoma</button>
-        <div id="listaSintomas" class="lista-sintomas" aria-live="polite"></div>
-        <small>Os registros antigos com um único sintoma continuam sendo exibidos normalmente.</small>
-      </div>
-
-      <div class="form-group">
-        <label>Prescrição / Medicação *</label>
-        <select id="medicacao">
-          <option value="">Selecione a medicação</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Observações / Recomendações Médicas</label>
-        <textarea id="obs" rows="4" placeholder="Anotações da consulta ou recomendações de alta..."></textarea>
-      </div>
-
-      <div class="botoes-acao">
-        <button class="btn-pdf" onclick="gerarPDFAlta()">📄 Gerar Alta (PDF)</button>
-        <button class="btn-salvar" onclick="salvar()">Finalizar Consulta</button>
-      </div>
-    </div>
-  </div>
+<button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="container sentinela-content sector-content" id="conteudo-principal">
+<div class="extracted-ccc5e8e6 sector-intro">
+<h2 class="extracted-6447d4f7">🩺 Painel Médico</h2>
+<button class="extracted-b0d6d29b" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button>
 </div>
-
+<div class="consultorio-box">
+<label for="consultorio-num"><strong>Meu Consultório:</strong></label>
+<input id="consultorio-num" type="text" value="01"/>
+<span class="extracted-3aa0d1aa">Número enviado para a TV ao chamar.</span>
+</div>
+<div aria-label="Fila de pacientes e ficha de atendimento" class="medico-grid">
+<div aria-label="Fila de pacientes" class="coluna-fila">
+<h3 class="extracted-26c08ab1">Fila de Espera</h3>
+<div class="emergencia-card">
+<strong>🚨 Paciente de Emergência</strong>
+<p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+<button onclick="selecionarPacienteEmergencia()" type="button">Selecionar Paciente de Emergência</button>
+</div>
+<div id="triagens"><p class="extracted-778528eb">Carregando...</p></div>
+<button class="extracted-db383b1c" onclick="carregar()">🔄 Atualizar Fila</button>
+</div>
+<div aria-label="Ficha de atendimento" class="coluna-form">
+<h3 class="extracted-02dd0a00">Atendimento Médico</h3>
+<div class="alerta-alergia" id="alertaAlergia"></div>
+<div class="extracted-c57d05b9" id="historicoPaciente"></div>
+<div class="form-group">
+<label>Paciente Selecionado *</label>
+<input class="extracted-4fbc116c" id="paciente" placeholder="Selecione um paciente na lista" readonly=""/>
+</div>
+<div class="form-group">
+<label>Diagnóstico / Hipótese Diagnóstica *</label>
+<input id="diagnostico" placeholder="Informe o diagnóstico"/>
+</div>
+<div class="form-group sintomas-editor">
+<label>Sintomas do paciente</label>
+<div class="sintoma-add-grid">
+<input id="novoSintoma" placeholder="Sintoma (ex.: cefaleia)"/>
+<input id="intensidadeSintoma" max="10" min="0" placeholder="Intensidade 0–10" type="number"/>
+<input id="duracaoSintoma" placeholder="Duração (ex.: 2 dias)"/>
+<input id="frequenciaSintoma" placeholder="Frequência"/>
+</div>
+<input id="observacaoSintoma" placeholder="Observação específica (opcional)"/>
+<button class="btn-adicionar-sintoma" onclick="adicionarSintoma()" type="button">＋ Adicionar sintoma</button>
+<div aria-live="polite" class="lista-sintomas" id="listaSintomas"></div>
+<small>Os registros antigos com um único sintoma continuam sendo exibidos normalmente.</small>
+</div>
+<div class="form-group">
+<label>Prescrição / Medicação *</label>
+<select id="medicacao">
+<option value="">Selecione a medicação</option>
+</select>
+</div>
+<div class="form-group">
+<label>Observações / Recomendações Médicas</label>
+<textarea id="obs" placeholder="Anotações da consulta ou recomendações de alta..." rows="4"></textarea>
+</div>
+<div class="botoes-acao">
+<button class="btn-pdf" onclick="gerarPDFAlta()">📄 Gerar Alta (PDF)</button>
+<button class="btn-salvar" onclick="salvar()">Finalizar Consulta</button>
+</div>
+</div>
+</div>
+</main>
 <script>
 "use strict";
 let triagensCarregadas = [];
@@ -279,8 +270,8 @@ carregar();
 carregarMedicacoes();
 setInterval(carregar, 10000);
 </script>
-
 <script src="/js/session.js"></script>
 <script src="/js/theme.js"></script>
+<script src="/js/layout.js"></script>
 </body>
 </html>

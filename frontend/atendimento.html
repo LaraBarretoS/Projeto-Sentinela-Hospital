@@ -1,98 +1,76 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recepção - Atendimento</title>
-  <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/css/atendimento.css">
-  <link rel="stylesheet" href="/design-overrides.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Recepção - Atendimento</title>
+<link href="/theme.css" rel="stylesheet"/>
+<link href="/css/atendimento.css" rel="stylesheet"/>
+<link href="/design-overrides.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/structural-layout.css">
 </head>
 <body>
-<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
-
-<div class="container">
-  <h2>Recepção - Novo Atendimento</h2>
-
-  <!-- Nome Completo -->
-  <div class="form-group">
-    <input id="nome" placeholder="Nome Completo *">
-  </div>
-
-  <!-- CPF e Data de Nascimento -->
-  <div class="form-group form-row">
-    <input id="cpf" placeholder="CPF (000.000.000-00)">
-    <input
-      type="date"
-      id="dataNascimento"
-      onchange="calcularIdade()"
-      title="Data de Nascimento"
-    >
-  </div>
-
-  <!-- Sexo e Estado Civil -->
-  <div class="form-group form-row">
-    <select id="sexo">
-      <option value="">Selecione o Sexo</option>
-      <option value="Masculino">Masculino</option>
-      <option value="Feminino">Feminino</option>
-      <option value="Outro">Outro</option>
-      <option value="NaoInformado">Prefiro não informar</option>
-    </select>
-
-    <select id="estadoCivil">
-      <option value="">Selecione o Estado Civil</option>
-      <option value="Solteiro(a)">Solteiro(a)</option>
-      <option value="Casado(a)">Casado(a)</option>
-      <option value="Divorciado(a)">Divorciado(a)</option>
-      <option value="Viuvo(a)">Viúvo(a)</option>
-      <option value="UniaoEstavel">União Estável</option>
-    </select>
-  </div>
-
-  <!-- Campo para menores de idade -->
-  <div class="menor-container" id="campoResponsavel">
-    <label class="extracted-4571105d">
+<button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="container sentinela-content sector-content" id="conteudo-principal">
+<header class="sector-intro"><span class="eyebrow">ATENDIMENTO • RECEPÇÃO</span><h2>Cadastro e encaminhamento</h2><p>Identifique o paciente e encaminhe com segurança para a triagem.</p></header>
+<!-- Nome Completo -->
+<div class="form-group">
+<input id="nome" placeholder="Nome Completo *"/>
+</div>
+<!-- CPF e Data de Nascimento -->
+<div class="form-group form-row">
+<input id="cpf" placeholder="CPF (000.000.000-00)"/>
+<input id="dataNascimento" onchange="calcularIdade()" title="Data de Nascimento" type="date"/>
+</div>
+<!-- Sexo e Estado Civil -->
+<div class="form-group form-row">
+<select id="sexo">
+<option value="">Selecione o Sexo</option>
+<option value="Masculino">Masculino</option>
+<option value="Feminino">Feminino</option>
+<option value="Outro">Outro</option>
+<option value="NaoInformado">Prefiro não informar</option>
+</select>
+<select id="estadoCivil">
+<option value="">Selecione o Estado Civil</option>
+<option value="Solteiro(a)">Solteiro(a)</option>
+<option value="Casado(a)">Casado(a)</option>
+<option value="Divorciado(a)">Divorciado(a)</option>
+<option value="Viuvo(a)">Viúvo(a)</option>
+<option value="UniaoEstavel">União Estável</option>
+</select>
+</div>
+<!-- Campo para menores de idade -->
+<div class="menor-container" id="campoResponsavel">
+<label class="extracted-4571105d">
       Paciente menor de idade:
     </label>
-
-    <input
-      id="responsavel"
-      placeholder="Nome do Responsável *"
-    >
-  </div>
-
-  <!-- Tipo de Atendimento -->
-  <div class="form-group">
-    <select id="tipo">
-      <option value="Convenio">Convênio</option>
-      <option value="Particular">Particular</option>
-      <option value="SUS">SUS</option>
-    </select>
-  </div>
-
-  <!-- Foto do Paciente -->
-  <div class="form-group">
-    <input type="file" id="foto">
-  </div>
-
-  <!-- Atendimento normal -->
-  <button id="btnCadastrar" onclick="cadastrar()">
+<input id="responsavel" placeholder="Nome do Responsável *"/>
+</div>
+<!-- Tipo de Atendimento -->
+<div class="form-group">
+<select id="tipo">
+<option value="Convenio">Convênio</option>
+<option value="Particular">Particular</option>
+<option value="SUS">SUS</option>
+</select>
+</div>
+<!-- Foto do Paciente -->
+<div class="form-group">
+<input id="foto" type="file"/>
+</div>
+<!-- Atendimento normal -->
+<button id="btnCadastrar" onclick="cadastrar()">
     Enviar para Triagem
   </button>
-
-  <!-- Paciente em branco / emergência -->
-  <button
-    id="btnPacienteEmergencia"
-    onclick="cadastrarPacienteEmBranco()"
-  >
+<!-- Paciente em branco / emergência -->
+<button id="btnPacienteEmergencia" onclick="cadastrarPacienteEmBranco()">
     Paciente em Branco / Emergência
   </button>
-
-  <!-- Mensagem de retorno -->
-  <div id="mensagem-status"></div>
-</div>
-
+<!-- Mensagem de retorno -->
+<div id="mensagem-status"></div>
+</main>
 <script>
 
 let idadeCalculada = null;
@@ -431,8 +409,8 @@ function limparFormulario() {
 }
 
 </script>
-
 <script src="/js/theme.js"></script>
 <script src="/js/session.js"></script>
+<script src="/js/layout.js"></script>
 </body>
 </html>

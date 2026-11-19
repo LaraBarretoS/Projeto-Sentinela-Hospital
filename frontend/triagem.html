@@ -1,132 +1,116 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Triagem Hospitalar</title>
-<link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/css/triagem.css">
-  <link rel="stylesheet" href="/design-overrides.css">
+<link href="/theme.css" rel="stylesheet"/>
+<link href="/css/triagem.css" rel="stylesheet"/>
+<link href="/design-overrides.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/structural-layout.css">
 </head>
 <body>
-<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
-<div class="container">
-
-  <!-- Cabeçalho -->
-  <div class="extracted-abf942cf">
-    <h2 class="extracted-6447d4f7">🏥 Triagem Hospitalar</h2>
-    <button class="btn-abrir-tv" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button>
-  </div>
-
-  <div class="triagem-grid">
-    
-    <!-- Coluna Esquerda: Lista de Pacientes -->
-    <div class="coluna-fila">
-      <h3 class="extracted-26c08ab1">
+<button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="container sentinela-content sector-content" id="conteudo-principal">
+<!-- Cabeçalho -->
+<div class="extracted-abf942cf sector-intro">
+<h2 class="extracted-6447d4f7">🏥 Triagem Hospitalar</h2>
+<button class="btn-abrir-tv" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button>
+</div>
+<div aria-label="Fila de pacientes e ficha de atendimento" class="triagem-grid">
+<!-- Coluna Esquerda: Lista de Pacientes -->
+<div aria-label="Fila de pacientes" class="coluna-fila">
+<h3 class="extracted-26c08ab1">
         Fila do Atendimento
       </h3>
-      <p class="extracted-c803fdde">Clique em "Chamar na TV" para iniciar o atendimento do paciente.</p>
-      
-      <div class="emergencia-card">
-        <strong>🚨 Paciente de Emergência</strong>
-        <p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
-        <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
-      </div>
-
-      <div id="fila-pacientes">
-        <p class="extracted-778528eb">Carregando...</p>
-      </div>
-
-      <button onclick="carregarPacientes()" class="extracted-0d3c39d5">🔄 Atualizar Fila</button>
-    </div>
-
-    <!-- Coluna Direita: Formulário do Enfermeiro -->
-    <div class="coluna-form">
-      <h3 class="extracted-02dd0a00">Ficha de Avaliação da Triagem</h3>
-      
-      <div class="form-group">
-        <label>Paciente Selecionado *</label>
-        <input id="nome" placeholder="Selecione um paciente na lista ao lado" readonly class="extracted-4fbc116c">
-      </div>
-
-      <div class="form-group">
-        <label>Sintoma / Queixa Principal *</label>
-        <select id="sintoma">
-          <option value="">Selecione o sintoma principal</option>
-          <option value="dor_leve">Dor leve</option>
-          <option value="resfriado">Resfriado</option>
-          <option value="coriza">Coriza</option>
-          <option value="tosse">Tosse</option>
-          <option value="febre">Febre</option>
-          <option value="vomito">Vômito</option>
-          <option value="diarreia">Diarreia</option>
-          <option value="falta_ar_moderada">Falta de ar moderada</option>
-          <option value="falta_ar_grave">Falta de ar grave</option>
-          <option value="infarto">Suspeita de infarto</option>
-          <option value="avc">Suspeita de AVC</option>
-          <option value="convulsao">Convulsão</option>
-          <option value="hemorragia">Hemorragia</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Temperatura (°C) *</label>
-        <input id="temp" type="number" step="0.1" placeholder="Ex: 36.5">
-      </div>
-
-      <div class="form-group grid-sinais">
-        <div><label for="pressao">Pressão arterial (mmHg)</label><input id="pressao" placeholder="Ex.: 120/80"></div>
-        <div><label for="fc">Frequência cardíaca (bpm)</label><input id="fc" type="number" min="0" placeholder="Ex.: 82"></div>
-        <div><label for="fr">Frequência respiratória (irpm)</label><input id="fr" type="number" min="0" placeholder="Ex.: 18"></div>
-        <div><label for="spo2">Saturação SpO₂ (%)</label><input id="spo2" type="number" min="0" max="100" placeholder="Ex.: 98"></div>
-        <div><label for="consciencia">Nível de consciência</label><select id="consciencia"><option value="">Não informado</option><option value="alerta">Alerta</option><option value="confuso">Confuso / desorientado</option><option value="rebaixado">Rebaixado / não responsivo</option></select></div>
-        <div><label for="dor">Intensidade da dor (0–10)</label><input id="dor" type="number" min="0" max="10" placeholder="0 a 10"></div>
-        <div><label for="glicemia">Glicemia (mg/dL), quando indicada</label><input id="glicemia" type="number" min="0" max="2000" placeholder="Não obrigatório"></div>
-      </div>
-      <div class="form-group">
-        <label>Sinais de alerta observados</label>
-        <div class="alertas-grid">
-          <label><input type="checkbox" name="alerta" value="dificuldade respiratória grave"> Dificuldade respiratória grave</label>
-          <label><input type="checkbox" name="alerta" value="dor no peito"> Dor no peito</label>
-          <label><input type="checkbox" name="alerta" value="convulsão"> Convulsão</label>
-          <label><input type="checkbox" name="alerta" value="sangramento intenso"> Sangramento intenso</label>
-          <label><input type="checkbox" name="alerta" value="alteração importante de consciência"> Alteração importante de consciência</label>
-          <label><input type="checkbox" name="alerta" value="suspeita de AVC"> Suspeita de AVC</label>
-          <label><input type="checkbox" name="alerta" value="sangramento ativo importante"> Sangramento ativo importante</label>
-          <label><input type="checkbox" name="alerta" value="cianose"> Cianose</label>
-          <label><input type="checkbox" name="alerta" value="reação alérgica grave"> Reação alérgica grave</label>
-          <label><input type="checkbox" name="alerta" value="risco imediato identificado pelo profissional"> Outro sinal crítico identificado</label>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="riscoManual">Classificação sugerida para revisão profissional</label>
-        <select id="riscoManual"><option value="amarelo">🟡 Amarelo — requer avaliação prioritária</option><option value="verde">🟢 Verde — menor prioridade</option><option value="vermelho">🔴 Vermelho — avaliação imediata</option></select>
-        <small id="avisoClassificacao">Ferramenta de registro e alerta, não é Protocolo de Manchester e não determina prioridade automaticamente. A classificação final é responsabilidade do profissional.</small>
-      </div>
-      <div class="form-group">
-        <label for="justificativa">Justificativa / revisão profissional</label>
-        <textarea id="justificativa" rows="2" placeholder="Registre os achados que fundamentam a classificação e eventuais ajustes"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Alergias Conhecidas</label>
-        <input id="alergia" placeholder="Ex: Dipirona, Penicilina, Nenhuma">
-      </div>
-
-      <div class="form-group">
-        <label>Observações / Sinais Vitais</label>
-        <textarea id="observacao" rows="3" placeholder="Pressão arterial, batimentos cardíacos, histórico..."></textarea>
-      </div>
-
-      <div id="resultado"></div>
-
-      <button class="btn-salvar" onclick="salvar()">Concluir Triagem e Enviar ao Médico</button>
-    </div>
-
-  </div>
-
+<p class="extracted-c803fdde">Clique em "Chamar na TV" para iniciar o atendimento do paciente.</p>
+<div class="emergencia-card">
+<strong>🚨 Paciente de Emergência</strong>
+<p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+<button onclick="selecionarPacienteEmergencia()" type="button">Selecionar Paciente de Emergência</button>
 </div>
-
+<div id="fila-pacientes">
+<p class="extracted-778528eb">Carregando...</p>
+</div>
+<button class="extracted-0d3c39d5" onclick="carregarPacientes()">🔄 Atualizar Fila</button>
+</div>
+<!-- Coluna Direita: Formulário do Enfermeiro -->
+<div aria-label="Ficha de atendimento" class="coluna-form">
+<h3 class="extracted-02dd0a00">Ficha de Avaliação da Triagem</h3>
+<div class="form-group">
+<label>Paciente Selecionado *</label>
+<input class="extracted-4fbc116c" id="nome" placeholder="Selecione um paciente na lista ao lado" readonly=""/>
+</div>
+<div class="form-group">
+<label>Sintoma / Queixa Principal *</label>
+<select id="sintoma">
+<option value="">Selecione o sintoma principal</option>
+<option value="dor_leve">Dor leve</option>
+<option value="resfriado">Resfriado</option>
+<option value="coriza">Coriza</option>
+<option value="tosse">Tosse</option>
+<option value="febre">Febre</option>
+<option value="vomito">Vômito</option>
+<option value="diarreia">Diarreia</option>
+<option value="falta_ar_moderada">Falta de ar moderada</option>
+<option value="falta_ar_grave">Falta de ar grave</option>
+<option value="infarto">Suspeita de infarto</option>
+<option value="avc">Suspeita de AVC</option>
+<option value="convulsao">Convulsão</option>
+<option value="hemorragia">Hemorragia</option>
+</select>
+</div>
+<div class="form-group">
+<label>Temperatura (°C) *</label>
+<input id="temp" placeholder="Ex: 36.5" step="0.1" type="number"/>
+</div>
+<div class="form-group grid-sinais">
+<div><label for="pressao">Pressão arterial (mmHg)</label><input id="pressao" placeholder="Ex.: 120/80"/></div>
+<div><label for="fc">Frequência cardíaca (bpm)</label><input id="fc" min="0" placeholder="Ex.: 82" type="number"/></div>
+<div><label for="fr">Frequência respiratória (irpm)</label><input id="fr" min="0" placeholder="Ex.: 18" type="number"/></div>
+<div><label for="spo2">Saturação SpO₂ (%)</label><input id="spo2" max="100" min="0" placeholder="Ex.: 98" type="number"/></div>
+<div><label for="consciencia">Nível de consciência</label><select id="consciencia"><option value="">Não informado</option><option value="alerta">Alerta</option><option value="confuso">Confuso / desorientado</option><option value="rebaixado">Rebaixado / não responsivo</option></select></div>
+<div><label for="dor">Intensidade da dor (0–10)</label><input id="dor" max="10" min="0" placeholder="0 a 10" type="number"/></div>
+<div><label for="glicemia">Glicemia (mg/dL), quando indicada</label><input id="glicemia" max="2000" min="0" placeholder="Não obrigatório" type="number"/></div>
+</div>
+<div class="form-group">
+<label>Sinais de alerta observados</label>
+<div class="alertas-grid">
+<label><input name="alerta" type="checkbox" value="dificuldade respiratória grave"/> Dificuldade respiratória grave</label>
+<label><input name="alerta" type="checkbox" value="dor no peito"/> Dor no peito</label>
+<label><input name="alerta" type="checkbox" value="convulsão"/> Convulsão</label>
+<label><input name="alerta" type="checkbox" value="sangramento intenso"/> Sangramento intenso</label>
+<label><input name="alerta" type="checkbox" value="alteração importante de consciência"/> Alteração importante de consciência</label>
+<label><input name="alerta" type="checkbox" value="suspeita de AVC"/> Suspeita de AVC</label>
+<label><input name="alerta" type="checkbox" value="sangramento ativo importante"/> Sangramento ativo importante</label>
+<label><input name="alerta" type="checkbox" value="cianose"/> Cianose</label>
+<label><input name="alerta" type="checkbox" value="reação alérgica grave"/> Reação alérgica grave</label>
+<label><input name="alerta" type="checkbox" value="risco imediato identificado pelo profissional"/> Outro sinal crítico identificado</label>
+</div>
+</div>
+<div class="form-group">
+<label for="riscoManual">Classificação sugerida para revisão profissional</label>
+<select id="riscoManual"><option value="amarelo">🟡 Amarelo — requer avaliação prioritária</option><option value="verde">🟢 Verde — menor prioridade</option><option value="vermelho">🔴 Vermelho — avaliação imediata</option></select>
+<small id="avisoClassificacao">Ferramenta de registro e alerta, não é Protocolo de Manchester e não determina prioridade automaticamente. A classificação final é responsabilidade do profissional.</small>
+</div>
+<div class="form-group">
+<label for="justificativa">Justificativa / revisão profissional</label>
+<textarea id="justificativa" placeholder="Registre os achados que fundamentam a classificação e eventuais ajustes" rows="2"></textarea>
+</div>
+<div class="form-group">
+<label>Alergias Conhecidas</label>
+<input id="alergia" placeholder="Ex: Dipirona, Penicilina, Nenhuma"/>
+</div>
+<div class="form-group">
+<label>Observações / Sinais Vitais</label>
+<textarea id="observacao" placeholder="Pressão arterial, batimentos cardíacos, histórico..." rows="3"></textarea>
+</div>
+<div id="resultado"></div>
+<button class="btn-salvar" onclick="salvar()">Concluir Triagem e Enviar ao Médico</button>
+</div>
+</div>
+</main>
 <script>
 let pacienteAtual = null;
 
@@ -265,8 +249,8 @@ carregarPacientes();
 // Atualiza a lista a cada 10 segundos
 setInterval(carregarPacientes, 10000);
 </script>
-
 <script src="/js/theme.js"></script>
 <script src="/js/session.js"></script>
+<script src="/js/layout.js"></script>
 </body>
 </html>

@@ -1,39 +1,41 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Farmácia | Sentinela Hospitalar</title>
-<link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="/css/farmacia.css">
-  <link rel="stylesheet" href="/design-overrides.css">
+<link href="/theme.css" rel="stylesheet"/>
+<link href="/css/farmacia.css" rel="stylesheet"/>
+<link href="/design-overrides.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/structural-layout.css">
 </head>
 <body>
-<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button" aria-label="Alternar tema">🌙</button>
-<main class="pharmacy">
+<button aria-label="Alternar tema" class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="pharmacy sentinela-content sector-content" id="conteudo-principal">
 <header class="pharmacy-header"><div><h1>💊 Farmácia</h1><p class="pharmacy-sub">Controle de estoque, validade e movimentações.</p></div></header>
 <section class="pharmacy-grid">
- <article class="pharmacy-stat"><small>Medicamentos cadastrados</small><strong id="totalMeds">—</strong></article>
- <article class="pharmacy-stat"><small>Itens com estoque baixo</small><strong id="lowCount">—</strong></article>
- <article class="pharmacy-stat"><small>Próximos do vencimento</small><strong id="expiryCount">—</strong></article>
+<article class="pharmacy-stat"><small>Medicamentos cadastrados</small><strong id="totalMeds">—</strong></article>
+<article class="pharmacy-stat"><small>Itens com estoque baixo</small><strong id="lowCount">—</strong></article>
+<article class="pharmacy-stat"><small>Próximos do vencimento</small><strong id="expiryCount">—</strong></article>
 </section>
-<section class="pharmacy-card">
- <h2>Estoque disponível</h2>
- <div class="pharmacy-tools"><input id="searchMed" placeholder="Pesquisar medicamento..." aria-label="Pesquisar medicamento"><select id="filterStock" aria-label="Filtrar estoque"><option value="todos">Todos os itens</option><option value="baixo">Estoque baixo</option><option value="validade">Próximos do vencimento</option><option value="vencido">Vencidos</option></select></div>
- <div class="pharmacy-table-wrap"><table><thead><tr><th>Medicamento</th><th>Quantidade</th><th>Mínimo</th><th>Validade</th><th>Situação</th></tr></thead><tbody id="estoque"><tr><td colspan="5">Carregando...</td></tr></tbody></table></div>
-</section>
-<section class="pharmacy-card">
- <h2>Registrar movimentação</h2>
- <div class="pharmacy-form">
-  <div><label for="med">Medicamento</label><select id="med"></select></div>
-  <div><label for="qtd">Quantidade</label><input id="qtd" type="number" min="1" step="1" value="1"></div>
-  <div><label for="paciente">Paciente (saída)</label><input id="paciente" placeholder="Opcional"></div>
-  <div><label for="validade">Validade do lote (entrada)</label><input id="validade" type="date"></div>
- </div>
- <p><button class="btn" onclick="mov('entrada')">＋ Registrar entrada</button> <button class="btn" onclick="mov('saida')">− Registrar saída</button></p>
- <small class="extracted-57f9e31d">A validade é informativa e deve ser conferida com a embalagem/lote físico. O sistema não substitui o controle farmacêutico.</small>
-</section>
-<section class="pharmacy-card"><h2>Histórico de movimentações</h2><div class="pharmacy-table-wrap"><table><thead><tr><th>Data</th><th>Tipo</th><th>Medicamento</th><th>Quantidade</th><th>Paciente</th><th>Usuário</th></tr></thead><tbody id="hist"></tbody></table></div></section>
-</main>
+
+
+
+<div class="pharmacy-workspace"><div class="pharmacy-primary"><section class="pharmacy-card">
+<h2>Estoque disponível</h2>
+<div class="pharmacy-tools"><input aria-label="Pesquisar medicamento" id="searchMed" placeholder="Pesquisar medicamento..."/><select aria-label="Filtrar estoque" id="filterStock"><option value="todos">Todos os itens</option><option value="baixo">Estoque baixo</option><option value="validade">Próximos do vencimento</option><option value="vencido">Vencidos</option></select></div>
+<div class="pharmacy-table-wrap"><table><thead><tr><th>Medicamento</th><th>Quantidade</th><th>Mínimo</th><th>Validade</th><th>Situação</th></tr></thead><tbody id="estoque"><tr><td colspan="5">Carregando...</td></tr></tbody></table></div>
+</section></div><aside class="pharmacy-secondary"><section class="pharmacy-card">
+<h2>Registrar movimentação</h2>
+<div class="pharmacy-form">
+<div><label for="med">Medicamento</label><select id="med"></select></div>
+<div><label for="qtd">Quantidade</label><input id="qtd" min="1" step="1" type="number" value="1"/></div>
+<div><label for="paciente">Paciente (saída)</label><input id="paciente" placeholder="Opcional"/></div>
+<div><label for="validade">Validade do lote (entrada)</label><input id="validade" type="date"/></div>
+</div>
+<p><button class="btn" onclick="mov('entrada')">＋ Registrar entrada</button> <button class="btn" onclick="mov('saida')">− Registrar saída</button></p>
+<small class="extracted-57f9e31d">A validade é informativa e deve ser conferida com a embalagem/lote físico. O sistema não substitui o controle farmacêutico.</small>
+</section></aside></div><section class="pharmacy-card"><h2>Histórico de movimentações</h2><div class="pharmacy-table-wrap"><table><thead><tr><th>Data</th><th>Tipo</th><th>Medicamento</th><th>Quantidade</th><th>Paciente</th><th>Usuário</th></tr></thead><tbody id="hist"></tbody></table></div></section></main>
 <script>
 let meds=[];
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -76,4 +78,5 @@ document.getElementById("filterStock").addEventListener("change",renderEstoque);
 carregar();setInterval(carregar,15000);
 </script>
 <script src="/js/session.js"></script><script src="/js/theme.js"></script>
+<script src="/js/layout.js"></script>
 </body></html>
