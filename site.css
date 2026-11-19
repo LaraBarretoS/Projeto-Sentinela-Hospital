@@ -1,0 +1,369 @@
+/* design-overrides.css */
+/* SENTINELA — Clinical Intelligence UI layer */
+body{background:var(--bg)!important;color:var(--text)!important}h1,h2,h3,h4{color:var(--heading)!important}.container,.wrap,.pharmacy{background:transparent!important;color:var(--text)!important}.container{max-width:1320px}.wrap{max-width:1440px;padding:28px 30px}
+.card,.section.card,.pharmacy-card,.coluna-fila,.coluna-form,.consultorio-box,.pharmacy-stat,.sentinela-topbar{background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:var(--radius-card)!important;box-shadow:var(--shadow-soft)!important}
+.admin-heading{padding:10px 2px 20px;border-bottom:1px solid var(--border)}.admin-heading h1,.container>h2,.pharmacy-header h1{font-size:clamp(1.45rem,2.5vw,2rem);font-weight:750;letter-spacing:-.04em}.admin-heading p,.pharmacy-sub{color:var(--muted)}.tabs{padding:6px;background:var(--surface-3);border:1px solid var(--border);border-radius:14px}.tab{background:transparent!important;color:var(--muted)!important;border:1px solid transparent!important;border-radius:10px!important}.tab.active{background:var(--surface)!important;color:var(--petrol)!important;border-color:var(--border)!important;box-shadow:var(--shadow-soft)}
+button,.btn,.btn-salvar,.btn-adicionar-sintoma{border-radius:10px!important}button:not(.theme-toggle):not(.tab):not(.bell-button){background-color:var(--primary);color:#fff;border:1px solid transparent}button:not(.theme-toggle):not(.tab):not(.bell-button):hover{background-color:var(--primary-hover);filter:none;transform:translateY(-1px)}button.secondary,.btn.secondary{background:var(--surface-3)!important;color:var(--text)!important;border-color:var(--border)!important}
+input:not([type=checkbox]):not([type=radio]),select,textarea{padding:11px 13px!important;border-radius:10px!important;background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important;min-height:42px}textarea{min-height:100px}label,.field{color:var(--text)}.field input,.field select{width:100%}
+table{border-collapse:separate!important;border-spacing:0;width:100%}th{background:var(--surface-3)!important;color:var(--heading)!important;font-weight:700}th,td{padding:12px 14px!important;border-bottom:1px solid var(--border)!important}tr:last-child td{border-bottom:0!important}.table,.pharmacy-table-wrap{border:1px solid var(--border);border-radius:12px;overflow:auto}.status,.role-pill,.badge-risco{border-radius:999px!important}.notice,.fila-item,.card-paciente,.sintoma-item{background:var(--surface-2)!important;border:1px solid var(--border)!important;border-radius:12px!important;color:var(--text)!important}.card-paciente.selecionado,.fila-item.selecionado{border-color:var(--teal)!important;box-shadow:0 0 0 2px rgba(41,157,145,.12)}.emergencia-card{border-radius:12px!important}.modal{background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)}.modal-backdrop{backdrop-filter:blur(5px)}
+#mensagem-erro,.erro,.error{color:var(--danger)}#mensagem-erro{display:none;margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+body:has(#usuario){background:radial-gradient(ellipse at 15% 10%,rgba(41,157,145,.12),transparent 38%),var(--bg)!important}body:has(#usuario) .container{max-width:430px;padding:42px;background:var(--surface)!important;border:1px solid var(--border);box-shadow:var(--shadow)!important;border-radius:22px!important}body:has(#usuario) h2{justify-content:center;margin-bottom:28px;font-size:1.55rem}body:has(#usuario) input{margin:7px 0}body:has(#usuario) .container button{width:100%;margin-top:14px;padding:13px}
+body:has(#btnCadastrar) .container{max-width:680px;padding:34px;background:var(--surface)!important;border:1px solid var(--border);box-shadow:var(--shadow)!important;border-radius:20px!important}body:has(#btnCadastrar) h2{text-align:left;margin:0 0 24px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}#btnPacienteEmergencia{background:#9D4B50!important}#mensagem-status{border-radius:10px;padding:10px;margin-top:12px}
+.medico-grid,.triagem-grid{gap:20px!important;align-items:start}.coluna-fila,.coluna-form{box-shadow:var(--shadow-soft)!important}.coluna-fila{position:sticky;top:18px}.coluna-form{min-width:0}.consultorio-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.consultorio-box input{max-width:110px}.card-paciente{border-left:3px solid var(--petrol)!important}.botoes-card,.botoes-acao{flex-wrap:wrap}.botoes-card button,.botoes-acao button{flex:1 1 150px}.btn-pdf{background:#6D5AA8!important}.btn-atender,.btn-salvar{background:var(--teal)!important}.alerta-alergia{border-radius:12px!important}#historicoPaciente{background:var(--surface-2)!important;border:1px solid var(--border);border-radius:12px;padding:14px}
+.pharmacy{max-width:1440px!important;padding:28px!important}.pharmacy-grid{gap:14px!important}.pharmacy-stat{padding:20px!important}.pharmacy-stat strong{color:var(--petrol)!important;font-size:1.8rem}.pharmacy-card{padding:22px!important;margin-top:18px!important}.pharmacy-card h2{margin-top:0}.pharmacy-tools{gap:10px}.pharmacy-form{gap:14px}.pharmacy-table-wrap{border:1px solid var(--border);border-radius:12px}.status.ok{background:rgba(41,157,145,.13);color:var(--teal)}.status.low{background:rgba(217,155,66,.16);color:var(--warning)}.status.expired{background:rgba(185,74,82,.14);color:var(--danger)}
+body:has(#listaMedicacoes) .container{max-width:900px;margin:40px auto;padding:28px;background:var(--surface)!important;border:1px solid var(--border);box-shadow:var(--shadow-soft)}#listaMedicacoes .card{margin:12px 0;padding:18px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2)!important}
+body:has(.tv-container){background:#101923!important;color:#E7F0F4!important}.tv-container{max-width:1800px}.tv-container .box{background:#1C3041!important;border:1px solid #34768A!important;border-radius:22px!important;box-shadow:0 16px 36px #0004}.tv-container .box-title{color:#9AAEBB!important;letter-spacing:.12em}.tv-container .local-number,.tv-container .patient-name{color:#E7F0F4!important}.tv-container .logo-box{background:#142536!important}#conteudoMultimidia{background:#101923!important;color:#E7F0F4!important}#conteudoMultimidia h1,#conteudoMultimidia p{color:#E7F0F4!important}
+@media(max-width:900px){.coluna-fila{position:static;max-height:none}.wrap{padding:18px}.pharmacy{padding:16px!important}}@media(max-width:600px){.form-row{grid-template-columns:1fr}.wrap{padding:12px}.pharmacy-card{padding:15px!important}.pharmacy{padding:10px!important}.botoes-acao{flex-direction:column}.botoes-acao button{width:100%}}
+
+
+/* structural-layout.css */
+/* Sentinela v2 — structural layout; existing Clinical Intelligence tokens preserved */
+body.sentinela-app{min-height:100vh;padding-top:0!important;background:var(--bg)!important}
+.sentinela-shell{min-height:100vh;display:grid;grid-template-columns:76px minmax(0,1fr);grid-template-rows:auto 1fr}
+.sentinela-rail{grid-column:1;grid-row:1 / 3;position:sticky;top:0;height:100vh;background:var(--navy);color:#E7F0F4;display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 10px;z-index:40}
+.sentinela-brand{display:grid;place-items:center;width:48px;height:48px;border:1px solid #ffffff35;border-radius:16px;background:#ffffff13;color:white;font-size:24px;text-decoration:none}
+.sentinela-rail-button{border:0;background:transparent;color:#d4e8ef;width:48px;height:46px;border-radius:12px;font-size:20px;display:grid;place-items:center;text-decoration:none}
+.sentinela-rail-button:hover,.sentinela-rail-button.is-active{background:#ffffff1d;color:#fff;box-shadow:inset 3px 0 0 var(--teal)}
+.sentinela-rail-spacer{flex:1}.sentinela-sidebar{position:fixed;z-index:45;top:0;bottom:0;left:76px;width:248px;background:var(--surface);border-right:1px solid var(--border);box-shadow:var(--shadow);padding:22px 14px;transform:translateX(calc(-100% - 76px));transition:transform .2s ease;overflow:auto}
+.sentinela-shell.sidebar-open .sentinela-sidebar{transform:translateX(0)}.sentinela-sidebar h2{font-size:17px;margin:0 0 6px}.sentinela-sidebar p{font-size:12px;color:var(--muted);margin:0 0 22px}.sentinela-nav-link{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;padding:12px;border-radius:11px;font-size:14px;font-weight:600;margin:4px 0}.sentinela-nav-link:hover,.sentinela-nav-link.is-active{background:var(--surface-3);color:var(--petrol)}
+.sentinela-workspace{grid-column:2;grid-row:1 / 3;min-width:0;display:flex;flex-direction:column}.sentinela-header{min-height:88px;padding:16px clamp(18px,3vw,42px);display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--border);background:var(--surface)}
+.sentinela-header-title .eyebrow{display:block;margin-bottom:3px}.sentinela-header-title h1{font-size:20px;margin:0}.sentinela-header-title p{margin:2px 0 0;color:var(--muted);font-size:13px}.sentinela-header-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.sentinela-header .sentinela-topbar{position:static!important;top:auto!important;left:auto!important;right:auto!important;display:flex!important;margin:0!important;padding:0!important;max-width:none!important;width:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;gap:10px!important;z-index:auto!important}
+.sentinela-header .sentinela-user{color:var(--muted)}.sentinela-header .sentinela-btn{background:var(--surface-3)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:10px!important}.sentinela-header .sentinela-btn.primary{background:var(--petrol)!important;color:white!important}
+.sentinela-header .theme-toggle{position:static!important;inset:auto!important;flex:none;box-shadow:none}.sentinela-shell .sentinela-content{width:100%;max-width:1560px!important;margin:0 auto!important;padding:clamp(16px,2.5vw,36px)!important;min-width:0;flex:1}
+.sentinela-shell .sentinela-content.container{background:transparent!important;box-shadow:none!important;border:0!important;border-radius:0!important}
+.sentinela-shell .sentinela-content.wrap{background:transparent!important}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--teal);text-transform:uppercase}.section-intro,.sector-intro{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 0 22px}.section-intro h2,.sector-intro h2{font-size:clamp(22px,2vw,28px);margin:4px 0}.section-intro p,.sector-intro p{color:var(--muted);font-size:14px;margin:0}
+.admin-metrics{margin-bottom:22px}.admin-metrics .grid{grid-template-columns:repeat(auto-fit,minmax(185px,1fr))!important;gap:14px!important}.admin-columns{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,1fr);gap:20px;align-items:start}.admin-columns .section{margin-top:0}.admin-columns .card{height:auto;min-width:0}.admin-primary,.admin-secondary{min-width:0;display:grid;gap:18px}.admin-quick-link{display:inline-flex;padding:10px 14px;border-radius:10px;background:var(--surface-3);color:var(--petrol);text-decoration:none;font-weight:700}.admin-quick-link:hover{outline:1px solid var(--teal)}
+.reception-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(290px,.8fr);gap:20px;align-items:start}.sector-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);box-shadow:var(--shadow-soft);padding:clamp(16px,2vw,28px);min-width:0}.section-label{margin-bottom:18px}.section-label h3{font-size:16px;margin:0 0 5px}.section-label p{font-size:13px;color:var(--muted);margin:0}.reception-layout .form-row{grid-template-columns:repeat(2,minmax(0,1fr))}.reception-layout input,.reception-layout select{width:100%}.patient-routing #btnCadastrar,.patient-routing #btnPacienteEmergencia{display:block;width:100%;margin:12px 0}
+.sentinela-shell .triagem-grid,.sentinela-shell .medico-grid{grid-template-columns:minmax(280px,.75fr) minmax(0,1.55fr)!important;gap:20px!important}.sentinela-shell .coluna-fila{position:sticky;top:20px;max-height:calc(100vh - 130px);overflow-y:auto}.sentinela-shell .coluna-form{min-width:0}
+.pharmacy-workspace{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.9fr);gap:20px;align-items:start}.pharmacy-workspace .pharmacy-card{margin-top:0!important}.pharmacy-secondary{min-width:0}.pharmacy-primary{min-width:0}.sentinela-shell .pharmacy-card{min-width:0}.sentinela-shell .pharmacy-table-wrap{overflow:auto}.sentinela-shell .pharmacy-header{margin-bottom:20px}
+.sentinela-shell .panel{min-width:0}.sentinela-shell .tabs{margin:0 0 26px}.sentinela-shell .table{width:100%}.sentinela-shell .extracted-a632715a{max-width:100%;overflow-x:auto}
+@media(max-width:1100px){.admin-columns,.pharmacy-workspace{grid-template-columns:1fr}.sentinela-header{align-items:flex-start;flex-direction:column}.sentinela-header-actions{width:100%;justify-content:flex-start}.sentinela-shell .triagem-grid,.sentinela-shell .medico-grid{grid-template-columns:minmax(240px,.8fr) minmax(0,1.2fr)!important}}
+@media(max-width:760px){.sentinela-shell{grid-template-columns:56px minmax(0,1fr)}.sentinela-rail{padding:12px 4px}.sentinela-rail-button,.sentinela-brand{width:44px}.sentinela-sidebar{left:56px;width:min(280px,calc(100vw - 56px))}.sentinela-header{padding:14px}.sentinela-header .sentinela-topbar{flex-wrap:wrap!important}.sentinela-header .sentinela-left,.sentinela-header .sentinela-actions{max-width:100%!important}.sentinela-shell .triagem-grid,.sentinela-shell .medico-grid,.reception-layout{grid-template-columns:1fr!important}.sentinela-shell .coluna-fila{position:static;max-height:none}.section-intro,.sector-intro{flex-wrap:wrap}.reception-layout .form-row{grid-template-columns:1fr}}
+@media(max-width:440px){.sentinela-header .sentinela-btn{font-size:12px;padding:8px!important}.sentinela-header .sentinela-user{font-size:12px}.sentinela-shell .sentinela-content{padding:12px!important}.sentinela-rail-button{font-size:17px}.sentinela-header-title h1{font-size:18px}}
+
+
+/* reference-layout.css */
+/* Sentinela — Reference UI v3. Applied only to sector pages; ADM and TV unchanged. */
+body.sentinela-app:has(.reference-v3){background:var(--bg)!important}
+.sentinela-shell:has(.reference-v3){grid-template-columns:76px minmax(0,1fr)}
+.sentinela-shell:has(.reference-v3) .sentinela-rail{background:linear-gradient(180deg,#102B41,#173B53);padding:18px 8px;gap:12px}
+.sentinela-shell:has(.reference-v3) .sentinela-rail-button{border-radius:12px}
+.sentinela-shell:has(.reference-v3) .sentinela-rail-button.is-active{outline:2px solid #61D7B2;outline-offset:0;box-shadow:none}
+.sentinela-shell:has(.reference-v3) .sentinela-header{background:var(--surface);padding:17px clamp(22px,3vw,46px);min-height:96px;gap:18px}
+.sentinela-shell:has(.reference-v3) .sentinela-header-title{padding-left:60px;position:relative;min-width:220px}
+.sentinela-shell:has(.reference-v3) .sentinela-header-title:before{content:'✚';position:absolute;left:0;top:8px;width:43px;height:43px;display:grid;place-items:center;color:#32AA70;font-size:37px;line-height:1}
+.sentinela-shell:has(.reference-v3) .sentinela-header-title .eyebrow{color:var(--heading);font-size:12px;letter-spacing:.12em}
+.sentinela-shell:has(.reference-v3) .sentinela-header-title h1{font-size:23px;line-height:1.12;color:var(--heading)}
+.sentinela-shell:has(.reference-v3) .sentinela-header-title p{font-size:14px;margin-top:4px}
+.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-user{display:none!important}
+.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-topbar{display:contents!important}
+.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-left,.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-actions{display:flex;gap:10px;align-items:center;max-width:none!important;flex-wrap:wrap}
+.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-btn{width:auto!important;min-width:135px;padding:11px 16px!important;min-height:44px!important;font-size:13px!important;border:1px solid var(--border)!important;border-radius:12px!important;background:var(--surface-2)!important;color:var(--heading)!important;box-shadow:var(--shadow-soft)!important;margin:0!important}
+.sentinela-shell:has(.reference-v3) .sentinela-header #btnMinhaSenha{background:color-mix(in srgb,var(--success) 7%,var(--surface))!important}
+.sentinela-shell:has(.reference-v3) .sentinela-header #btnPontoManual{background:var(--petrol)!important;color:#fff!important;min-width:150px}
+.sentinela-shell:has(.reference-v3) .sentinela-header .theme-toggle{width:44px!important;height:44px!important;border-radius:12px!important;flex:none;order:4}
+.sentinela-shell .reference-v3{max-width:none!important;padding:20px clamp(20px,3vw,52px) 44px!important}
+.reference-v3 .ref-hero{position:relative;margin:0 0 18px;overflow:hidden;min-height:170px}
+.reference-v3 .ref-breadcrumb{display:flex;gap:13px;align-items:center;font-size:13px;color:var(--success);font-weight:600;min-height:30px;margin-bottom:18px}
+.reference-v3 .ref-breadcrumb a{font-size:22px;color:var(--success);text-decoration:none;line-height:1}
+.reference-v3 .ref-hero-main{display:flex;align-items:center;gap:23px;min-height:98px;padding:0 320px 8px 18px}
+.reference-v3 .ref-hero-emblem{width:72px;height:72px;border-radius:18px;background:color-mix(in srgb,var(--teal) 12%,var(--surface));display:grid;place-items:center;color:var(--success);font-size:37px;flex:0 0 72px}
+.reference-v3 .ref-hero-copy{border-left:2px solid var(--border);padding-left:26px;min-width:0}
+.reference-v3 .ref-hero-copy h2{font-size:clamp(24px,2.4vw,35px);font-weight:780;text-align:left;margin:0 0 8px;color:var(--heading)}
+.reference-v3 .ref-hero-copy p{font-size:clamp(13px,1.1vw,16px);margin:0;color:var(--muted);line-height:1.5}
+.reference-v3 .ref-hero-art{position:absolute;right:0;bottom:-4px;width:min(310px,31%);opacity:.9;pointer-events:none}
+.reference-v3 .ref-hero-art svg{width:100%;display:block;height:auto}
+.reference-v3 .ref-card{background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:20px!important;box-shadow:var(--shadow)!important;padding:clamp(20px,2.3vw,32px)!important;color:var(--text)!important;min-width:0}
+.reference-v3 .ref-section-heading{font-size:15px!important;letter-spacing:.055em!important;text-transform:uppercase;font-weight:800!important;color:var(--success)!important;text-align:left!important;margin:0 0 22px!important;line-height:1.3!important}
+.reference-v3 .ref-section-heading:before{content:'';display:inline-block;height:18px;width:4px;background:#39B975;border-radius:3px;vertical-align:-3px;margin-right:10px}
+.reference-v3 label{font-size:13px;font-weight:700;color:var(--heading);margin-bottom:6px;display:block}
+.reference-v3 input:not([type=checkbox]):not([type=radio]),.reference-v3 select,.reference-v3 textarea{min-height:42px;width:100%;padding:10px 15px;border-radius:10px!important;background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)!important;font-size:14px;box-shadow:0 1px 2px rgba(23,50,77,.04)}
+.reference-v3 input:focus,.reference-v3 select:focus,.reference-v3 textarea:focus{outline:0;box-shadow:var(--focus-ring)!important;border-color:var(--teal)!important}
+.reference-v3 .ref-form-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.reference-v3 .ref-form-grid .form-group{margin:0!important}
+.reference-v3 .ref-form-grid .ref-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.reference-v3 .ref-form-grid .ref-field{min-width:0}
+.reference-v3 .ref-form-grid .ref-full{min-width:0}
+.reference-v3 .ref-registration .menor-container{margin:0!important}
+.reference-v3 .ref-action-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:28px}
+.reference-v3 .ref-action-row button{margin:0!important;width:100%;min-height:55px;border-radius:11px;font-weight:750;font-size:16px;color:#fff;border:0}
+.reference-v3 .ref-primary-action{background:linear-gradient(120deg,#22786F,#126457)!important}
+.reference-v3 .ref-danger-action{background:linear-gradient(120deg,#AF4C53,#A13A43)!important}
+.reference-v3 #mensagem-status{margin-top:14px}
+.reference-v3 .ref-sector-controls{display:flex;justify-content:flex-end;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px}
+.reference-v3 .ref-subtle-action{width:auto!important;min-height:43px!important;padding:10px 16px!important;margin:0!important;border-radius:10px!important;background:var(--petrol)!important;color:#fff!important;font-size:14px!important}
+.reference-v3 .ref-clinical-grid{display:grid!important;grid-template-columns:minmax(245px,.82fr) minmax(0,1.55fr)!important;gap:20px!important;align-items:start}
+.reference-v3 .coluna-fila{position:static!important;max-height:none!important;overflow:visible!important}
+.reference-v3 .coluna-form{min-width:0}
+.reference-v3 .fila-item{border:1px solid var(--border)!important;border-radius:12px!important;background:var(--surface-2)!important;gap:10px}
+.reference-v3 .coluna-fila button{max-width:100%}
+.reference-v3 .coluna-form .form-group{margin-bottom:18px}
+.reference-v3 .coluna-form .alertas-grid{background:var(--surface-2);border-color:var(--border)}
+.reference-v3 .coluna-form .alertas-grid label{font-size:12px;font-weight:500;display:flex}
+.reference-v3 .coluna-form .alertas-grid input{width:auto}
+.reference-v3 .consultorio-box{width:auto!important;display:flex;align-items:center;gap:12px;padding:10px 14px!important;margin:0!important;border:1px solid var(--border);border-radius:12px;background:var(--surface)!important}
+.reference-v3 .consultorio-box input{width:75px!important}
+.reference-v3 .consultorio-box label{margin:0}
+.reference-v3 .consultorio-box span{font-size:11px;color:var(--muted)}
+.reference-v3 .ref-kpi-row{margin:0 0 20px}
+.reference-v3 .pharmacy-card{margin-bottom:20px}
+.reference-v3 .pharmacy-workspace{grid-template-columns:minmax(0,1.55fr) minmax(320px,.9fr)}
+.reference-v3 .pharmacy-stat{border-radius:15px!important;border:1px solid var(--border)!important;box-shadow:var(--shadow-soft)}
+.reference-v3 .pharmacy-tools{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.reference-v3 .pharmacy-table-wrap{overflow-x:auto;max-width:100%}
+.reference-v3 .pharmacy-table-wrap table{min-width:600px}
+.reference-v3 .pharmacy-form{display:grid;grid-template-columns:1fr!important;gap:12px!important}
+.reference-v3 .pharmacy-card .btn{width:auto!important;min-height:42px!important;margin:4px 0!important}
+.reference-v3 .ref-medicines #listaMedicacoes{display:grid;gap:12px}
+.reference-v3 .ref-medicines #listaMedicacoes .card{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px}
+body.dark-mode .reference-v3 .ref-hero-art{opacity:.55}
+@media(max-width:1250px){.sentinela-shell:has(.reference-v3) .sentinela-header{align-items:flex-start;flex-direction:column}.sentinela-shell:has(.reference-v3) .sentinela-header-actions{width:100%;justify-content:flex-start}.reference-v3 .pharmacy-workspace{grid-template-columns:1fr}.reference-v3 .ref-hero-main{padding-right:230px}.reference-v3 .ref-hero-art{width:230px}}
+@media(max-width:850px){.reference-v3 .ref-clinical-grid{grid-template-columns:1fr!important}.reference-v3 .ref-hero-main{padding-right:0}.reference-v3 .ref-hero-art{opacity:.12;width:280px}.reference-v3 .consultorio-box{flex-wrap:wrap}}
+@media(max-width:760px){.sentinela-shell:has(.reference-v3){grid-template-columns:56px minmax(0,1fr)}.sentinela-shell .reference-v3{padding:16px!important}.reference-v3 .ref-hero-main{gap:12px;padding-left:0}.reference-v3 .ref-hero-emblem{width:52px;height:52px;flex-basis:52px;font-size:25px}.reference-v3 .ref-hero-copy{padding-left:14px}.reference-v3 .ref-hero-copy h2{font-size:23px}.reference-v3 .ref-action-row{grid-template-columns:1fr;gap:12px}.reference-v3 .ref-form-grid .ref-pair{grid-template-columns:1fr;gap:14px}.reference-v3 .ref-card{padding:18px!important}.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-btn{min-width:0!important;flex:1 1 auto}.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-topbar{display:flex!important;width:100%!important}.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-left,.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-actions{max-width:100%!important;flex:1 1 100%}}
+@media(max-width:480px){.reference-v3 .ref-hero-art{display:none}.reference-v3 .ref-hero-copy h2{font-size:20px}.reference-v3 .ref-hero-copy p{font-size:12px}.reference-v3 .ref-hero{min-height:140px}.reference-v3 .ref-section-heading{font-size:13px!important}}
+
+
+/* design-final-v4.css */
+/* Sentinela v4 — layout drawn from user-supplied UI references. No business-logic changes. */
+body.sentinela-app:has(.design-v4){background:var(--bg)!important}
+.sentinela-shell:has(.design-v4){grid-template-columns:70px minmax(0,1fr)}
+.sentinela-shell:has(.design-v4) .sentinela-rail{background:linear-gradient(180deg,#102b40 0%,#123e55 100%);padding:17px 7px;gap:12px}
+.sentinela-shell:has(.design-v4) .sentinela-brand,.sentinela-shell:has(.design-v4) .sentinela-rail-button{border-radius:14px;background:#ffffff0d;border:1px solid #ffffff12;color:#ecf9ff}
+.sentinela-shell:has(.design-v4) .sentinela-rail-button.is-active{outline:2px solid #48dba3;background:#ffffff25;box-shadow:none}
+.sentinela-shell:has(.design-v4) .sentinela-sidebar{left:70px}
+.sentinela-shell:has(.design-v4) .sentinela-header{min-height:93px;padding:13px clamp(22px,3vw,46px);background:var(--surface);box-shadow:0 2px 13px #102b4012}
+.sentinela-shell:has(.design-v4) .sentinela-header-title{position:relative;padding-left:58px}
+.sentinela-shell:has(.design-v4) .sentinela-header-title:before{content:'✚';position:absolute;left:0;top:8px;font-size:38px;line-height:1;color:#25af72;font-weight:800}
+.sentinela-shell:has(.design-v4) .sentinela-header-title .eyebrow{font-size:12px;letter-spacing:.04em;color:var(--heading)}
+.sentinela-shell:has(.design-v4) .sentinela-header-title h1{font-size:clamp(21px,1.6vw,28px);line-height:1.13;font-weight:800;color:var(--heading)}
+.sentinela-shell:has(.design-v4) .sentinela-header-title p{font-size:13px;color:var(--muted)}
+.sentinela-shell:has(.design-v4) .sentinela-header-actions .sentinela-user{display:none!important}
+.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-topbar{display:contents!important}
+.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-left,.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-btn{width:auto!important;min-width:144px!important;min-height:43px;border:1px solid var(--border)!important;border-radius:11px!important;color:var(--heading)!important;background:var(--surface-2)!important;box-shadow:0 3px 9px #102b4010!important;font-size:13px!important;margin:0!important}
+.sentinela-shell:has(.design-v4) .sentinela-header #btnPontoManual{background:#075e62!important;color:#fff!important}
+.sentinela-shell:has(.design-v4) .sentinela-header .theme-toggle{position:static!important;margin:0!important;width:45px!important;height:45px!important;border:1px solid var(--border)!important;border-radius:13px!important;box-shadow:0 3px 9px #102b4011!important}
+.sentinela-shell .sentinela-content.design-v4{max-width:none!important;padding:18px clamp(20px,2.2vw,44px) 50px!important}
+.design-v4 .ref-hero{min-height:155px;margin:0 0 16px}
+.design-v4 .ref-breadcrumb{margin:0 0 12px}
+.design-v4 .ref-hero-main{min-height:116px;padding-right:min(35%,500px)}
+.design-v4 .ref-hero-emblem{background:linear-gradient(140deg,#d5f7ea,#e5f7f9);color:#007b60}
+.design-v4 .ref-hero-copy{border-left:2px solid #0c9075;padding-left:19px}
+.design-v4 .ref-hero-copy h2{font-size:clamp(23px,2.3vw,35px);letter-spacing:-.025em}
+.design-v4 .ref-hero-art{width:min(535px,38%);height:auto;bottom:-3px;right:0;opacity:1}
+.design-v4 .ref-hero-art img{width:100%;height:auto;display:block;object-fit:contain;object-position:bottom right}
+.design-v4 .ref-card,.design-v4 .v4-admin-card{border:1px solid var(--border)!important;border-radius:19px!important;background:var(--surface)!important;box-shadow:0 6px 19px #1332480d!important}
+.design-v4 .ref-section-heading{font-size:19px!important;letter-spacing:-.015em!important;text-transform:none;color:var(--heading)!important;margin-bottom:4px!important}
+.design-v4 .ref-section-heading:before{content:none!important}
+.design-v4 .ref-section-heading::first-letter{color:#078d68}
+.design-v4 .v4-card-subtitle{margin:0 0 21px;color:var(--muted);font-size:12.5px;line-height:1.5}
+.design-v4 .ref-sector-controls{margin:0 0 14px}
+.design-v4 .ref-clinical-grid{grid-template-columns:minmax(270px,.73fr) minmax(0,1.83fr)!important;gap:16px!important}
+.design-v4 .ref-clinical-grid>.ref-card{padding:22px!important}
+.design-v4 label{font-size:12.5px;font-weight:700;color:var(--heading)}
+.design-v4 input:not([type=checkbox]):not([type=radio]),.design-v4 textarea,.design-v4 select{min-height:39px;padding:9px 13px;border-radius:9px!important}
+.design-v4 .coluna-fila{max-height:none!important;overflow:visible!important;position:static!important}
+.design-v4 .coluna-fila .emergencia-card{border-radius:12px;background:color-mix(in srgb,#fbe0e0 58%,var(--surface))!important;padding:16px!important;margin:13px 0 17px!important}
+.design-v4 .coluna-fila .emergencia-card button{background:#cf424b!important;color:white!important;border:0;border-radius:9px;padding:10px 12px}
+.design-v4 .coluna-fila #fila-pacientes,.design-v4 .coluna-fila #triagens{display:grid;gap:9px}
+.design-v4 .coluna-fila .fila-item{padding:11px;border:1px solid var(--border)!important;border-radius:11px!important;margin:0!important;background:var(--surface-2)!important}
+.design-v4 .coluna-fila>button:last-child{width:100%;background:#036565!important;color:#fff!important;border-radius:10px!important;min-height:44px}
+.design-v4 .btn-salvar{border-radius:9px!important;background:linear-gradient(120deg,#08656c,#00776f)!important;color:#fff!important;min-height:45px!important}
+/* Admin: match tab rail, landscape illustration and eight operational indicators */
+.sentinela-header .v4-header-notification{position:static;z-index:2;background:var(--surface)!important;min-width:49px;height:47px;order:3}
+.sentinela-shell:has(.design-v4) .sentinela-header-actions{padding-right:0}
+.design-v4 .tabs{margin:0 0 8px!important;display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:15px;background:var(--surface-2);padding:7px;overflow-x:auto;flex-wrap:nowrap}
+.design-v4 .tab{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:11px;background:transparent!important;color:var(--muted)!important;font-size:14px;font-weight:650;padding:11px 16px}
+.design-v4 .tab.active{color:#076345!important;background:linear-gradient(160deg,#e6faf0,#caf9e2)!important;border-color:transparent!important}
+.design-v4 .v4-tab-icon{font-weight:900;font-size:19px}
+.design-v4 .v4-admin-hero{position:relative;display:flex;align-items:center;justify-content:space-between;min-height:165px;margin:0 0 15px;overflow:hidden;padding:28px 26px 17px;background:linear-gradient(110deg,transparent 20%,color-mix(in srgb,#e4faf0 32%,transparent) 100%)}
+.design-v4 .v4-admin-hero .v4-admin-copy{position:relative;z-index:1;max-width:63%}
+.design-v4 .v4-admin-hero h2{font-size:clamp(25px,2.6vw,34px);font-weight:800;color:var(--heading);letter-spacing:-.025em;margin:7px 0 5px}
+.design-v4 .v4-admin-hero p{font-size:14px;color:var(--muted);margin:0}
+.design-v4 .v4-admin-hero img{width:min(520px,38%);object-fit:contain;position:absolute;right:0;bottom:0;pointer-events:none}
+.design-v4 .admin-metrics .grid{grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:11px!important}
+.design-v4 .admin-metrics .card{border-radius:17px!important;padding:16px 12px!important;min-width:0;border:1px solid var(--border);box-shadow:0 5px 16px #123b5010;background:var(--surface);text-align:center;min-height:103px}
+.design-v4 .admin-metrics .card b{display:block;font-size:12.5px;color:var(--heading);white-space:normal;line-height:1.25}
+.design-v4 .admin-metrics .card b:before{content:'◉';display:grid;place-items:center;margin:0 auto 8px;width:32px;height:32px;border-radius:10px;font-size:19px;color:#00975d;background:#e6f8ee}
+.design-v4 .admin-metrics .card:nth-child(2) b:before{content:'▤'}
+.design-v4 .admin-metrics .card:nth-child(3) b:before{content:'⚕'}
+.design-v4 .admin-metrics .card:nth-child(4) b:before{content:'●';color:#23b478}
+.design-v4 .admin-metrics .card:nth-child(5) b:before{content:'●';color:#ecae25;background:#fff7e4}
+.design-v4 .admin-metrics .card:nth-child(6) b:before{content:'●';color:#d34c5e;background:#fff0f0}
+.design-v4 .admin-metrics .card:nth-child(7) b:before{content:'♙'}
+.design-v4 .admin-metrics .card:nth-child(8) b:before{content:'⬡'}
+.design-v4 .admin-metrics .num{font-size:29px;color:var(--heading);margin-top:5px;line-height:1.1}
+.design-v4 .admin-columns{grid-template-columns:minmax(0,1.35fr) minmax(350px,1fr);gap:18px}
+.design-v4 .admin-columns .card{margin:0;border-radius:18px!important;border:1px solid var(--border);box-shadow:0 7px 20px #123b5011!important}
+.design-v4 .admin-primary .card,.design-v4 .admin-secondary .card{padding:22px!important}
+.design-v4 .admin-columns h2{font-size:22px;color:var(--heading);margin:0 0 17px}
+.design-v4 .admin-columns .table{border:1px solid var(--border);border-radius:10px;border-collapse:separate;border-spacing:0;overflow:hidden}
+.design-v4 .admin-columns .table th{background:color-mix(in srgb,#d3ece5 60%,var(--surface));font-weight:800;color:var(--heading)}
+.design-v4 .admin-columns .table td{color:var(--text)}
+.design-v4 .admin-quick-link{background:linear-gradient(120deg,#187b79,#00605b);color:#fff!important;border-radius:10px;box-shadow:0 3px 10px #075c5228}
+.design-v4 .v4-subpage-heading h2{font-size:26px}
+/* Triagem: queue + coherent evaluation form, never synthetic patient statistics. */
+.design-v4 .v4-triage-status{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px}
+.design-v4 .v4-status-summary{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--border);box-shadow:0 4px 14px #102b4010;border-radius:14px;padding:11px 20px;min-width:215px}
+.design-v4 .v4-status-icon{display:grid;place-items:center;width:43px;height:43px;background:#d9f5ee;border-radius:13px;color:#028d7a;font-size:26px}
+.design-v4 .v4-status-copy{display:flex;flex-direction:column;gap:2px}.design-v4 .v4-status-copy small{font-size:12px;font-weight:700;color:var(--heading)}.design-v4 .v4-status-copy strong{font-size:23px;color:#006d66}
+.design-v4 .v4-status-note{color:var(--muted);font-size:12px;margin:0;text-align:right}
+.design-v4 .v4-triage-form-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px}
+.design-v4 .v4-triage-main,.design-v4 .v4-triage-risk{min-width:0}.design-v4 .v4-triage-main>.form-group,.design-v4 .v4-triage-risk>.form-group{margin:0 0 15px!important}
+.design-v4 .v4-triage-main .grid-sinais{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.design-v4 .v4-triage-main .grid-sinais>div{min-width:0}
+.design-v4 .v4-triage-main .grid-sinais label{min-height:28px}
+.design-v4 .v4-risk-alerts{padding:13px;background:var(--surface-2);border:1px solid var(--border);border-radius:13px}
+.design-v4 .v4-risk-alerts .alertas-grid{background:none!important;border:0!important;padding:0!important;gap:6px}
+.design-v4 .v4-risk-alerts .alertas-grid label{margin:0!important;font-size:11.5px}
+.design-v4 .coluna-form>button.btn-salvar{width:100%;margin-top:10px}
+/* Médico: first row identity+diagnosis, symptoms and bottom panels. */
+.design-v4 .v4-doctor-top,.design-v4 .v4-doctor-bottom{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.design-v4 .v4-doctor-form{display:grid;gap:14px}
+.design-v4 .v4-doctor-form .form-group{margin:0!important;min-width:0}
+.design-v4 .v4-doctor-form .sintoma-add-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.design-v4 .v4-doctor-form .sintoma-add-grid>*{min-width:0}
+.design-v4 .v4-doctor-form .sintomas-editor{padding-bottom:12px;border-bottom:1px solid var(--border)}
+.design-v4 .v4-doctor-bottom textarea{min-height:85px}
+.design-v4 .botoes-acao{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.design-v4 .botoes-acao button{min-height:46px;margin:0!important;width:100%;border-radius:10px!important}
+.design-v4 .botoes-acao .btn-pdf{background:#7d68bc!important;color:#fff!important}
+/* Farmácia: stacked counters, stock grid and movements. */
+.design-v4 .pharmacy-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;margin-bottom:18px}
+.design-v4 .pharmacy-stat{min-height:83px;display:grid;grid-template-columns:54px 1fr;grid-template-rows:1fr 1fr;column-gap:14px;padding:12px 22px!important;align-items:center;background:var(--surface);border-radius:15px!important}
+.design-v4 .v4-stat-icon{grid-row:1 / 3;display:grid;place-items:center;width:51px;height:51px;border-radius:14px;background:#d8f8f1;color:#007c70;font-size:29px}
+.design-v4 .pharmacy-stat:nth-child(2) .v4-stat-icon{background:#e6f8e9;color:#00975f}.design-v4 .pharmacy-stat:nth-child(3) .v4-stat-icon{background:#fff4db;color:#da9b00}
+.design-v4 .pharmacy-stat small{font-size:12.5px;color:var(--heading);font-weight:700;align-self:end}
+.design-v4 .pharmacy-stat strong{font-size:29px;color:#00635f;line-height:1.1;align-self:start}
+.design-v4 .pharmacy-workspace{grid-template-columns:minmax(0,1.4fr) minmax(340px,.88fr)!important;gap:18px}
+.design-v4 .pharmacy-card{padding:21px!important;margin:0 0 16px!important}
+.design-v4 .v4-sector-heading{font-size:20px;color:var(--heading);margin:0 0 17px}
+.design-v4 .pharmacy-table-wrap{border-radius:11px;overflow-x:auto;border:1px solid var(--border)}
+.design-v4 .pharmacy-table-wrap table{border-collapse:collapse;width:100%;min-width:570px}
+.design-v4 .pharmacy-table-wrap th{background:color-mix(in srgb,#d7eaf0 65%,var(--surface));color:var(--heading);font-weight:750}
+.design-v4 .pharmacy-tools{display:grid;grid-template-columns:1.45fr .85fr;gap:12px}
+.design-v4 .pharmacy-form{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.design-v4 .pharmacy-form>div:nth-child(n+3){grid-column:1/-1}
+.design-v4 .pharmacy-secondary .pharmacy-card>p:has(button){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.design-v4 .pharmacy-secondary .btn{width:100%!important;min-height:43px!important;background:#006965!important;color:white!important}
+.design-v4 .pharmacy-secondary .btn:last-child{background:#dff2ee!important;color:#005d57!important;border:1px solid #27877c!important}
+/* Responsive and dark-mode parity */
+body.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(110deg,transparent,#103f3b30)}
+body.dark-mode .design-v4 .tab.active{background:#155f53!important;color:#effff7!important}
+body.dark-mode .design-v4 .v4-risk-alerts{background:var(--surface-2)}
+body.dark-mode .design-v4 .ref-hero-art img,body.dark-mode .design-v4 .v4-admin-hero img{opacity:.78}
+@media(max-width:1450px){.design-v4 .admin-metrics .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.design-v4 .v4-triage-main .grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1200px){.design-v4 .admin-columns,.design-v4 .pharmacy-workspace{grid-template-columns:1fr!important}.design-v4 .ref-clinical-grid{grid-template-columns:minmax(240px,.85fr) minmax(0,1.4fr)!important}.design-v4 .v4-triage-form-grid{grid-template-columns:1fr}.design-v4 .v4-risk-alerts .alertas-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:850px){.design-v4 .ref-clinical-grid{grid-template-columns:1fr!important}.design-v4 .v4-admin-hero img{opacity:.28}.design-v4 .v4-admin-hero .v4-admin-copy{max-width:100%}.design-v4 .ref-hero-main{padding-right:0}.design-v4 .ref-hero-art{opacity:.23;width:45%}.design-v4 .pharmacy-grid{grid-template-columns:1fr!important}.design-v4 .v4-triage-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.design-v4 .v4-triage-main .grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.sentinela-shell:has(.design-v4){grid-template-columns:56px minmax(0,1fr)}.sentinela-shell:has(.design-v4) .sentinela-sidebar{left:56px}.sentinela-shell .sentinela-content.design-v4{padding:15px!important}.design-v4 .admin-metrics .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.design-v4 .v4-admin-hero{padding:22px 6px}.design-v4 .v4-triage-form-grid,.design-v4 .v4-doctor-top,.design-v4 .v4-doctor-bottom{grid-template-columns:1fr}.design-v4 .v4-doctor-form .sintoma-add-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.design-v4 .v4-triage-status{flex-wrap:wrap}.design-v4 .v4-status-note{text-align:left}.design-v4 .ref-hero-art{display:none}.design-v4 .pharmacy-tools{grid-template-columns:1fr}.design-v4 .pharmacy-form{grid-template-columns:1fr!important}.design-v4 .pharmacy-form>div:nth-child(n+3){grid-column:auto}.design-v4 .tabs{gap:3px}.design-v4 .tab{font-size:12px;padding:8px 9px}.design-v4 .botoes-acao{grid-template-columns:1fr}}
+
+
+/* visual-fixes-v5.css */
+/* Sentinela v5 | layout and dark-mode alignment. Load after all prior visual styles. */
+html{min-width:320px}
+/* The old Atendimento stylesheet sets body{display:flex;justify-content:center;align-items:center;padding:20px}.
+   This causes the entire application shell to be constrained to its contents. */
+body.sentinela-app{
+  display:block!important; width:100%!important; max-width:none!important;
+  min-width:0!important; min-height:100vh!important; height:auto!important;
+  padding:0!important; margin:0!important;
+  justify-content:initial!important;align-items:initial!important;
+  overflow-x:hidden;
+}
+body.sentinela-app>.sentinela-shell{
+  display:grid!important;width:100%!important;max-width:none!important;
+  min-height:100vh!important;margin:0!important;align-self:stretch!important;
+  grid-template-columns:76px minmax(0,1fr)!important;
+}
+body.sentinela-app>.sentinela-shell:has(.design-v4){grid-template-columns:76px minmax(0,1fr)!important}
+body.sentinela-app .sentinela-workspace{width:100%;max-width:100%;min-width:0}
+body.sentinela-app .sentinela-rail{position:sticky;top:0;left:0;width:76px;max-width:76px;height:100dvh;z-index:40;align-self:start;box-sizing:border-box}
+body.sentinela-app .sentinela-rail-button,body.sentinela-app .sentinela-brand{width:49px;min-width:49px;max-width:49px;flex:0 0 auto}
+body.sentinela-app .sentinela-sidebar{left:76px;}
+body.sentinela-app .sentinela-content.design-v4{
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;box-sizing:border-box;background:transparent!important;
+}
+/* The original reception style also imposes a 500px container; the app takes the full grid column. */
+body.sentinela-app:has(#btnCadastrar) .container.sentinela-content{
+  max-width:100%!important;width:100%!important;margin:0!important;
+  padding:18px clamp(18px,2.8vw,48px) 48px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important
+}
+body.sentinela-app .sentinela-header{width:100%;box-sizing:border-box;min-width:0}
+body.sentinela-app .sentinela-header-title,body.sentinela-app .sentinela-header-actions{min-width:0}
+/* Prevent shrinking the hero description beside the illustration, while preserving a natural responsive wrap. */
+body.sentinela-app .design-v4 .ref-hero-copy{flex:1 1 auto;max-width:100%;min-width:0}
+body.sentinela-app .design-v4 .ref-hero-art{pointer-events:none}
+/* File upload should inherit theme rather than browser's default opaque white button. */
+body.sentinela-app input[type="file"]{
+  display:block;width:100%;color:var(--muted)!important;background:var(--surface-2)!important;
+  border:1px solid var(--border)!important;border-radius:11px!important;
+  padding:7px 11px!important;min-height:52px!important;line-height:1.7
+}
+body.sentinela-app input[type="file"]::file-selector-button{
+  border:1px solid transparent;background:color-mix(in srgb,var(--teal) 22%,var(--surface));
+  color:var(--heading);font-weight:750;border-radius:9px;padding:9px 16px;margin-right:15px;
+  font:inherit;cursor:pointer
+}
+body.sentinela-app input[type="file"]:hover::file-selector-button{border-color:var(--teal)}
+/* Day/night art versions: avoid pasting a white rectangle over the dark background. */
+body.sentinela-app.dark-mode .design-v4 .ref-hero-art img,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{opacity:1!important;filter:none!important}
+body.sentinela-app.dark-mode .design-v4 .ref-hero-art,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{isolation:isolate}
+/* Layered dark theme; do not overwrite any inline data text or business status. */
+body.sentinela-app.dark-mode .design-v4,
+body.sentinela-app.dark-mode .design-v4 .ref-card,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-card{color:var(--text)!important}
+body.sentinela-app.dark-mode .design-v4 .ref-hero-emblem,
+body.sentinela-app.dark-mode .design-v4 .v4-stat-icon,
+body.sentinela-app.dark-mode .design-v4 .v4-status-icon,
+body.sentinela-app.dark-mode .design-v4 .admin-metrics .card b:before{
+  background:#204a4c!important;color:#78e0c7!important
+}
+body.sentinela-app.dark-mode .design-v4 .v4-status-copy strong,
+body.sentinela-app.dark-mode .design-v4 .pharmacy-stat strong{color:#8de6d5!important}
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(110deg,transparent,#153d4055)!important}
+body.sentinela-app.dark-mode .design-v4 .v4-risk-alerts,
+body.sentinela-app.dark-mode .design-v4 .fila-item,
+body.sentinela-app.dark-mode .design-v4 .pharmacy-table-wrap{background:var(--surface-2)!important;color:var(--text)!important}
+body.sentinela-app.dark-mode .design-v4 .coluna-fila .emergencia-card{background:#482b35!important;color:#ffe4e7!important}
+body.sentinela-app.dark-mode .design-v4 .coluna-fila .emergencia-card :is(h3,h4,p,strong){color:#ffe4e7!important}
+body.sentinela-app.dark-mode .design-v4 .tab.active{background:#21554a!important;color:#dcfff3!important}
+body.sentinela-app.dark-mode .design-v4 .pharmacy-secondary .btn:last-child{background:#254d4a!important;color:#d8fff1!important;border-color:#398b80!important}
+body.sentinela-app.dark-mode .design-v4 .admin-columns .table th,
+body.sentinela-app.dark-mode .design-v4 .pharmacy-table-wrap th{background:#294759!important;color:var(--heading)!important}
+body.sentinela-app.dark-mode :is(input,select,textarea){color-scheme:dark}
+body.sentinela-app.dark-mode input[type="file"]{background:var(--surface-2)!important;color:#c3dbe3!important}
+body.sentinela-app.dark-mode input[type="file"]::file-selector-button{background:#285951!important;color:#e8fff5!important;border-color:#34776c}
+body.sentinela-app.dark-mode .design-v4 .ref-hero-copy,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{color:var(--text)!important}
+/* Keep image and text legible at laptop widths without horizontal clipping. */
+@media(max-width:1250px){
+ body.sentinela-app .design-v4 .ref-hero-main{padding-right:min(30%,350px)!important}
+ body.sentinela-app .design-v4 .ref-hero-art{width:min(330px,30%)!important}
+}
+@media(max-width:900px){
+ body.sentinela-app .design-v4 .ref-hero-main{padding-right:0!important}
+ body.sentinela-app .design-v4 .ref-hero-art{opacity:.2!important;width:43%!important}
+ body.sentinela-app .sentinela-header{flex-wrap:wrap}
+}
+@media(max-width:680px){
+ body.sentinela-app>.sentinela-shell,
+ body.sentinela-app>.sentinela-shell:has(.design-v4){grid-template-columns:56px minmax(0,1fr)!important}
+ body.sentinela-app .sentinela-rail{width:56px;max-width:56px;padding-inline:3px}
+ body.sentinela-app .sentinela-rail-button,body.sentinela-app .sentinela-brand{width:46px;min-width:46px;max-width:46px}
+ body.sentinela-app .sentinela-sidebar{left:56px}
+ body.sentinela-app:has(#btnCadastrar) .container.sentinela-content{padding:14px 12px 32px!important}
+ body.sentinela-app .design-v4 .ref-hero-art{display:none!important}
+}
+
+/* Night-specific copy of the supplied hospital illustration; avoids a bright rectangular background. */
+body.sentinela-app.dark-mode .design-v4 .ref-hero-art img,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{
+  content:url('/assets/hospital-ilustracao-dark.png')!important;
+}
+
