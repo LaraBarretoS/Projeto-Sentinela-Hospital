@@ -3,7 +3,7 @@
 const user=(()=>{try{return JSON.parse(localStorage.getItem('sentinelaUser')||'null')}catch(_){return null}})();
 if(!user)return;
 const page=location.pathname.split('/').pop().toLowerCase();
-const pages={admin:['Administração','Gestão e indicadores','📊'],atendimento:['Atendimento','Recepção e cadastro','🪪'],triagem:['Triagem','Avaliação e classificação','🩺'],medico:['Médico','Consultório e prontuário','🧑‍⚕️'],farmacia:['Farmácia','Estoque e movimentações','💊']};
+const pages={admin:['Administração','Gestão e indicadores','📊'],atendimento:['Atendimento','Recepção e cadastro','🪪'],triagem:['Triagem','Avaliação e classificação','🩺'],medico:['Médico','Consultório e prontuário','🧑‍⚕️'],farmacia:['Almoxarifado','Estoque e movimentações','📦']};
 const key=page.replace('.html','');const current=pages[key]||['Medicações','Prescrições','💊'];
 const content=document.querySelector('#conteudo-principal');if(!content)return;
 const shell=document.createElement('div');shell.className='sentinela-shell';
@@ -33,30 +33,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){shell.classList.rem
 document.body.classList.add('sentinela-app');
 })();
 
-/* Interface sectorial: reference-ui */
-/* Sector-only refinements. Admin and TV do not load this module. */
-(() => {
+(()=>{
   'use strict';
   const main = document.querySelector('#conteudo-principal.reference-v3');
   if (!main) return;
-  const label = document.querySelector('.sentinela-header-title .eyebrow');
-  if (label) label.textContent = label.textContent.replace(' / ', ' / ');
   const theme = document.getElementById('themeToggle');
   if (theme) theme.setAttribute('aria-label', 'Alternar entre tema claro e escuro');
   const actions = document.querySelector('.sentinela-header-actions');
   if (actions && theme) actions.appendChild(theme);
-  const sender = document.getElementById('btnTrocarUsuario');
-  if (sender) sender.textContent = '⇄  Trocar usuário';
-  const password = document.getElementById('btnMinhaSenha');
-  if (password) password.textContent = '♙  Minha senha';
-  const point = document.getElementById('btnPontoManual');
-  if (point) point.textContent = '◷  Ponto';
-  // No existing input IDs, business logic, validation or API calls are altered.
 })();
 
-
-
-/* Interface sectorial: design-final-v4 */
 (()=>{'use strict';
 const queue=document.getElementById('fila-pacientes');const counter=document.getElementById('v4FilaCount');
 if(queue&&counter){const update=()=>{const items=queue.querySelectorAll('.fila-item,[data-paciente-id],.paciente-item');if(items.length)counter.textContent=String(items.length);else{const txt=queue.textContent.trim();counter.textContent=/carregando/i.test(txt)?'—':(/nenhum|vazia|sem pacientes/i.test(txt)?'0':'—')}};new MutationObserver(update).observe(queue,{childList:true,subtree:true});update()}

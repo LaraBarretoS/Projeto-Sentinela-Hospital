@@ -1,34 +1,97 @@
-(function () {
-  const storageKey = "sentinela-theme";
-  function aplicarTema() {
-    const savedTheme = localStorage.getItem(storageKey);
-    document.body.classList.toggle("dark-mode", savedTheme === "dark");
-    atualizarIcone();
+(() => {
+  "use strict";
+  const THEME_KEY = "sentinela-theme";
+  const EFFECTS_KEY = "sentinela-effects";
+  const root = document.documentElement;
+
+  function readTheme(){
+    try { return localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light"; }
+    catch (_) { return "light"; }
   }
-  function atualizarIcone() {
-    const botao = document.getElementById("themeToggle");
-    if (!botao) return;
-    const escuro = document.body.classList.contains("dark-mode");
-    botao.textContent = escuro ? "☀️" : "🌙";
-    botao.title = escuro ? "Modo claro" : "Modo escuro";
-    botao.setAttribute("aria-label", escuro ? "Ativar modo claro" : "Ativar modo escuro");
+  function readEffects(){
+    try {
+      const value = localStorage.getItem(EFFECTS_KEY);
+      return value !== "off";
+    } catch (_) { return true; }
   }
-  function garantirBotao() {
-    if (!document.getElementById("themeToggle")) {
-      const botao = document.createElement("button");
-      botao.id = "themeToggle"; botao.className = "theme-toggle"; botao.type = "button";
-      botao.textContent = "🌙"; botao.title = "Modo escuro"; botao.setAttribute("aria-label", "Ativar modo escuro");
-      document.body.appendChild(botao);
+  function store(key, value){ try { localStorage.setItem(key, value); } catch (_) {} }
+
+  function updateThemeIcon(){
+    const button = document.getElementById("themeToggle");
+    if (!button) return;
+    const dark = document.body.classList.contains("dark-mode");
+    button.textContent = dark ? "☀️" : "🌙";
+    button.title = dark ? "Ativar modo claro" : "Ativar modo escuro";
+    button.setAttribute("aria-label", dark ? "Ativar modo claro" : "Ativar modo escuro");
+  }
+
+  function ensureThemeButton(){
+    let button = document.getElementById("themeToggle");
+    if (!button) {
+      button = document.createElement("button");
+      button.id = "themeToggle";
+      button.className = "theme-toggle";
+      button.type = "button";
+      document.body.appendChild(button);
     }
-    document.getElementById("themeToggle").onclick = alternarTema;
-    atualizarIcone();
+    button.onclick = window.alternarTema;
+    updateThemeIcon();
   }
-  window.alternarTema = function () {
-    const escuro = !document.body.classList.contains("dark-mode");
-    document.body.classList.toggle("dark-mode", escuro);
-    localStorage.setItem(storageKey, escuro ? "dark" : "light");
-    atualizarIcone();
+
+  function setTheme(theme){
+    const dark = theme === "dark";
+    document.body.classList.toggle("dark-mode", dark);
+    store(THEME_KEY, dark ? "dark" : "light");
+    updateThemeIcon();
+    document.dispatchEvent(new CustomEvent("sentinela:theme-change", { detail: { theme: dark ? "dark" : "light" } }));
+  }
+
+  function setEffects(enabled){
+    document.body.classList.toggle("effects-enabled", enabled);
+    document.body.classList.toggle("effects-disabled", !enabled);
+    store(EFFECTS_KEY, enabled ? "on" : "off");
+    document.dispatchEvent(new CustomEvent("sentinela:effects-change", { detail: { enabled } }));
+  }
+
+  let rafId = 0;
+  function handlePointerMove(event){
+    if (!readEffects()) return;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      const x = `${(event.clientX / window.innerWidth) * 100}%`;
+      const y = `${(event.clientY / window.innerHeight) * 100}%`;
+      root.style.setProperty("--fx-x", x);
+      root.style.setProperty("--fx-y", y);
+    });
+  }
+
+  function markPageType(){
+    const isLogin = !!document.getElementById("usuario");
+    document.body.classList.toggle("sentinela-login", isLogin);
+  }
+
+  function applyPreferences(){
+    markPageType();
+    setTheme(readTheme());
+    setEffects(readEffects());
+    ensureThemeButton();
+    root.style.setProperty("--fx-x", "50%");
+    root.style.setProperty("--fx-y", "18%");
+  }
+
+  window.alternarTema = function alternarTema(){
+    const next = document.body.classList.contains("dark-mode") ? "light" : "dark";
+    setTheme(next);
   };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { aplicarTema(); garantirBotao(); });
-  else { aplicarTema(); garantirBotao(); }
+
+  window.sentinelaThemeAPI = {
+    getTheme: readTheme,
+    setTheme,
+    getEffectsEnabled: readEffects,
+    setEffects
+  };
+
+  document.addEventListener("mousemove", handlePointerMove, { passive: true });
+  document.addEventListener("DOMContentLoaded", applyPreferences, { once: true });
+  if (document.readyState !== "loading") applyPreferences();
 })();

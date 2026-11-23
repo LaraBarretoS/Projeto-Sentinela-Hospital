@@ -1,143 +1,202 @@
-/* Tema global do Sistema Hospitalar */
-:root {
-  --bg: #f0f4f8;
-  --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --text: #2d3748;
-  --muted: #718096;
-  --heading: #1a365d;
-  --border: #cbd5e1;
-  --primary: #3182ce;
-  --primary-hover: #2b6cb0;
-  --shadow: rgba(0,0,0,.06);
+/* SENTINELA — UI foundation v5 */
+:root{
+  color-scheme:light;
+  --navy:#0f2234;
+  --petrol:#1e6b72;
+  --teal:#1fa27f;
+  --teal-soft:#dff7ee;
+  --amber:#d79b42;
+  --bg:#f4fbf8;
+  --surface:#ffffff;
+  --surface-2:#f7fcf9;
+  --surface-3:#edf7f1;
+  --surface-4:#e4f1ea;
+  --text:#17322f;
+  --muted:#5f7f74;
+  --heading:#153430;
+  --border:#d9ebe1;
+  --primary:#149c70;
+  --primary-hover:#0f845e;
+  --primary-contrast:#ffffff;
+  --success:#169f71;
+  --warning:#a9751d;
+  --danger:#c4545d;
+  --shadow:0 18px 50px rgba(18,68,48,.10);
+  --shadow-soft:0 8px 24px rgba(18,68,48,.06);
+  --radius-card:22px;
+  --radius-control:14px;
+  --focus-ring:0 0 0 4px rgba(20,156,112,.16);
+  --fx-x:50%;
+  --fx-y:20%;
+  --glow-strong:rgba(35,126,255,.22);
+  --glow-soft:rgba(92,170,255,.10);
+  --page-grid:rgba(16,63,49,.05);
 }
+body.dark-mode{
+  color-scheme:dark;
+  --navy:#07111d;
+  --petrol:#0f3151;
+  --teal:#2b8cff;
+  --teal-soft:#0a223d;
+  --amber:#ddb36a;
+  --bg:#050b13;
+  --surface:#0c1623;
+  --surface-2:#0f1c2d;
+  --surface-3:#122237;
+  --surface-4:#16283f;
+  --text:#edf4ff;
+  --muted:#97aac6;
+  --heading:#f8fbff;
+  --border:#1b3552;
+  --primary:#2b8cff;
+  --primary-hover:#4a9eff;
+  --primary-contrast:#ffffff;
+  --success:#2dd6a4;
+  --warning:#edc170;
+  --danger:#f08b95;
+  --shadow:0 22px 60px rgba(0,0,0,.36);
+  --shadow-soft:0 10px 30px rgba(0,0,0,.22);
+  --focus-ring:0 0 0 4px rgba(43,140,255,.18);
+  --glow-strong:rgba(43,140,255,.24);
+  --glow-soft:rgba(56,107,255,.12);
+  --page-grid:rgba(121,166,255,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(31,162,127,.09), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(31,162,127,.08), transparent 26%),
+    linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,0)),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  line-height:1.55;
+  transition:background-color .25s ease,color .25s ease;
+  position:relative;
+  overflow-x:hidden;
+}
+body.sentinela-app::before,body.sentinela-login::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.85;
+  background:
+    radial-gradient(34rem 34rem at var(--fx-x) var(--fx-y), var(--glow-strong), transparent 52%),
+    radial-gradient(22rem 22rem at calc(var(--fx-x) - 14%) calc(var(--fx-y) + 18%), var(--glow-soft), transparent 56%);
+  transition:opacity .22s ease;
+}
+body.sentinela-app::after,body.sentinela-login::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background-image:linear-gradient(var(--page-grid) 1px, transparent 1px), linear-gradient(90deg, var(--page-grid) 1px, transparent 1px);
+  background-size:32px 32px;
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.9), rgba(0,0,0,.18));
+  opacity:.55;
+}
+body.effects-disabled::before,body.effects-disabled::after{opacity:0 !important}
+body.sentinela-app > *:not(script), body.sentinela-login > *:not(script){position:relative;z-index:1}
+h1,h2,h3,h4{color:var(--heading);line-height:1.2;letter-spacing:-.025em}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s,opacity .18s}
+button:disabled{opacity:.58;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;box-shadow:var(--focus-ring)}
+input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),select,textarea{
+  max-width:100%;
+  border:1px solid var(--border);
+  border-radius:var(--radius-control);
+  background:var(--surface);
+  color:var(--text);
+}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+table{color:var(--text)}
+th{color:var(--heading)}
+.theme-toggle{
+  position:fixed;
+  top:16px;
+  right:18px;
+  z-index:9999;
+  width:46px;
+  height:46px;
+  padding:0;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:color-mix(in srgb, var(--surface) 88%, transparent);
+  color:var(--text);
+  box-shadow:var(--shadow-soft);
+  font-size:18px;
+  line-height:1;
+  backdrop-filter:blur(16px);
+}
+.theme-toggle:hover{transform:translateY(-1px);border-color:var(--primary)}
+.sentinela-topbar{position:relative;margin:12px auto 20px;max-width:1440px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-soft)}
+.sentinela-user{color:var(--muted)}
+.form-group{margin-bottom:18px}.form-group small,#avisoClassificacao{display:block;color:var(--muted);margin-top:6px;line-height:1.45}#resultado{border-radius:16px;padding:14px 16px;margin:14px 0;line-height:1.5}
 
-body {
-  background-color: var(--bg) !important;
-  color: var(--text);
+/* Shared modals / settings */
+.sentinela-overlay{position:fixed;inset:0;background:rgba(5,11,19,.56);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px;z-index:10020}
+.sentinela-dialog{width:min(980px,100%);background:color-mix(in srgb, var(--surface) 92%, transparent);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:28px;overflow:hidden}
+.sentinela-dialog-grid{display:grid;grid-template-columns:minmax(250px,.9fr) minmax(0,1.4fr)}
+.sentinela-dialog-aside{padding:28px;background:linear-gradient(180deg, color-mix(in srgb, var(--primary) 24%, var(--surface-2)), var(--surface));color:var(--heading);border-right:1px solid var(--border)}
+body.dark-mode .sentinela-dialog-aside{background:linear-gradient(180deg, rgba(43,140,255,.18), rgba(5,11,19,.85))}
+.sentinela-dialog-aside h2{margin:0 0 8px;font-size:1.55rem}
+.sentinela-dialog-aside p{margin:0;color:var(--muted)}
+.sentinela-user-card{margin-top:22px;padding:18px;border-radius:22px;background:color-mix(in srgb, var(--surface) 75%, transparent);border:1px solid var(--border);box-shadow:var(--shadow-soft)}
+.sentinela-user-card .mini{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sentinela-user-card strong{display:block;font-size:1.2rem;margin-bottom:10px;color:var(--heading)}
+.sentinela-user-card ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.sentinela-user-card li{font-size:14px;color:var(--text)}
+.sentinela-dialog-main{padding:28px}
+.sentinela-dialog-main h3{margin:0 0 14px;font-size:1.15rem}
+.sentinela-settings-section + .sentinela-settings-section{margin-top:24px;padding-top:22px;border-top:1px solid var(--border)}
+.sentinela-settings-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sentinela-settings-actions button,.sentinela-settings-actions a,.sentinela-btn{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:13px 16px;
+  background:var(--surface-2);
+  color:var(--heading);
+  font-weight:700;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
 }
+.sentinela-btn.primary,.sentinela-settings-actions .primary{background:linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, #ffffff));color:var(--primary-contrast);border-color:transparent}
+body.dark-mode .sentinela-btn.primary,body.dark-mode .sentinela-settings-actions .primary{background:linear-gradient(135deg, #1764d8, #2b8cff)}
+.sentinela-btn.ghost,.sentinela-settings-actions .ghost{background:transparent}
+.sentinela-btn:hover,.sentinela-settings-actions button:hover,.sentinela-settings-actions a:hover{transform:translateY(-1px)}
+.sentinela-toggle-row{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 16px;border-radius:18px;background:var(--surface-2);border:1px solid var(--border)}
+.sentinela-toggle-copy strong{display:block;font-size:14px;color:var(--heading)}
+.sentinela-toggle-copy span{display:block;font-size:13px;color:var(--muted)}
+.sentinela-switch{position:relative;display:inline-flex;align-items:center;cursor:pointer;user-select:none}
+.sentinela-switch input{position:absolute;opacity:0;pointer-events:none}
+.sentinela-switch span{width:52px;height:30px;border-radius:999px;background:var(--surface-4);border:1px solid var(--border);display:block;position:relative;transition:.2s ease}
+.sentinela-switch span::after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 6px 12px rgba(0,0,0,.18);transition:.2s ease}
+.sentinela-switch input:checked + span{background:var(--primary);border-color:transparent}
+.sentinela-switch input:checked + span::after{left:25px}
+.sentinela-dialog-close{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.sentinela-password-backdrop,.ponto-overlay{position:fixed;inset:0;background:rgba(5,11,19,.58);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:10010;padding:18px}
+.sentinela-password-modal,.ponto-modal{background:var(--surface);color:var(--text);width:min(460px,100%);padding:24px;border-radius:24px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.sentinela-password-modal h2,.ponto-modal h3{margin-top:0}
+.sentinela-password-modal input,.ponto-modal input{box-sizing:border-box;width:100%;padding:12px 14px;margin:6px 0 12px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);color:var(--text)}
+.sentinela-password-modal label{display:block;font-size:13px;font-weight:700}
+.sentinela-password-msg{font-size:13px;min-height:18px;margin:8px 0}.sentinela-password-actions,.ponto-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.ponto-buttons button,.sentinela-password-actions button{flex:1 1 180px}
 
-body.dark-mode {
-  --bg: #111827;
-  --surface: #1f2937;
-  --surface-2: #374151;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --heading: #93c5fd;
-  --border: #4b5563;
-  --primary: #60a5fa;
-  --primary-hover: #3b82f6;
-  --shadow: rgba(0,0,0,.30);
-}
-
-body.dark-mode .container,
-body.dark-mode .sidebar,
-body.dark-mode .main-content,
-body.dark-mode .coluna-fila,
-body.dark-mode .coluna-form,
-body.dark-mode .consultorio-box,
-body.dark-mode .card,
-body.dark-mode .fila-item,
-body.dark-mode .card-paciente {
-  background-color: var(--surface) !important;
-  color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-
-body.dark-mode input,
-body.dark-mode select,
-body.dark-mode textarea {
-  background-color: var(--surface-2) !important;
-  color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-
-body.dark-mode input[readonly] {
-  background-color: #4b5563 !important;
-  color: #f3f4f6 !important;
-}
-
-body.dark-mode h1,
-body.dark-mode h2,
-body.dark-mode h3,
-body.dark-mode h4,
-body.dark-mode label,
-body.dark-mode strong,
-body.dark-mode .card b,
-body.dark-mode .sidebar h3 {
-  color: var(--text) !important;
-}
-
-body.dark-mode h2,
-body.dark-mode .sidebar h3 {
-  color: var(--heading) !important;
-}
-
-body.dark-mode p,
-body.dark-mode span,
-body.dark-mode small {
-  color: var(--muted);
-}
-
-.theme-toggle {
-  position: fixed;
-  top: auto;
-  right: 18px;
-  bottom: 18px;
-  z-index: 9999;
-  width: 44px !important;
-  height: 44px;
-  padding: 0 !important;
-  margin: 0 !important;
-  border-radius: 50% !important;
-  border: 1px solid var(--border) !important;
-  background: var(--surface) !important;
-  color: var(--text) !important;
-  box-shadow: 0 3px 12px var(--shadow);
-  font-size: 21px !important;
-  line-height: 1;
-}
-
-.theme-toggle:hover {
-  background: var(--surface-2) !important;
-  transform: scale(1.05);
-}
-
-/* Ajustes gerais para manter o modo escuro legível em todas as telas. */
-body.dark-mode .wrap,
-body.dark-mode .container,
-body.dark-mode main,
-body.dark-mode section,
-body.dark-mode .content,
-body.dark-mode .main,
-body.dark-mode .painel,
-body.dark-mode .panel,
-body.dark-mode .modal,
-body.dark-mode .modal-content,
-body.dark-mode .box,
-body.dark-mode .card,
-body.dark-mode .table-container,
-body.dark-mode .historico,
-body.dark-mode .form-container {
-  color: var(--text) !important;
-}
-body.dark-mode table { color: var(--text) !important; }
-body.dark-mode th,
-body.dark-mode td { border-color: var(--border) !important; }
-body.dark-mode th { background-color: var(--surface-2) !important; color: var(--text) !important; }
-body.dark-mode tr:nth-child(even) { background-color: rgba(255,255,255,.025); }
-body.dark-mode button:not(.theme-toggle),
-body.dark-mode .btn,
-body.dark-mode input[type="button"],
-body.dark-mode input[type="submit"] { color: inherit; }
-body.dark-mode textarea,
-body.dark-mode input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),
-body.dark-mode select {
-  background-color: var(--surface-2) !important;
-  color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder { color: #9ca3af !important; }
-body.dark-mode .theme-toggle { background: var(--surface) !important; color: var(--text) !important; }
-body.dark-mode .sentinela-password-modal { background: var(--surface) !important; color: var(--text) !important; }
+body.dark-mode .container,body.dark-mode .wrap,body.dark-mode .card,body.dark-mode .coluna-fila,body.dark-mode .coluna-form,body.dark-mode .consultorio-box,body.dark-mode .card-paciente,body.dark-mode .fila-item,body.dark-mode .sentinela-topbar{background-color:var(--surface);color:var(--text);border-color:var(--border)}
+body.dark-mode input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),body.dark-mode select,body.dark-mode textarea{background:var(--surface-2);color:var(--text);border-color:var(--border)}
+body.dark-mode th{background:var(--surface-2);color:var(--heading)}body.dark-mode td,body.dark-mode th{border-color:var(--border)}body.dark-mode .theme-toggle{background:var(--surface);color:var(--text);border-color:var(--border)}body.dark-mode .emergencia-card{background:#40272B;border-color:#92545B;color:#F9E5E5}body.dark-mode .risco-vermelho{background:#54272D;color:#FFD6D8}body.dark-mode .risco-amarelo{background:#514022;color:#FDE8B5}body.dark-mode .risco-verde{background:#1F453F;color:#C3F3E8}
+@media(max-width:900px){.sentinela-dialog-grid{grid-template-columns:1fr}.sentinela-dialog-aside{border-right:0;border-bottom:1px solid var(--border)}}
+@media(max-width:760px){.container,.wrap{max-width:100%;box-sizing:border-box;margin:10px;padding:14px}.triagem-grid,.medico-grid{grid-template-columns:1fr}.grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}table{display:block;max-width:100%;overflow-x:auto}.sentinela-settings-actions{grid-template-columns:1fr}.theme-toggle{top:12px;right:12px}}
+@media(max-width:420px){.grid-sinais{grid-template-columns:1fr}.sentinela-left,.sentinela-actions{max-width:100%;width:100%}.sentinela-actions{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}body::before,body::after{display:none!important}}

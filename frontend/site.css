@@ -367,3 +367,126 @@ body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{
   content:url('/assets/hospital-ilustracao-dark.png')!important;
 }
 
+
+
+/* ======================================================================
+   VISUAL REFRESH V5 — dark blue/black + light clinical green
+   ====================================================================== */
+body.sentinela-app .sentinela-rail{
+  background:linear-gradient(180deg, #06131f 0%, #0c2136 42%, #091624 100%) !important;
+  border-right:1px solid rgba(255,255,255,.06);
+}
+body:not(.dark-mode).sentinela-app .sentinela-rail{
+  background:linear-gradient(180deg, #0f5a4a 0%, #0b3f35 100%) !important;
+}
+body.sentinela-app .sentinela-brand,
+body.sentinela-app .sentinela-rail-button{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(10px);
+}
+body.sentinela-app .sentinela-brand:hover,
+body.sentinela-app .sentinela-rail-button:hover,
+body.sentinela-app .sentinela-rail-button.is-active{
+  background:rgba(255,255,255,.14) !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), 0 12px 24px rgba(0,0,0,.18);
+}
+body.sentinela-app .sentinela-sidebar{
+  background:color-mix(in srgb, var(--surface) 95%, transparent);
+  backdrop-filter:blur(16px);
+  border-right:1px solid var(--border);
+}
+body.sentinela-app .sentinela-header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:color-mix(in srgb, var(--surface) 94%, transparent) !important;
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+body.sentinela-app .sentinela-header-title:before{color:var(--primary) !important}
+body.sentinela-app .sentinela-header .sentinela-btn,
+body.sentinela-app .sentinela-header .theme-toggle{
+  background:color-mix(in srgb, var(--surface-2) 92%, transparent) !important;
+  border:1px solid var(--border) !important;
+  box-shadow:var(--shadow-soft) !important;
+}
+body.sentinela-app .sentinela-header #btnPontoManual{
+  background:linear-gradient(135deg,var(--primary),color-mix(in srgb,var(--primary) 62%, #ffffff)) !important;
+  color:var(--primary-contrast) !important;
+}
+body.dark-mode.sentinela-app .sentinela-header #btnPontoManual{background:linear-gradient(135deg,#1764d8,#2b8cff) !important}
+body.sentinela-app .reference-v3 .ref-hero,
+body.sentinela-app .design-v4 .v4-admin-hero,
+body.sentinela-app .ref-card,
+body.sentinela-app .card,
+body.sentinela-app .pharmacy-card,
+body.sentinela-app .consultorio-box,
+body.sentinela-app .coluna-fila,
+body.sentinela-app .coluna-form,
+body.sentinela-app .section.card,
+body.sentinela-app .pharmacy-stat,
+body.sentinela-app .notice,
+body.sentinela-app .fila-item,
+body.sentinela-app .card-paciente{
+  border-radius:24px !important;
+  border:1px solid var(--border) !important;
+  background:color-mix(in srgb, var(--surface) 96%, transparent) !important;
+  box-shadow:var(--shadow-soft) !important;
+}
+body.sentinela-app .reference-v3 .ref-hero,
+body.sentinela-app .design-v4 .v4-admin-hero{
+  background:
+    linear-gradient(135deg, color-mix(in srgb,var(--surface) 72%, transparent), color-mix(in srgb,var(--surface-2) 94%, transparent)),
+    radial-gradient(circle at top right, color-mix(in srgb,var(--primary) 18%, transparent), transparent 30%) !important;
+  overflow:hidden;
+}
+body.dark-mode.sentinela-app .reference-v3 .ref-hero,
+body.dark-mode.sentinela-app .design-v4 .v4-admin-hero{
+  background:
+    linear-gradient(135deg, rgba(13,28,45,.92), rgba(10,19,31,.98)),
+    radial-gradient(circle at top right, rgba(43,140,255,.22), transparent 30%) !important;
+}
+body.sentinela-app .tabs{padding:8px;border-radius:18px;background:color-mix(in srgb,var(--surface-3) 96%, transparent);border:1px solid var(--border)}
+body.sentinela-app .tab{border-radius:14px !important;padding:10px 14px !important;font-weight:700;color:var(--muted) !important}
+body.sentinela-app .tab.active{background:var(--surface) !important;color:var(--heading) !important;box-shadow:var(--shadow-soft)}
+body.sentinela-app input:not([type=checkbox]):not([type=radio]),
+body.sentinela-app select,
+body.sentinela-app textarea{
+  border-radius:16px !important;
+  border:1px solid var(--border) !important;
+  background:var(--surface-2) !important;
+}
+body.sentinela-app table thead th{background:var(--surface-3) !important}
+body.sentinela-app .ref-primary-action,
+body.sentinela-app button:not(.theme-toggle):not(.tab):not(.bell-button):not(.sentinela-dialog-close){
+  border-radius:16px !important;
+}
+body.sentinela-app .ref-primary-action,
+body.sentinela-app button:not(.theme-toggle):not(.tab):not(.bell-button):not(.sentinela-dialog-close):not(.secondary):not(.ghost):not(.sentinela-btn.ghost){
+  background:linear-gradient(135deg,var(--primary),color-mix(in srgb,var(--primary) 60%, #ffffff));
+  color:var(--primary-contrast);
+}
+body.dark-mode.sentinela-app .ref-primary-action,
+body.dark-mode.sentinela-app button:not(.theme-toggle):not(.tab):not(.bell-button):not(.sentinela-dialog-close):not(.secondary):not(.ghost):not(.sentinela-btn.ghost){
+  background:linear-gradient(135deg,#1764d8,#2b8cff);
+}
+body.sentinela-app button.secondary,
+body.sentinela-app .btn.secondary,
+body.sentinela-app .ghost,
+body.sentinela-app .sentinela-btn.ghost{background:var(--surface-2) !important;color:var(--heading) !important;border:1px solid var(--border) !important}
+body.sentinela-app .ref-danger-action{background:linear-gradient(135deg,#c4545d,#df7079) !important;color:#fff !important}
+body.sentinela-app .status.ok{background:rgba(22,159,113,.12);color:var(--success)}
+body.sentinela-app .status.low{background:rgba(215,155,66,.16);color:var(--warning)}
+body.sentinela-app .status.expired{background:rgba(196,84,93,.14);color:var(--danger)}
+body.sentinela-app .pharmacy-stat strong{color:var(--heading) !important}
+body.sentinela-app .v4-stat-icon{border-radius:18px !important}
+body.sentinela-app .admin-primary .table,
+body.sentinela-app .admin-secondary .table,
+body.sentinela-app .pharmacy-table-wrap,
+body.sentinela-app .table{border-radius:18px !important;overflow:auto}
+body.sentinela-app .tv-container .box{background:color-mix(in srgb,var(--surface) 94%, transparent) !important;border:1px solid var(--border) !important}
+@media(max-width:760px){
+  body.sentinela-app .sentinela-user-chip{width:100%}
+  body.sentinela-app .sentinela-topbar{gap:10px}
+}

@@ -1,13 +1,13 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const cors = require("cors");
 const PDFDocument = require("pdfkit");
-const crypto = require("crypto");
 
 const app = express();
 
 app.use(express.json());
-app.disable("x-powered-by");
+app.use(cors());
 
 // ======================================================
 // CONFIGURAÇÃO DOS CAMINHOS ESTÁTICOS
@@ -21,7 +21,21 @@ if (!fs.existsSync(frontendPath)) {
     : path.join(__dirname, "../");
 }
 
-app.use(express.static(frontendPath));
+app.use(express.static(frontendPath, {
+  etag: true,
+  lastModified: true,
+  maxAge: 0,
+  setHeaders(res, filePath) {
+    if (/\.(?:css|html)$/i.test(filePath)) {
+      res.setHeader("Cache-Control", "no-cache, must-revalidate");
+    }
+  }
+}));
+
+// Endpoint simples para verificar se o Render iniciou a aplicação correta.
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", service: "sentinela-hospitalar" });
+});
 
 // ======================================================
 // PÁGINA INICIAL
@@ -67,7 +81,9 @@ const db = {
       tipo: "medico",
       nome: "Dr. Médico"
     },
-    { usuario: "almoxarifado", senha: "123", tipo: "almoxarifado", nome: "Almoxarifado" }
+    { usuario: "farmacia", senha: "123", tipo: "farmacia", nome: "Farmácia" },
+    { usuario: "enfermeira2", senha: "123", tipo: "triagem", nome: "Enfermeira Ana" },
+    { usuario: "medico2", senha: "123", tipo: "medico", nome: "Dr. Carlos" }
   ],
 
   pacientes: [],
@@ -93,6 +109,37 @@ const db = {
   ]
 };
 
+// Persistência local dos dados operacionais. O arquivo é gravado de forma atômica
+// para reduzir o risco de corrupção caso o processo seja interrompido durante a gravação.
+const DATA_FILE = path.join(__dirname, "sentinela-data.json");
+try {
+  if (fs.existsSync(DATA_FILE)) {
+    const savedData = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+    for (const key of ["pacientes", "triagens", "consultas", "prescricoes", "ponto", "auditoria", "movimentacoesEstoque", "medicamentosEstoque", "tv_chamada", "tv_historico", "tv_conteudos"]) {
+      if (Object.prototype.hasOwnProperty.call(savedData, key)) db[key] = savedData[key];
+    }
+  }
+} catch (error) {
+  console.error("Não foi possível carregar os dados persistidos:", error.message);
+}
+function salvarDados() {
+  const temporario = `${DATA_FILE}.tmp`;
+  const { usuarios: _usuarios, ...dadosOperacionais } = db;
+  fs.writeFileSync(temporario, JSON.stringify(dadosOperacionais, null, 2), "utf8");
+  fs.renameSync(temporario, DATA_FILE);
+}
+// Todas as rotas mutáveis persistem o estado após uma resposta bem-sucedida.
+app.use((req, res, next) => {
+  if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) return next();
+  res.on("finish", () => {
+    if (res.statusCode >= 200 && res.statusCode < 400) {
+      try { salvarDados(); }
+      catch (error) { console.error("Falha ao persistir dados:", error.message); }
+    }
+  });
+  next();
+});
+
 // ======================================================
 // PERSISTÊNCIA DE USUÁRIOS CRIADOS PELO ADMIN
 // ======================================================
@@ -103,12 +150,7 @@ try {
     if (Array.isArray(savedUsers)) {
       // O arquivo é a lista completa, não apenas usuários extras: assim, usuários excluídos
       // não reaparecem depois que o servidor é reiniciado.
-      db.usuarios = savedUsers.map(user => ({
-        ...user,
-        tipo: user.tipo === "farmacia" ? "almoxarifado" : user.tipo,
-        usuario: user.usuario === "farmacia" ? "almoxarifado" : user.usuario,
-        nome: user.nome === "Farmácia" ? "Almoxarifado" : user.nome
-      }));
+      db.usuarios = savedUsers;
     }
   }
 } catch (error) {
@@ -135,33 +177,6 @@ function salvarSolicitacoesSenha() {
 // LOGIN
 // ======================================================
 
-// Sessões de demonstração em memória: cookie HttpOnly e validação no servidor.
-// Em reinícios, o login precisa ser realizado novamente.
-const activeSessions = new Map();
-const SESSION_COOKIE = "sentinela_session";
-function getSession(req) {
-  const token = (req.headers.cookie || "").split("; ").find(v => v.startsWith(SESSION_COOKIE + "="))?.slice(SESSION_COOKIE.length + 1);
-  if (!token) return null;
-  const session = activeSessions.get(token);
-  if (!session || session.exp < Date.now()) { activeSessions.delete(token); return null; }
-  return db.usuarios.find(u => u.usuario === session.username) || null;
-}
-function sessionCookie(req, token, maxAge) {
-  const secure = req.secure || req.headers["x-forwarded-proto"] === "https";
-  return `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
-}
-app.get("/session", (req, res) => {
-  const user = getSession(req);
-  if (!user) return res.status(401).json({ erro: "Sessão expirada." });
-  res.json({ usuario: user.usuario, nome: user.nome, tipo: user.tipo });
-});
-app.post("/logout", (req, res) => {
-  const token = (req.headers.cookie || "").split("; ").find(v => v.startsWith(SESSION_COOKIE + "="))?.slice(SESSION_COOKIE.length + 1);
-  if (token) activeSessions.delete(token);
-  res.setHeader("Set-Cookie", sessionCookie(req, "", 0));
-  res.json({ sucesso: true });
-});
-// /login e /session acima são públicos. A partir daqui a API exige sessão.
 app.post("/login", (req, res) => {
   const { usuario, senha } = req.body;
 
@@ -177,33 +192,19 @@ app.post("/login", (req, res) => {
     });
   }
 
-  const token = crypto.randomBytes(32).toString("hex");
-  activeSessions.set(token, { username: user.usuario, exp: Date.now() + 8 * 60 * 60 * 1000 });
-  res.setHeader("Set-Cookie", sessionCookie(req, token, 8 * 60 * 60));
-  res.json({ usuario: user.usuario, nome: user.nome || user.usuario, tipo: user.tipo });
-});
-
-app.use((req, res, next) => {
-  const user = getSession(req);
-  if (!user) return res.status(401).json({ erro: "Faça login para acessar o sistema." });
-  req.authUser = user;
-  if (req.path.startsWith("/admin/") && user.tipo !== "admin") return res.status(403).json({ erro: "Acesso restrito à administração." });
-  if (req.path.startsWith("/almoxarifado/")) {
-    const leituraEstoque = req.method === "GET" && req.path === "/almoxarifado/estoque";
-    if (!(["almoxarifado", "admin"].includes(user.tipo) || (leituraEstoque && user.tipo === "medico")))
-      return res.status(403).json({ erro: "Acesso restrito ao almoxarifado." });
-  }
-  const fluxos = { "/atendimento": "atendimento", "/triagem": "triagem", "/consulta": "medico" };
-  if (req.method === "POST" && fluxos[req.path] && user.tipo !== fluxos[req.path])
-    return res.status(403).json({ erro: "Sua área não pode executar esta operação." });
-  next();
+  res.json({
+    usuario: user.usuario,
+    nome: user.nome || user.usuario,
+    tipo: user.tipo
+  });
 });
 
 // ======================================================
 // ADMIN: GERENCIAMENTO DE USUÁRIOS
 // ======================================================
 function requisicaoAdmin(req) {
-  return req.authUser?.tipo === "admin";
+  const solicitante = String(req.headers["x-sentinela-user"] || "");
+  return db.usuarios.some(u => u.usuario === solicitante && u.tipo === "admin");
 }
 app.get("/admin/usuarios", (req, res) => {
   if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode gerenciar usuários." });
@@ -215,7 +216,7 @@ app.post("/admin/usuarios", (req, res) => {
   const senha = String(req.body.senha || "");
   const nome = String(req.body.nome || usuario).trim();
   const tipo = String(req.body.tipo || "");
-  const tiposPermitidos = ["triagem", "atendimento", "medico", "almoxarifado"];
+  const tiposPermitidos = ["triagem", "atendimento", "medico", "farmacia"];
   if (usuario.length < 3 || usuario.length > 40 || !/^[a-zA-Z0-9._-]+$/.test(usuario)) return res.status(400).json({ erro: "O login deve ter de 3 a 40 caracteres e usar apenas letras, números, ponto, hífen ou underline." });
   if (senha.length < 3 || senha.length > 100) return res.status(400).json({ erro: "A senha deve ter pelo menos 3 caracteres." });
   if (!tiposPermitidos.includes(tipo)) return res.status(400).json({ erro: "Selecione uma função válida." });
@@ -226,7 +227,7 @@ app.post("/admin/usuarios", (req, res) => {
     db.usuarios.pop(); console.error("Erro ao salvar usuário:", error);
     return res.status(500).json({ erro: "Não foi possível salvar o usuário." });
   }
-  db.auditoria.unshift({ id: Date.now(), usuarioAcao: req.authUser.usuario, acao: `Criou usuário (${tipo})`, alvo: usuario, dataHora: new Date().toISOString() });
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: `Criou usuário (${tipo})`, alvo: usuario, dataHora: new Date().toISOString() });
   res.status(201).json({ usuario, nome: novoUsuario.nome, tipo });
 });
 
@@ -236,10 +237,10 @@ app.delete("/admin/usuarios/:usuario", (req, res) => {
   const alvo = decodeURIComponent(req.params.usuario);
   const existente = db.usuarios.find(u => u.usuario.toLowerCase() === alvo.toLowerCase());
   if (!existente) return res.status(404).json({ erro: "Usuário não encontrado." });
-  if (existente.tipo === "admin" || existente.usuario === req.authUser.usuario) return res.status(400).json({ erro: "Por segurança, contas administrativas não podem ser excluídas por esta tela." });
+  if (existente.tipo === "admin" || existente.usuario === String(req.headers["x-sentinela-user"] || "")) return res.status(400).json({ erro: "Por segurança, contas administrativas não podem ser excluídas por esta tela." });
   db.usuarios = db.usuarios.filter(u => u !== existente);
   try { salvarUsuarios(); } catch (error) { db.usuarios.push(existente); return res.status(500).json({ erro: "Não foi possível salvar a exclusão." }); }
-  db.auditoria.unshift({ id: Date.now(), usuarioAcao: req.authUser.usuario, acao: "Excluiu usuário", alvo: existente.usuario, dataHora: new Date().toISOString() });
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Excluiu usuário", alvo: existente.usuario, dataHora: new Date().toISOString() });
   res.json({ sucesso: true });
 });
 
@@ -254,7 +255,7 @@ app.post("/admin/usuarios/:usuario/senha", (req, res) => {
   if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "A nova senha deve ter entre 3 e 100 caracteres." });
   const anterior = alvo.senha; alvo.senha = novaSenha;
   try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
-  db.auditoria.unshift({ id: Date.now(), usuarioAcao: req.authUser.usuario, acao: "Alterou senha de usuário", alvo: alvo.usuario, dataHora: new Date().toISOString() });
+  db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Alterou senha de usuário", alvo: alvo.usuario, dataHora: new Date().toISOString() });
   res.json({ sucesso: true });
 });
 
@@ -263,7 +264,6 @@ app.post("/senha/alterar", (req, res) => {
   const usuario = String(req.body.usuario || "").trim();
   const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === usuario.toLowerCase());
   if (!alvo) return res.status(404).json({ erro: "Usuário não encontrado." });
-  if (alvo.usuario !== req.authUser.usuario) return res.status(403).json({ erro: "Só é possível alterar a própria senha." });
   if (String(req.body.senhaAntiga || "") !== alvo.senha) return res.status(401).json({ erro: "Senha antiga incorreta. Se você a esqueceu, solicite redefinição ao administrador." });
   const novaSenha = String(req.body.novaSenha || "");
   if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "A nova senha deve ter entre 3 e 100 caracteres." });
@@ -278,7 +278,6 @@ app.post("/senha/solicitar-redefinicao", (req, res) => {
   const usuario = String(req.body.usuario || "").trim();
   const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === usuario.toLowerCase());
   if (!alvo) return res.status(404).json({ erro: "Usuário não encontrado." });
-  if (req.authUser.tipo !== "admin" && alvo.usuario !== req.authUser.usuario) return res.status(403).json({ erro: "Só é possível solicitar redefinição da própria senha." });
   if (alvo.tipo === "admin") return res.status(400).json({ erro: "A redefinição de conta administrativa deve ser tratada diretamente pelo responsável pelo sistema." });
   if (solicitacoesSenha.some(n => n.usuario.toLowerCase() === alvo.usuario.toLowerCase() && n.status === "pendente")) return res.status(409).json({ erro: "Já existe uma solicitação pendente para este usuário." });
   const solicitacao = { id: Date.now(), usuario: alvo.usuario, nome: alvo.nome || alvo.usuario, tipo: alvo.tipo, status: "pendente", dataHora: new Date().toISOString() };
@@ -302,10 +301,10 @@ app.post("/admin/notificacoes/:id/decidir", (req, res) => {
     if (!alvo) return res.status(404).json({ erro: "Este usuário não existe mais." });
     const anterior = alvo.senha; alvo.senha = novaSenha;
     try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
-    pedido.status = "aprovada"; pedido.decididaPor = req.authUser.usuario; pedido.decisaodataHora = new Date().toISOString();
-    db.auditoria.unshift({ id: Date.now(), usuarioAcao: req.authUser.usuario, acao: "Aprovou redefinição de senha", alvo: pedido.usuario, dataHora: new Date().toISOString() });
+    pedido.status = "aprovada"; pedido.decididaPor = String(req.headers["x-sentinela-user"]); pedido.decisaodataHora = new Date().toISOString();
+    db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Aprovou redefinição de senha", alvo: pedido.usuario, dataHora: new Date().toISOString() });
   } else {
-    pedido.status = "recusada"; pedido.decididaPor = req.authUser.usuario; pedido.decisaodataHora = new Date().toISOString();
+    pedido.status = "recusada"; pedido.decididaPor = String(req.headers["x-sentinela-user"]); pedido.decisaodataHora = new Date().toISOString();
   }
   try { salvarSolicitacoesSenha(); } catch (error) { return res.status(500).json({ erro: "A decisão foi aplicada, mas não foi possível salvar a notificação." }); }
   res.json({ sucesso: true, status: pedido.status });
@@ -350,11 +349,8 @@ app.post("/atendimento", (req, res) => {
       tipo = req.body.tipo;
     }
 
-    if (!pacienteEmBranco && (!String(nome || "").trim() || !String(dataNascimento || "").trim())) {
-      return res.status(400).json({ erro: "Nome e data de nascimento são obrigatórios." });
-    }
     const paciente = {
-      id: Date.now() * 100 + Math.floor(Math.random() * 100),
+      id: Date.now(),
       nome,
       cpf,
       dataNascimento,
@@ -398,69 +394,56 @@ app.get("/pacientes", (req, res) => {
 
 app.post("/triagem", (req, res) => {
   try {
-    const {
-      pacienteId,
-      nome,
-      sintoma,
-      temperatura,
-      alergia,
-      observacao
-    } = req.body;
-
-    let risco = req.body.risco;
-
-    if (temperatura >= 39) {
-      risco = "vermelho";
-    } else if (temperatura >= 38) {
-      risco = "amarelo";
-    } else if (!risco) {
-      risco = "verde";
+    const { pacienteId, nome, sintoma, temperatura, alergia, observacao, sinaisVitais = {}, sintomas = [], sinaisAlerta = [], justificativaRisco = "", riscoRevisadoPor = "" } = req.body;
+    if (!String(nome || "").trim() || !String(sintoma || "").trim()) {
+      return res.status(400).json({ erro: "Informe o paciente e a queixa principal." });
     }
-
-    if (!String(nome || "").trim() || !String(sintoma || "").trim() || !Number.isFinite(Number(temperatura)) || Number(temperatura) < 30 || Number(temperatura) > 45) {
-      return res.status(400).json({ erro: "Informe paciente, sintoma e temperatura válida (30 a 45 °C)." });
+    const temp = temperatura === "" || temperatura == null ? null : Number(temperatura);
+    if (temp !== null && (!Number.isFinite(temp) || temp < 25 || temp > 45)) {
+      return res.status(400).json({ erro: "Temperatura inválida. Confira o valor informado." });
     }
-    if (pacienteId && !db.pacientes.some(p => String(p.id) === String(pacienteId) && p.status === "triagem")) {
-      return res.status(409).json({ erro: "Paciente não encontrado ou já encaminhado para triagem." });
-    }
-    if (pacienteId) {
-      const paciente = db.pacientes.find(
-        p =>
-          String(p.id) ===
-          String(pacienteId)
-      );
-
-      if (paciente) {
-        paciente.status = "medico";
+    // Valida apenas formato e plausibilidade de entrada (não são limites clínicos
+    // de classificação). Valores fora dessas faixas são recusados para evitar erros de digitação.
+    const vitais = sinaisVitais && typeof sinaisVitais === "object" ? sinaisVitais : {};
+    const numericRanges = {
+      frequenciaCardiaca: [0, 300], frequenciaRespiratoria: [0, 100],
+      spo2: [0, 100], intensidadeDor: [0, 10], glicemia: [0, 2000]
+    };
+    for (const [campo, [min, max]] of Object.entries(numericRanges)) {
+      if (vitais[campo] !== "" && vitais[campo] != null) {
+        const valor = Number(vitais[campo]);
+        if (!Number.isFinite(valor) || valor < min || valor > max) {
+          return res.status(400).json({ erro: `Valor inválido no campo ${campo}. Confira a informação digitada.` });
+        }
       }
     }
-
+    if (vitais.pressao) {
+      const partesPA = String(vitais.pressao).split("/").map(parte => parte.trim());
+      if (partesPA.length !== 2 || partesPA.some(parte => !parte || !Number.isInteger(Number(parte)) || Number(parte) < 0 || Number(parte) > 999)) {
+        return res.status(400).json({ erro: "Pressão arterial inválida. Utilize o formato 120/80." });
+      }
+    }
+    // Compatibilidade: conserva o risco enviado pelo formulário legado, mas não
+    // transforma limites isolados em protocolo clínico validado.
+    const riscosValidos = ["verde", "amarelo", "vermelho"];
+    const risco = riscosValidos.includes(req.body.risco) ? req.body.risco : "amarelo";
     const triagem = {
-      id: Date.now() * 100 + Math.floor(Math.random() * 100),
-      pacienteId,
-      nome,
-      sintoma,
-      temperatura,
-      alergia,
-      observacao,
-      risco,
-      status: "aguardando_medico",
-      createdAt: new Date()
+      id: Date.now(), pacienteId: pacienteId || null, nome: String(nome).trim(), sintoma: String(sintoma),
+      sintomas: Array.isArray(sintomas) ? sintomas : [], temperatura: temp, sinaisVitais: vitais,
+      sinaisAlerta: Array.isArray(sinaisAlerta) ? sinaisAlerta : [], alergia: String(alergia || ""), observacao: String(observacao || ""),
+      risco, justificativaRisco: String(justificativaRisco || "Classificação registrada pelo profissional responsável."),
+      classificacaoApoio: true, protocoloValidado: false, revisadoPor: String(riscoRevisadoPor || ""),
+      status: "aguardando_medico", createdAt: new Date().toISOString()
     };
-
+    if (pacienteId) {
+      const paciente = db.pacientes.find(p => String(p.id) === String(pacienteId));
+      if (paciente) paciente.status = "medico";
+    }
     db.triagens.push(triagem);
-
-    res.json(triagem);
-
+    res.status(201).json(triagem);
   } catch (error) {
-    console.error(
-      "Erro na triagem:",
-      error
-    );
-
-    res.status(500).json({
-      erro: "Erro ao processar triagem."
-    });
+    console.error("Erro na triagem:", error);
+    res.status(500).json({ erro: "Erro ao processar triagem." });
   }
 });
 
@@ -549,15 +532,10 @@ app.post("/consulta", (req, res) => {
     obs,
     medicoUsuario,
     medicoNome,
-    pacienteId
+    pacienteId,
+    sintomas = []
   } = req.body;
 
-  if (!String(paciente || "").trim() || !String(diagnostico || "").trim() || !String(medicacao || "").trim()) {
-    return res.status(400).json({ erro: "Paciente, diagnóstico e medicação são obrigatórios." });
-  }
-  if (triagemId && !db.triagens.some(t => String(t.id) === String(triagemId) && t.status === "aguardando_medico")) {
-    return res.status(409).json({ erro: "A triagem não está mais disponível para atendimento." });
-  }
   if (triagemId) {
     const triagem = db.triagens.find(
       t =>
@@ -578,6 +556,7 @@ app.post("/consulta", (req, res) => {
     diagnostico,
     medicacao,
     obs,
+    sintomas: Array.isArray(sintomas) ? sintomas : [],
     medicoUsuario: medicoUsuario || "medico",
     medicoNome: medicoNome || "Profissional não informado",
     createdAt: new Date()
@@ -606,19 +585,16 @@ function agoraISO() { return new Date().toISOString(); }
 function horaBR(data = new Date()) { return data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); }
 
 app.get("/ponto", (req, res) => {
-  const usuario = req.authUser.usuario;
-  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const usuario = String(req.query.usuario || "");
+  const hoje = new Date().toISOString().slice(0, 10);
   const registro = db.ponto.find(p => p.usuario === usuario && p.data === hoje);
   res.json(registro || null);
 });
 
 app.post("/ponto/entrada", (req, res) => {
-  const usuario = req.authUser.usuario;
-  const nome = req.authUser.nome || usuario;
-  const horaInformada = req.body.horaInformada;
-  if (horaInformada && !/^([01]\d|2[0-3]):[0-5]\d$/.test(String(horaInformada)))
-    return res.status(400).json({ erro: "Horário inválido." });
-  const data = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const { usuario, nome, horaInformada } = req.body;
+  if (!usuario) return res.status(400).json({ erro: "Usuário não informado." });
+  const data = new Date().toISOString().slice(0, 10);
   let registro = db.ponto.find(p => p.usuario === usuario && p.data === data);
   if (!registro) {
     registro = { id: Date.now(), usuario, nome: nome || usuario, data, horaSistemaEntrada: horaBR(), horaEntrada: horaInformada || horaBR(), saida: null, status: "presente" };
@@ -629,8 +605,8 @@ app.post("/ponto/entrada", (req, res) => {
 });
 
 app.post("/ponto/saida", (req, res) => {
-  const usuario = req.authUser.usuario;
-  const data = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const { usuario } = req.body;
+  const data = new Date().toISOString().slice(0, 10);
   const registro = db.ponto.find(p => p.usuario === usuario && p.data === data);
   if (!registro) return res.status(404).json({ erro: "Entrada não registrada." });
   if (!registro.saida) registro.saida = horaBR();
@@ -639,7 +615,7 @@ app.post("/ponto/saida", (req, res) => {
 });
 
 app.get("/admin/frequencia", (req, res) => {
-  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const hoje = new Date().toISOString().slice(0, 10);
   const registros = db.usuarios.filter(u => u.tipo !== "admin").map(u => ({
     usuario: u.usuario, nome: u.nome || u.usuario, tipo: u.tipo,
     registro: db.ponto.find(p => p.usuario === u.usuario && p.data === hoje) || null
@@ -670,62 +646,51 @@ app.get("/historico-paciente", (req, res) => {
 });
 
 // ======================================================
-// ALMOXARIFADO / ESTOQUE
+// FARMÁCIA / ESTOQUE
 // ======================================================
-// Cadastra novo insumo/medicamento; o estoque permanece demonstrativo em memória.
-app.post("/almoxarifado/itens", (req, res) => {
-  const nome = String(req.body.nome || "").trim();
-  const unidade = String(req.body.unidade || "unidades").trim();
-  const quantidade = Number(req.body.quantidade);
-  const minimo = Number(req.body.minimo);
-  if (nome.length < 2 || nome.length > 100 || unidade.length < 1 || unidade.length > 40 ||
-      !Number.isSafeInteger(quantidade) || quantidade < 0 ||
-      !Number.isSafeInteger(minimo) || minimo < 0) {
-    return res.status(400).json({ erro: "Confira o nome, unidade e quantidades inteiras não negativas." });
-  }
-  if (db.medicamentosEstoque.some(m => m.nome.toLocaleLowerCase("pt-BR") === nome.toLocaleLowerCase("pt-BR"))) {
-    return res.status(409).json({ erro: "Este item já está cadastrado." });
-  }
-  const item = { id: Math.max(0, ...db.medicamentosEstoque.map(m => m.id)) + 1, nome, quantidade, minimo, unidade };
-  db.medicamentosEstoque.push(item);
-  db.movimentacoesEstoque.unshift({ id: Date.now(), tipo: "cadastro", medicamento: nome, quantidade, usuario: req.authUser.usuario, dataHora: agoraISO() });
-  db.auditoria.unshift({ id: Date.now(), usuarioAcao: req.authUser.usuario, acao: "Cadastrou novo item", alvo: nome, dataHora: agoraISO() });
-  res.status(201).json(item);
+app.get("/farmacia/estoque", (req, res) => res.json(db.medicamentosEstoque));
+app.get("/farmacia/movimentacoes", (req, res) => res.json(db.movimentacoesEstoque.slice(0, 100)));
+app.get("/farmacia/alertas", (req, res) => {
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  res.json(db.medicamentosEstoque.filter(m => {
+    const baixo = m.quantidade <= m.minimo;
+    const vencido = m.validade && new Date(`${m.validade}T00:00:00`) < hoje;
+    const proximo = m.validade && !vencido && (new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 <= 90;
+    return baixo || vencido || proximo;
+  }).map(m => ({...m, alertaValidade: m.validade ? ((new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 < 0 ? "vencido" : ((new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 <= 90 ? "proximo" : null)) : null})));
 });
-app.get("/almoxarifado/estoque", (req, res) => res.json(db.medicamentosEstoque));
-app.get("/almoxarifado/movimentacoes", (req, res) => res.json(db.movimentacoesEstoque.slice(0, 100)));
-app.get("/almoxarifado/alertas", (req, res) => res.json(db.medicamentosEstoque.filter(m => m.quantidade <= m.minimo)));
 
-app.post("/almoxarifado/entrada", (req, res) => {
+app.post("/farmacia/entrada", (req, res) => {
   const { medicamentoId, quantidade, usuario } = req.body;
   const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
-  if (!med || !Number.isSafeInteger(Number(quantidade)) || Number(quantidade) <= 0) return res.status(400).json({ erro: "Informe uma quantidade inteira e positiva e selecione um item válido." });
+  if (!med || Number(quantidade) <= 0) return res.status(400).json({ erro: "Dados inválidos." });
   med.quantidade += Number(quantidade);
-  const mov = { id: Date.now(), tipo: "entrada", medicamento: med.nome, quantidade: Number(quantidade), usuario: usuario || "almoxarifado", dataHora: agoraISO() };
+  if (req.body.validade && /^\\d{4}-\\d{2}-\\d{2}$/.test(String(req.body.validade))) med.validade = String(req.body.validade);
+  const mov = { id: Date.now(), tipo: "entrada", medicamento: med.nome, quantidade: Number(quantidade), validade: med.validade || null, usuario: usuario || "farmacia", dataHora: agoraISO() };
   db.movimentacoesEstoque.unshift(mov);
-  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "almoxarifado", acao: `Entrada de ${quantidade} ${med.nome}`, alvo: med.nome, dataHora: agoraISO() });
+  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Entrada de ${quantidade} ${med.nome}`, alvo: med.nome, dataHora: agoraISO() });
   res.json(med);
 });
 
-app.post("/almoxarifado/saida", (req, res) => {
+app.post("/farmacia/saida", (req, res) => {
   const { medicamentoId, quantidade, usuario, paciente } = req.body;
   const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
-  if (!med || !Number.isSafeInteger(Number(quantidade)) || Number(quantidade) <= 0 || med.quantidade < Number(quantidade)) return res.status(400).json({ erro: "Estoque insuficiente ou dados inválidos." });
+  if (!med || Number(quantidade) <= 0 || med.quantidade < Number(quantidade)) return res.status(400).json({ erro: "Estoque insuficiente ou dados inválidos." });
   med.quantidade -= Number(quantidade);
-  const mov = { id: Date.now(), tipo: "saida", medicamento: med.nome, quantidade: Number(quantidade), paciente: paciente || "Não informado", usuario: usuario || "almoxarifado", dataHora: agoraISO() };
+  const mov = { id: Date.now(), tipo: "saida", medicamento: med.nome, quantidade: Number(quantidade), paciente: paciente || "Não informado", usuario: usuario || "farmacia", dataHora: agoraISO() };
   db.movimentacoesEstoque.unshift(mov);
-  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "almoxarifado", acao: `Saída de ${quantidade} ${med.nome}`, alvo: paciente || med.nome, dataHora: agoraISO() });
+  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Saída de ${quantidade} ${med.nome}`, alvo: paciente || med.nome, dataHora: agoraISO() });
   res.json(med);
 });
 
-app.post("/almoxarifado/ajuste", (req, res) => {
+app.post("/farmacia/ajuste", (req, res) => {
   const { medicamentoId, quantidade, usuario, motivo } = req.body;
   const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
-  if (!med || !Number.isSafeInteger(Number(quantidade)) || Number(quantidade) < 0) return res.status(400).json({ erro: "Quantidade inválida para ajuste de estoque." });
+  if (!med || Number(quantidade) < 0) return res.status(400).json({ erro: "Dados inválidos." });
   const anterior = med.quantidade;
   med.quantidade = Number(quantidade);
-  db.movimentacoesEstoque.unshift({ id: Date.now(), tipo: "ajuste", medicamento: med.nome, quantidade: Number(quantidade), quantidadeAnterior: anterior, motivo: motivo || "Correção de estoque", usuario: usuario || "almoxarifado", dataHora: agoraISO() });
-  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "almoxarifado", acao: `Ajustou estoque de ${med.nome}`, alvo: motivo || "Correção", dataHora: agoraISO() });
+  db.movimentacoesEstoque.unshift({ id: Date.now(), tipo: "ajuste", medicamento: med.nome, quantidade: Number(quantidade), quantidadeAnterior: anterior, motivo: motivo || "Correção de estoque", usuario: usuario || "farmacia", dataHora: agoraISO() });
+  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Ajustou estoque de ${med.nome}`, alvo: motivo || "Correção", dataHora: agoraISO() });
   res.json(med);
 });
 
@@ -735,7 +700,7 @@ app.post("/almoxarifado/ajuste", (req, res) => {
 app.get("/admin/resumo", (req, res) => {
   const risco = { verde: 0, amarelo: 0, vermelho: 0 };
   db.triagens.forEach(t => { if (risco[t.risco] !== undefined) risco[t.risco]++; });
-  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const hoje = new Date().toISOString().slice(0, 10);
   const pontosHoje = db.ponto.filter(p => p.data === hoje);
   res.json({ pacientes: db.pacientes.length, triagens: db.triagens.length, consultas: db.consultas.length, risco, presentes: pontosHoje.length, funcionarios: db.usuarios.filter(u => u.tipo !== "admin").length, estoqueBaixo: db.medicamentosEstoque.filter(m => m.quantidade <= m.minimo).length });
 });
@@ -1338,14 +1303,13 @@ app.post("/gerar-pdf-alta", (req, res) => {
 // SERVIDOR
 // ======================================================
 
-const PORT =
-  process.env.PORT || 3000;
+// Permite iniciar pelo backend/server.js ou pelo adaptador api/index.js.
+// Ao importar este módulo, não abre uma segunda porta.
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Servidor Sentinela rodando na porta ${PORT}`);
+  });
+}
 
-app.listen(
-  PORT,
-  () => {
-    console.log(
-      `Servidor rodando na porta ${PORT}`
-    );
-  }
-);
+module.exports = app;

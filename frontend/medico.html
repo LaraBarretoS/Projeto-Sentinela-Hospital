@@ -1,75 +1,76 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Painel Médico</title>
-<link rel="stylesheet" href="/css/medico.css">
-  <link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="/design.css">
-</head>
+<link href="/theme.css" rel="stylesheet"/>
+<link href="/css/medico.css" rel="stylesheet"/>
+
+
+<link rel="stylesheet" href="/site.css"/></head>
 <body>
-<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
-
-<div class="container">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-    <h2 style="margin:0; color:#1a365d;">Fila e consulta</h2>
-    <button onclick="window.open('tv.html','_blank')" style="background:#3182ce; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">Abrir TV</button>
-  </div>
-
-  <div class="consultorio-box">
-    <label for="consultorio-num"><strong>Meu Consultório:</strong></label>
-    <input type="text" id="consultorio-num" value="01">
-    <span style="color:#4a5568; font-size:13px;">Número enviado para a TV ao chamar.</span>
-  </div>
-
-  <div class="medico-grid">
-    <div class="coluna-fila">
-      <h3 style="margin-top:0; color:#2d3748;">Fila de Espera</h3>
-      <div class="emergencia-card">
-        <strong>🚨 Paciente de Emergência</strong>
-        <p style="font-size:12px; margin-top:4px;">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
-        <button type="button" onclick="selecionarPacienteEmergencia()">Selecionar Paciente de Emergência</button>
-      </div>
-      <div id="triagens"><p style="color:#888; text-align:center;">Carregando...</p></div>
-      <button onclick="carregar()" style="margin-top:10px; width:100%; background:#6c757d; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">Atualizar fila</button>
-    </div>
-
-    <div class="coluna-form">
-      <h3 style="margin-top:0; color:#2d3748; margin-bottom:15px;">Atendimento Médico</h3>
-      <div id="alertaAlergia" class="alerta-alergia"></div>
-      <div id="historicoPaciente" style="display:none;margin-bottom:12px;padding:12px;border-radius:8px;background:#eef6ff;border:1px solid #bfd7f5;"></div>
-
-      <div class="form-group">
-        <label>Paciente Selecionado *</label>
-        <input id="paciente" placeholder="Selecione um paciente na lista" readonly style="background-color: #edf2f7; font-weight: bold;">
-      </div>
-
-      <div class="form-group">
-        <label>Diagnóstico / Hipótese Diagnóstica *</label>
-        <input id="diagnostico" placeholder="Informe o diagnóstico">
-      </div>
-
-      <div class="form-group">
-        <label>Prescrição / Medicação *</label>
-        <select id="medicacao">
-          <option value="">Selecione a medicação</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Observações / Recomendações Médicas</label>
-        <textarea id="obs" rows="4" placeholder="Anotações da consulta ou recomendações de alta..."></textarea>
-      </div>
-
-      <div class="botoes-acao">
-        <button class="btn-pdf" onclick="gerarPDFAlta()">📄 Gerar Alta (PDF)</button>
-        <button class="btn-salvar" onclick="salvar()">Finalizar Consulta</button>
-      </div>
-    </div>
-  </div>
+<button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Médico</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">⚕</div><div class="ref-hero-copy"><h2>Atendimento e prontuário</h2><p>Selecione o paciente, consulte o histórico e registre a conduta médica.</p></div><div aria-hidden="true" class="ref-hero-art"><img alt="" loading="eager" src="/assets/hospital-ilustracao.png"/></div></div></section><div class="ref-sector-controls v4-toolbar"><div class="consultorio-box">
+<label for="consultorio-num"><strong>Meu Consultório:</strong></label>
+<input id="consultorio-num" type="text" value="01"/>
+<span class="extracted-3aa0d1aa">Número enviado para a TV ao chamar.</span>
+</div><button class="extracted-b0d6d29b ref-subtle-action" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button></div>
+<div aria-label="Fila de pacientes e ficha de atendimento" class="medico-grid ref-clinical-grid">
+<div aria-label="Fila de pacientes" class="coluna-fila ref-card">
+<h3 class="extracted-26c08ab1 ref-section-heading">Fila de Espera</h3>
+<div class="emergencia-card">
+<strong>🚨 Paciente de Emergência</strong>
+<p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+<button onclick="selecionarPacienteEmergencia()" type="button">Selecionar Paciente de Emergência</button>
 </div>
+<div id="triagens"><p class="extracted-778528eb">Carregando...</p></div>
+<button class="extracted-db383b1c" onclick="carregar()">🔄 Atualizar Fila</button>
+</div>
+<div aria-label="Ficha de atendimento" class="coluna-form ref-card">
+<h3 class="extracted-02dd0a00 ref-section-heading">Atendimento Médico</h3><p class="v4-card-subtitle">Registre o diagnóstico, a conduta e atualize o prontuário do paciente.</p><div class="v4-doctor-form"><div class="v4-doctor-top"><div class="form-group">
+<label>Paciente Selecionado *</label>
+<input class="extracted-4fbc116c" id="paciente" placeholder="Selecione um paciente na lista" readonly=""/>
+</div><div class="form-group">
+<label>Diagnóstico / Hipótese Diagnóstica *</label>
+<input id="diagnostico" placeholder="Informe o diagnóstico"/>
+</div></div><div class="form-group sintomas-editor">
+<label>Sintomas do paciente</label>
+<div class="sintoma-add-grid">
+<input id="novoSintoma" placeholder="Sintoma (ex.: cefaleia)"/>
+<input id="intensidadeSintoma" max="10" min="0" placeholder="Intensidade 0–10" type="number"/>
+<input id="duracaoSintoma" placeholder="Duração (ex.: 2 dias)"/>
+<input id="frequenciaSintoma" placeholder="Frequência"/>
+</div>
+<input id="observacaoSintoma" placeholder="Observação específica (opcional)"/>
+<button class="btn-adicionar-sintoma" onclick="adicionarSintoma()" type="button">＋ Adicionar sintoma</button>
+<div aria-live="polite" class="lista-sintomas" id="listaSintomas"></div>
+<small>Os registros antigos com um único sintoma continuam sendo exibidos normalmente.</small>
+</div><div class="v4-doctor-bottom"><div class="form-group">
+<label>Prescrição / Medicação *</label>
+<select id="medicacao">
+<option value="">Selecione a medicação</option>
+</select>
+</div><div class="form-group">
+<label>Observações / Recomendações Médicas</label>
+<textarea id="obs" placeholder="Anotações da consulta ou recomendações de alta..." rows="4"></textarea>
+</div></div></div>
+<div class="alerta-alergia" id="alertaAlergia"></div>
+<div class="extracted-c57d05b9" id="historicoPaciente"></div>
 
+
+
+
+
+<div class="botoes-acao">
+<button class="btn-pdf" onclick="gerarPDFAlta()">📄 Gerar Alta (PDF)</button>
+<button class="btn-salvar" onclick="salvar()">Finalizar Consulta</button>
+</div>
+</div>
+</div>
+</main>
 <script>
 "use strict";
 let triagensCarregadas = [];
@@ -77,6 +78,45 @@ let pacienteSelecionado = null;
 let carregandoFila = false;
 const $ = id => document.getElementById(id);
 const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let sintomasConsulta = [];
+function renderizarSintomas() {
+  const box = $("listaSintomas");
+  if (!box) return;
+  box.innerHTML = sintomasConsulta.length ? sintomasConsulta.map((item,i) => `<div class="sintoma-item"><span><b>${escapeHTML(item.nome)}</b> · Intensidade: ${item.intensidade || "—"}/10 · Duração: ${escapeHTML(item.duracao || "—")} · Frequência: ${escapeHTML(item.frequencia || "—")}<small>${escapeHTML(item.observacao || "")}</small></span><button type="button" data-editar-sintoma="${i}" aria-label="Editar sintoma">Editar</button><button type="button" data-remover-sintoma="${i}" aria-label="Remover sintoma">Remover</button></div>`).join("") : "<p>Nenhum sintoma adicional registrado.</p>";
+}
+function adicionarSintoma() {
+  const nome=$("novoSintoma").value.trim();
+  if (!nome) return alert("Informe o sintoma antes de adicionar.");
+  sintomasConsulta.push({nome, intensidade:$("intensidadeSintoma").value, duracao:$("duracaoSintoma").value.trim(), frequencia:$("frequenciaSintoma").value.trim(), observacao:$("observacaoSintoma").value.trim()});
+  ["novoSintoma","intensidadeSintoma","duracaoSintoma","frequenciaSintoma","observacaoSintoma"].forEach(id=>$(id).value="");
+  renderizarSintomas();
+}
+$("listaSintomas").addEventListener("click", event => {
+  const edit = event.target.closest("button[data-editar-sintoma]");
+  if (edit) {
+    const index = Number(edit.dataset.editarSintoma);
+    const item = sintomasConsulta[index];
+    if (!item) return;
+    const nome = prompt("Nome do sintoma:", item.nome);
+    if (nome === null) return;
+    const intensidade = prompt("Intensidade (0 a 10):", item.intensidade || "");
+    if (intensidade === null) return;
+    if (intensidade && !/^([0-9]|10)$/.test(intensidade)) return alert("Intensidade deve estar entre 0 e 10.");
+    const duracao = prompt("Duração:", item.duracao || "");
+    if (duracao === null) return;
+    const frequencia = prompt("Frequência:", item.frequencia || "");
+    if (frequencia === null) return;
+    const observacao = prompt("Observações:", item.observacao || "");
+    if (observacao === null) return;
+    sintomasConsulta[index] = { nome: nome.trim(), intensidade, duracao: duracao.trim(), frequencia: frequencia.trim(), observacao: observacao.trim() };
+    renderizarSintomas();
+    return;
+  }
+  const button=event.target.closest("button[data-remover-sintoma]");
+  if (!button) return;
+  sintomasConsulta.splice(Number(button.dataset.removerSintoma),1); renderizarSintomas();
+});
 
 async function requisicaoJSON(url, options = {}) {
   const response = await fetch(url, options);
@@ -97,7 +137,7 @@ async function carregar() {
       .sort((a,b) => (peso[a.risco] || 4) - (peso[b.risco] || 4));
     div.replaceChildren();
     if (!triagensCarregadas.length) {
-      div.innerHTML = "<p style='color:#888;text-align:center;padding:20px 0'>Nenhum paciente na fila de espera.</p>";
+      div.innerHTML = '<p class="extracted-5b52d149">Nenhum paciente na fila de espera.</p>';
       return;
     }
     triagensCarregadas.forEach((t, index) => {
@@ -105,14 +145,16 @@ async function carregar() {
       const selecionado = pacienteSelecionado && String(pacienteSelecionado.id ?? "") === String(t.id ?? "");
       const risco = ["vermelho", "amarelo", "verde"].includes(t.risco) ? t.risco : "verde";
       card.className = `card-paciente ${selecionado ? "selecionado" : ""}`;
-      card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><strong>${escapeHTML(t.nome || "Paciente sem nome")}</strong><span class="badge-risco ${risco}">${escapeHTML(risco)}</span></div>
-        <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>Sintoma:</b> ${escapeHTML(t.sintoma || "Não informado")}</p>
-        <p style="font-size:12px;margin:4px 0;color:#4a5568"><b>Temp:</b> ${t.temperatura ? escapeHTML(t.temperatura) + "°C" : "—"} | <b>Alergia:</b> ${escapeHTML(t.alergia || "Nenhuma")}</p>
+      card.innerHTML = `<div class="extracted-1fadc7d7"><strong>${escapeHTML(t.nome || "Paciente sem nome")}</strong><span class="badge-risco ${risco}">${escapeHTML(risco)}</span></div>
+        <p class="extracted-fa201034"><b>Sintoma:</b> ${escapeHTML(t.sintoma || "Não informado")}</p>
+        <p class="extracted-fa201034"><b>Temp:</b> ${t.temperatura ? escapeHTML(t.temperatura) + "°C" : "—"} | <b>Alergia:</b> ${escapeHTML(t.alergia || "Nenhuma")}</p>
+        <p class="extracted-fa201034"><b>PA:</b> ${escapeHTML(t.sinaisVitais?.pressao || "—")} · <b>FC:</b> ${escapeHTML(t.sinaisVitais?.frequenciaCardiaca || "—")} · <b>FR:</b> ${escapeHTML(t.sinaisVitais?.frequenciaRespiratoria || "—")} · <b>SpO₂:</b> ${escapeHTML(t.sinaisVitais?.spo2 || "—")}%</p>
+        ${Array.isArray(t.sinaisAlerta) && t.sinaisAlerta.length ? `<p class="extracted-5977a114"><b>⚠ Alertas:</b> ${escapeHTML(t.sinaisAlerta.join(", "))}</p>` : ""}
         <div class="botoes-card"><button type="button" class="btn-tv" data-action="chamar" data-index="${index}">📺 Chamar na TV</button><button type="button" class="btn-atender" data-action="selecionar" data-index="${index}">Apenas Selecionar</button></div>`;
       div.appendChild(card);
     });
   } catch (error) {
-    div.innerHTML = `<p role="alert" style="color:#c53030;text-align:center">Não foi possível carregar a fila. ${escapeHTML(error.message)}</p>`;
+    div.innerHTML = `<p role="alert" class="extracted-3c7371bb">Não foi possível carregar a fila. ${escapeHTML(error.message)}</p>`;
   } finally { carregandoFila = false; }
 }
 
@@ -138,6 +180,7 @@ function selecionarPacienteEmergencia() {
   pacienteSelecionado = { id:null, pacienteId:null, nome:"Paciente de Emergência", sintoma:"", temperatura:"", alergia:"" };
   $("paciente").value = pacienteSelecionado.nome;
   $("diagnostico").value = ""; $("medicacao").value = ""; $("obs").value = "";
+  sintomasConsulta = []; renderizarSintomas();
   $("alertaAlergia").style.display = "none"; $("historicoPaciente").style.display = "none";
   carregar();
   requisicaoJSON("/tv/chamar", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({localTipo:"CONSULTÓRIO",localNumero:$("consultorio-num").value.trim() || "01",paciente:pacienteSelecionado.nome})})
@@ -150,6 +193,8 @@ function selecionar(index) {
   pacienteSelecionado = t;
   $("paciente").value = t.nome || "";
   $("diagnostico").value = ""; $("medicacao").value = "";
+  sintomasConsulta = Array.isArray(t.sintomas) && t.sintomas.length ? t.sintomas.map(x => typeof x === "string" ? {nome:x} : x) : (t.sintoma ? [{nome:t.sintoma, origem:"triagem"}] : []);
+  renderizarSintomas();
   $("obs").value = t.observacao ? `[Triagem]: ${t.observacao}\n` : "";
   const alergia = String(t.alergia || "").trim();
   const alerta = $("alertaAlergia");
@@ -167,14 +212,14 @@ async function carregarHistoricoPaciente(pacienteId) {
     const data = await requisicaoJSON(`/pacientes/${encodeURIComponent(pacienteId)}/historico`);
     const consultas = Array.isArray(data.consultas) ? data.consultas : [];
     box.style.display = "block";
-    box.innerHTML = `<b>📋 Histórico do paciente</b><br><span style="font-size:12px;color:#4a5568">${consultas.length ? consultas.map(c => `${c.createdAt && !Number.isNaN(new Date(c.createdAt).getTime()) ? new Date(c.createdAt).toLocaleDateString("pt-BR") : "Data não informada"} — ${escapeHTML(c.medicoNome || "Médico")} — ${escapeHTML(c.diagnostico || "Sem diagnóstico")} — ${escapeHTML(c.medicacao || "Sem medicação")}`).join("<br>") : "Nenhuma consulta anterior registrada."}</span>`;
+    box.innerHTML = `<b>📋 Histórico do paciente</b><br><span class="extracted-a27ad5cf">${consultas.length ? consultas.map(c => `${c.createdAt && !Number.isNaN(new Date(c.createdAt).getTime()) ? new Date(c.createdAt).toLocaleDateString("pt-BR") : "Data não informada"} — ${escapeHTML(c.medicoNome || "Médico")} — ${escapeHTML(c.diagnostico || "Sem diagnóstico")} — ${escapeHTML(c.medicacao || "Sem medicação")}`).join("<br>") : "Nenhuma consulta anterior registrada."}</span>`;
   } catch (error) { box.style.display = "block"; box.textContent = "Não foi possível carregar o histórico deste paciente."; }
 }
 
 async function carregarMedicacoes() {
   const select = $("medicacao");
   try {
-    const data = await requisicaoJSON("/almoxarifado/estoque");
+    const data = await requisicaoJSON("/farmacia/estoque");
     if (!Array.isArray(data)) throw new Error("Estoque inválido.");
     select.replaceChildren(new Option("Selecione a medicação", ""));
     data.filter(m => Number(m.quantidade) > 0).forEach(m => {
@@ -207,9 +252,10 @@ async function salvar() {
   if (!medicacao) { alert("Selecione uma medicação."); $("medicacao").focus(); return; }
   const button = document.querySelector(".btn-salvar"); button.disabled = true;
   try {
-    await requisicaoJSON("/consulta", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({triagemId:pacienteSelecionado.id ?? null,pacienteId:pacienteSelecionado.pacienteId ?? null,paciente:$("paciente").value.trim(),diagnostico,medicacao,obs:$("obs").value.trim(),medicoUsuario:window.sentinelaUser?.usuario,medicoNome:window.sentinelaUser?.nome})});
+    await requisicaoJSON("/consulta", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({triagemId:pacienteSelecionado.id ?? null,pacienteId:pacienteSelecionado.pacienteId ?? null,paciente:$("paciente").value.trim(),diagnostico,medicacao,obs:$("obs").value.trim(),medicoUsuario:window.sentinelaUser?.usuario,medicoNome:window.sentinelaUser?.nome,sintomas:sintomasConsulta})});
     alert("Consulta finalizada com sucesso!"); pacienteSelecionado = null;
     $("paciente").value = ""; $("diagnostico").value = ""; $("medicacao").value = ""; $("obs").value = "";
+    sintomasConsulta = []; renderizarSintomas();
     $("alertaAlergia").style.display = "none"; $("historicoPaciente").style.display = "none";
     await carregar(); await carregarMedicacoes();
   } catch (error) { alert(`Não foi possível finalizar a consulta: ${error.message}`); }
@@ -220,9 +266,8 @@ carregar();
 carregarMedicacoes();
 setInterval(carregar, 10000);
 </script>
-
 <script src="/js/session.js"></script>
 <script src="/js/theme.js"></script>
-<script src="/js/ui.js"></script>
+<script src="/js/layout.js"></script>
 </body>
 </html>

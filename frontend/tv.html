@@ -1,205 +1,84 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Mídia Indoor - TV</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-
-    body {
-      background-color: #5c4033;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .tv-container {
-      display: flex;
-      width: 95vw;
-      height: 90vh;
-      gap: 18px;
-    }
-
-    .left-panel {
-      display: flex;
-      flex-direction: column;
-      width: 35%;
-      gap: 18px;
-    }
-
-    .right-panel {
-      display: flex;
-      flex-direction: column;
-      width: 65%;
-      gap: 18px;
-    }
-
-    .box {
-      background-color: #63d4f4;
-      border: 6px solid #b39b82;
-      border-radius: 15px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-
-    .box-title {
-      color: #ffffff;
-      font-size: 2.2vw;
-      font-weight: bold;
-      text-transform: uppercase;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-      margin-bottom: 12px;
-    }
-
-    /* Painel esquerdo - local (guichê ou consultório) */
-    .local-box { flex: 1; }
-    .local-number {
-      color: #d12c2c;
-      font-size: 9vw;
-      font-weight: bold;
-      line-height: 1;
-    }
-    .local-type {
-      color: #555;
-      font-size: 1.8vw;
-      font-weight: bold;
-      margin-top: 6px;
-    }
-
-    /* Histórico */
-    .history-box {
-      flex: 1;
-      justify-content: flex-start;
-      align-items: flex-start;
-    }
-    .history-box .box-title { font-size: 1.8vw; align-self: center; }
-    #history-list {
-      list-style: none;
-      width: 100%;
-      color: #d12c2c;
-      font-size: 1.5vw;
-      font-weight: bold;
-      text-align: left;
-    }
-    #history-list li {
-      margin-bottom: 8px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      padding-bottom: 5px;
-    }
-
-    /* Painel direito - nome do paciente */
-    .patient-box { flex: 3; }
-    .patient-name {
-      color: #d12c2c;
-      font-size: 6.5vw;
-      font-weight: bold;
-      line-height: 1.2;
-      word-break: break-word;
-    }
-
-    /* Logo */
-    .logo-box { flex: 1; }
-    .logo-text {
-      color: #8c3b7a;
-      font-size: 3.5vw;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    /* Animação de flash quando chama */
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-    .flash { animation: flash 0.5s ease 3; }
-  </style>
-  <link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="/design.css">
+ <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
+ <meta charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Painel de chamadas • Hospital Sentinela</title>
+ <link rel="stylesheet" href="/css/tv.css"/>
 </head>
-<body class="tv-screen">
-
-
-<!-- Estrutura da tela da TV criada para exibir o local e o nome do paciente chamado -->
-<div class="tv-container">
-  <div class="left-panel">
-    <div class="box local-box">
-      <div class="box-title" id="local-tipo">GUICHÊ</div>
-      <div class="local-number" id="local-numero">--</div>
-    </div>
-    <div class="box history-box">
-      <div class="box-title">ÚLTIMAS CHAMADAS</div>
-      <ul id="history-list"></ul>
-    </div>
-  </div>
+<body class="tv-display">
+ <main class="tv-container" aria-label="Painel de chamadas do Hospital Sentinela">
+  <aside class="left-panel">
+   <section class="box local-box" aria-label="Local de atendimento">
+    <div class="tv-heading"><span class="tv-people-icon" aria-hidden="true">●●●</span><span id="local-tipo">Guichê</span></div>
+    <div class="local-number" id="local-numero">--</div>
+   </section>
+   <section class="box history-box" aria-label="Últimas chamadas">
+    <h2 class="tv-heading"><span class="tv-history-icon" aria-hidden="true">◴</span> Últimas chamadas</h2>
+    <ul id="history-list" aria-live="polite"></ul>
+   </section>
+  </aside>
   <div class="right-panel">
-    <div class="box patient-box">
-      <div class="box-title">PACIENTE</div>
-      <div class="patient-name" id="patient-name">AGUARDANDO...</div>
-    </div>
-    <div class="box logo-box">
-      <div class="logo-text">HOSPITAL SENTINELA</div>
-    </div>
+   <section class="box patient-box" aria-label="Chamada atual">
+    <div class="patient-name" id="patient-name" aria-live="polite" aria-atomic="true">Aguardando...</div>
+    <div class="tv-call-instruction">Dirija-se ao <strong id="local-indicacao">local indicado</strong></div>
+   </section>
+   <footer class="box logo-box">
+    <div class="logo-text"><span class="tv-cross" aria-hidden="true">✚</span><span>Hospital<br/><strong>Sentinela</strong></span></div>
+    <img class="tv-hospital-art" src="/assets/hospital-ilustracao.png" alt="Ilustração do Hospital Sentinela"/>
+   </footer>
   </div>
-</div>
-
-<script>
-let ultimoId = null;
-window.sentinelaTVHasCall = false;
-
-// Função criada para buscar a chamada atual e o histórico da TV em tempo real.
-function atualizar() {
-  fetch("/tv/chamada")
-    .then(r => r.json())
-    .then(data => {
-      const chamada = data.chamada;
-      const historico = data.historico || [];
-
-      window.sentinelaTVHasCall = Boolean(chamada);
-      if (chamada) {
-        document.getElementById("local-tipo").innerText = chamada.localTipo || "GUICHÊ";
-        document.getElementById("local-numero").innerText = chamada.localNumero || "--";
-        document.getElementById("patient-name").innerText = chamada.paciente || "AGUARDANDO...";
-
-        // Flash visual quando há chamada nova
-        if (chamada.id !== ultimoId) {
-          ultimoId = chamada.id;
-          const patientBox = document.querySelector(".patient-box");
-          patientBox.classList.remove("flash");
-          void patientBox.offsetWidth; // reflow
-          patientBox.classList.add("flash");
-        }
-      }
-
-      // Histórico
-      const list = document.getElementById("history-list");
-      list.innerHTML = "";
-      historico.slice(0, 4).forEach(h => {
-        const li = document.createElement("li");
-        const tipo = h.localTipo ? h.localTipo.substring(0,4) : "GUIC";
-        li.innerText = `${tipo}. ${h.localNumero} - ${h.paciente}`;
-        list.appendChild(li);
-      });
-    })
-    .catch(err => console.log("Erro ao buscar chamada:", err));
-}
-
-// Polling a cada 2 segundos
-atualizar();
-setInterval(atualizar, 2000);
-</script>
-
-
-<div id="conteudoMultimidia" style="display:none;position:fixed;inset:0;background:#0b1220;color:white;z-index:5;align-items:center;justify-content:center;text-align:center;padding:40px"><div><div style="font-size:60px">🏥</div><h1 id="conteudoTitulo"></h1><p id="conteudoTexto" style="font-size:28px;max-width:900px"></p></div></div>
-<script>
-let conteudosTV=[];let indiceTV=0;async function carregarConteudosTV(){try{conteudosTV=await fetch('/tv/conteudo').then(r=>r.json());}catch(e){}}
-function mostrarConteudoTV(){if(!conteudosTV.length)return;const box=document.getElementById('conteudoMultimidia');document.getElementById('conteudoTitulo').textContent=conteudosTV[indiceTV].titulo;document.getElementById('conteudoTexto').textContent=conteudosTV[indiceTV].texto;box.style.display='flex';indiceTV=(indiceTV+1)%conteudosTV.length;setTimeout(()=>box.style.display='none',6500)}
-carregarConteudosTV();setInterval(()=>{if(!window.sentinelaTVHasCall)mostrarConteudoTV()},9000);
-</script></body>
+ </main>
+ <div id="conteudoMultimidia" aria-live="polite" aria-label="Comunicado do hospital">
+  <div class="tv-message"><div class="tv-message-icon" aria-hidden="true">✚</div><h1 id="conteudoTitulo"></h1><p id="conteudoTexto"></p></div>
+ </div>
+ <script>
+ let ultimoId = null;
+ function atualizar() {
+  fetch('/tv/chamada')
+   .then(r => {if (!r.ok) throw new Error('Falha na consulta da TV');return r.json()})
+   .then(data => {
+    const chamada=data.chamada;
+    const historico=Array.isArray(data.historico)?data.historico:[];
+    if (chamada) {
+     const tipo=String(chamada.localTipo || 'GUICHÊ');
+     const numero=String(chamada.localNumero ?? '--');
+     document.getElementById('local-tipo').textContent=tipo;
+     document.getElementById('local-numero').textContent=numero;
+     document.getElementById('patient-name').textContent=chamada.paciente || 'AGUARDANDO...';
+     document.getElementById('local-indicacao').textContent=`${tipo} ${numero}`;
+     if (chamada.id !== ultimoId) {
+      ultimoId=chamada.id;
+      const box=document.querySelector('.patient-box');
+      box.classList.remove('flash');void box.offsetWidth;box.classList.add('flash');
+     }
+    }
+    const list=document.getElementById('history-list');list.replaceChildren();
+    historico.slice(0,3).forEach(h => {
+     const li=document.createElement('li');
+     const paciente=document.createElement('strong');paciente.textContent=h.paciente || 'Paciente';
+     const local=document.createElement('span');local.textContent=`${h.localTipo || 'Guichê'} ${h.localNumero ?? '--'}`;
+     li.append(paciente,local);list.appendChild(li);
+    });
+   })
+   .catch(err => console.warn('Erro ao buscar chamada:',err));
+ }
+ atualizar();setInterval(atualizar,2000);
+ let conteudosTV=[];let indiceTV=0;let hideMensagem=null;
+ async function carregarConteudosTV(){try{const res=await fetch('/tv/conteudo');if(res.ok){const data=await res.json();conteudosTV=Array.isArray(data)?data:[]}}catch(e){console.warn('Comunicados indisponíveis',e)}}
+ function mostrarConteudoTV(){
+  if(!conteudosTV.length)return;
+  const box=document.getElementById('conteudoMultimidia');
+  document.getElementById('conteudoTitulo').textContent=conteudosTV[indiceTV]?.titulo || '';
+  document.getElementById('conteudoTexto').textContent=conteudosTV[indiceTV]?.texto || '';
+  indiceTV=(indiceTV+1)%conteudosTV.length;
+  box.style.display='flex';
+  if(hideMensagem)clearTimeout(hideMensagem);
+  hideMensagem=setTimeout(()=>box.style.display='none',6500);
+ }
+ carregarConteudosTV();
+ setInterval(()=>{if(ultimoId===null)mostrarConteudoTV()},9000);
+ </script>
+</body>
 </html>
