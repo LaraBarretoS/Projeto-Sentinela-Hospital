@@ -3,7 +3,7 @@
 const user=(()=>{try{return JSON.parse(localStorage.getItem('sentinelaUser')||'null')}catch(_){return null}})();
 if(!user)return;
 const page=location.pathname.split('/').pop().toLowerCase();
-const pages={admin:['Administração','Gestão e indicadores','📊'],atendimento:['Atendimento','Recepção e cadastro','🪪'],triagem:['Triagem','Avaliação e classificação','🩺'],medico:['Médico','Consultório e prontuário','🧑‍⚕️'],farmacia:['Farmácia','Estoque e movimentações','💊']};
+const pages={admin:['Administração','Gestão e indicadores','📊'],atendimento:['Atendimento','Recepção e cadastro','🪪'],triagem:['Triagem','Avaliação e classificação','🩺'],medico:['Médico','Consultório e prontuário','🧑‍⚕️'],farmacia:['Almoxarifado','Estoque e movimentações','💊']};
 const key=page.replace('.html','');const current=pages[key]||['Medicações','Prescrições','💊'];
 const content=document.querySelector('#conteudo-principal');if(!content)return;
 const shell=document.createElement('div');shell.className='sentinela-shell';
@@ -27,7 +27,7 @@ const actions=document.createElement('div');actions.className='sentinela-header-
 content.parentNode.insertBefore(shell,content);shell.append(rail,sidebar,workspace);workspace.append(header,content);
 const bell=document.querySelector('#notificationBell.v4-header-notification');if(bell)actions.append(bell);
 const bar=document.querySelector('.sentinela-topbar');if(bar)actions.append(bar);
-const theme=document.querySelector('#themeToggle');if(theme)actions.append(theme);
+
 menu.addEventListener('click',()=>{const open=shell.classList.toggle('sidebar-open');menu.setAttribute('aria-expanded',String(open));});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){shell.classList.remove('sidebar-open');menu.setAttribute('aria-expanded','false')}});
 document.body.classList.add('sentinela-app');
@@ -41,10 +41,6 @@ document.body.classList.add('sentinela-app');
   if (!main) return;
   const label = document.querySelector('.sentinela-header-title .eyebrow');
   if (label) label.textContent = label.textContent.replace(' / ', ' / ');
-  const theme = document.getElementById('themeToggle');
-  if (theme) theme.setAttribute('aria-label', 'Alternar entre tema claro e escuro');
-  const actions = document.querySelector('.sentinela-header-actions');
-  if (actions && theme) actions.appendChild(theme);
   const sender = document.getElementById('btnTrocarUsuario');
   if (sender) sender.textContent = '⇄  Trocar usuário';
   const password = document.getElementById('btnMinhaSenha');

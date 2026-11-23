@@ -81,9 +81,7 @@ const db = {
       tipo: "medico",
       nome: "Dr. Médico"
     },
-    { usuario: "farmacia", senha: "123", tipo: "farmacia", nome: "Farmácia" },
-    { usuario: "enfermeira2", senha: "123", tipo: "triagem", nome: "Enfermeira Ana" },
-    { usuario: "medico2", senha: "123", tipo: "medico", nome: "Dr. Carlos" }
+    { usuario: "farmacia", senha: "123", tipo: "farmacia", nome: "Almoxarifado" }
   ],
 
   pacientes: [],
@@ -148,9 +146,13 @@ try {
   if (fs.existsSync(USERS_FILE)) {
     const savedUsers = JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
     if (Array.isArray(savedUsers)) {
-      // O arquivo é a lista completa, não apenas usuários extras: assim, usuários excluídos
-      // não reaparecem depois que o servidor é reiniciado.
-      db.usuarios = savedUsers;
+      // Preserva contas existentes, exceto os dois usuários demonstrativos removidos
+      // desta versão. Isso também cobre instalações que já possuam users.json.
+      const obsoleteDemoLogins = new Set(["enfermeira2", "medico2"]);
+      db.usuarios = savedUsers.filter(u => !obsoleteDemoLogins.has(u.usuario));
+      if (db.usuarios.length !== savedUsers.length) {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(db.usuarios, null, 2), "utf8");
+      }
     }
   }
 } catch (error) {

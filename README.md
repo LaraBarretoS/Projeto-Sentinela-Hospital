@@ -1,75 +1,55 @@
-<p align="center">
-  <img src="frontend/assets/sentinela-icon.png" alt="Símbolo do Hospital Sentinela" width="156" />
-</p>
-
+<p align="center"><img src="frontend/assets/sentinela-icon.svg" alt="Símbolo do Sentinela" width="112" /></p>
 <h1 align="center">Hospital Sentinela</h1>
-<p align="center"><strong>Sistema demonstrativo de gestão hospitalar</strong><br/>Atendimento integrado • Interface Clinical Premium • Node.js</p>
+<p align="center">Sistema acadêmico de gestão hospitalar · Interface clara, minimalista e responsiva</p>
 
----
+## Visão geral
 
-## Sobre o projeto
+O **Hospital Sentinela** é um projeto demonstrativo de desenvolvimento web que integra a recepção, a triagem, o atendimento médico, o almoxarifado e a administração. A interface utiliza tons de vermelho e branco, sem alternância de tema, e um painel independente de chamadas para guichês e consultórios.
 
-O **Hospital Sentinela** é um projeto acadêmico de desenvolvimento web que demonstra a comunicação entre setores de uma unidade hospitalar. A interface foi criada para oferecer navegação simples, acompanhamento de filas e visão operacional em um único sistema.
+## Áreas do sistema
 
-O sistema utiliza **HTML, CSS e JavaScript** no frontend, **Node.js com Express** no backend e armazenamento local em arquivos JSON. Inclui temas claro e escuro e um painel independente para exibição pública das chamadas.
-
-## Módulos
-
-| Módulo | Principais recursos |
+| Área | Funcionalidades |
 | --- | --- |
-| **Administração** | Visão geral, usuários, frequência, notificações e auditoria. |
-| **Atendimento** | Cadastro de pacientes, anexos e encaminhamento para triagem. |
-| **Triagem** | Fila, sinais vitais, observações e registro de classificação pelo profissional. |
-| **Médico** | Consultas, sintomas, histórico, prescrições e geração de documentos. |
-| **Farmácia** | Estoque, alertas, entradas, saídas e histórico de movimentações. |
-| **Medicações** | Consulta das informações de medicamentos disponíveis. |
-| **TV hospitalar** | Chamadas para guichês ou consultórios e histórico resumido, sem classificação de risco. |
+| **Administração** | Usuários e permissões, indicadores, frequência, auditoria e notificações. |
+| **Atendimento** | Cadastro de pacientes, anexos e encaminhamento à triagem. |
+| **Triagem** | Fila, sinais vitais, registros e classificação profissional. |
+| **Médico** | Atendimento, prontuário, sintomas, prescrições e documentos em PDF. |
+| **Almoxarifado** | Estoque de medicamentos, entradas, saídas, alertas e histórico. |
+| **Medicações** | Consulta de registros de medicação. |
+| **TV** | Chamada atual e histórico resumido com número do guichê ou consultório, sem mostrar a classificação de risco. |
 
 ## Tecnologias
 
-- **Frontend:** HTML5, CSS3 e JavaScript.
-- **Backend:** Node.js, Express e API HTTP.
-- **Documentos:** PDFKit.
-- **Persistência:** arquivos JSON locais gerados durante a execução.
+Frontend em HTML, CSS e JavaScript. Backend em Node.js com Express e PDFKit. Dados operacionais são armazenados localmente em JSON durante a execução.
 
-## Como executar
+## Executar localmente
 
-**Pré-requisitos:** Node.js 20 ou superior e npm.
-
-Na pasta principal do projeto, execute:
+Requer Node.js 20 ou superior e npm. Na raiz do projeto:
 
 ```bash
 npm install
 npm start
 ```
 
-Depois, abra **http://localhost:3000** no navegador. O arquivo de dependências travadas (`package-lock.json`) será gerado pelo npm durante a instalação.
+Acesse `http://localhost:3000`. Em hospedagens Node.js, configure `npm start` como comando de inicialização. O endpoint `/health` pode ser usado para verificar o serviço.
 
-Para usar um serviço de hospedagem Node.js como o Render, execute o mesmo comando de inicialização (`npm start`) e configure a raiz do projeto como diretório de trabalho. A aplicação utiliza a variável de ambiente `PORT` quando fornecida. O endpoint `/health` permite verificar se o serviço está ativo.
-
-## Organização do código
+### Organização
 
 ```text
-Projeto-Sentinela-Hospital-main/
-├── api/                 # Entrada de compatibilidade para hospedagens
-├── backend/             # Servidor, rotas e persistência
-├── frontend/
-│   ├── assets/          # Identidade visual e ilustrações
-│   ├── css/             # Estilos específicos de cada página
-│   ├── js/              # Scripts de interface, sessão e módulos
-│   ├── site.css         # Layout e componentes compartilhados
-│   ├── theme.css        # Variáveis e regras dos temas
-│   └── *.html           # Páginas dos setores e painel de TV
-├── package.json
-└── README.md
+api/                Entrada de compatibilidade para hospedagens
+backend/            Servidor e rotas
+frontend/assets/    Ícone SVG
+frontend/css/       Estilos por módulo e TV
+frontend/js/        Sessão, navegação e administração
+frontend/site.css   Estilos compartilhados
+frontend/theme.css  Paleta única e bases de interface
+frontend/*.html     Páginas do projeto
 ```
 
-## Avisos sobre segurança e uso
+Para preservar os fluxos existentes, os identificadores internos de acesso, o arquivo `farmacia.html` e os endpoints `/farmacia/*` continuam com seus nomes originais; **na interface a área é chamada Almoxarifado**.
 
-Este é um **projeto acadêmico/demonstrativo**, não um sistema homologado para assistência clínica real. A classificação de risco não implementa um protocolo clínico validado e deve ser sempre analisada por profissional habilitado.
+## Uso responsável
 
-A autenticação, as permissões e a proteção dos dados ainda exigem melhorias antes de um uso real. **Não cadastre dados verdadeiros de pacientes**, nem publique arquivos de dados gerados pelo sistema. O armazenamento local em JSON também não oferece a mesma durabilidade de um banco de dados de produção; em hospedagens sem disco persistente, os registros podem ser perdidos após reinicializações ou novas implantações.
+Este é um sistema acadêmico, não homologado para utilização clínica real. Não armazene informações reais de pacientes. A autenticação demonstrativa, a privacidade de dados e a persistência local precisam ser reforçadas antes de qualquer implantação real. Em ambientes sem armazenamento persistente, registros podem ser perdidos em novas implantações. A classificação clínica exige revisão de profissional habilitado.
 
----
-
-<p align="center"><sub>Hospital Sentinela • Desenvolvimento web e design de interfaces</sub></p>
+Contas geradas e administradas pelo sistema podem ser persistidas no arquivo privado `backend/users.json`, não incluído no repositório. Caso exista uma implantação anterior, mudanças nos usuários iniciais do código **não** apagam automaticamente contas que já tenham sido salvas: essas devem ser removidas pela Administração.

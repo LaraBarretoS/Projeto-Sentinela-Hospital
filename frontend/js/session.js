@@ -21,10 +21,9 @@
   .sentinela-topbar{position:absolute;top:12px;left:16px;right:16px;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0;padding:0;flex-wrap:wrap;width:auto;box-sizing:border-box}
   .sentinela-left,.sentinela-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}.sentinela-actions{margin-left:auto;justify-content:flex-end}
   .sentinela-user{font-size:13px;color:#4a5568;margin-left:4px}
-  .sentinela-btn{border:0;border-radius:7px;padding:9px 12px;min-height:38px;white-space:nowrap;cursor:pointer;background:#edf2f7;color:#2d3748;font-weight:600;line-height:1.2}
-  .sentinela-btn.primary{background:#2b6cb0;color:white}.sentinela-btn.danger{background:#c53030;color:white}
+  .sentinela-btn{border:0;border-radius:7px;padding:9px 12px;min-height:38px;white-space:nowrap;cursor:pointer;background:#fff1f3;color:#351b26;font-weight:600;line-height:1.2}
+  .sentinela-btn.primary{background:#b71f3c;color:white}.sentinela-btn.danger{background:#c53030;color:white}
   @media(max-width:520px){.sentinela-topbar{position:absolute;top:10px;left:10px;right:10px;align-items:flex-start}.sentinela-left,.sentinela-actions{width:auto;max-width:48%;flex-wrap:wrap}.sentinela-actions{margin-left:auto;justify-content:flex-end}.sentinela-btn{flex:0 1 auto;white-space:normal}}
-  body.dark-mode .sentinela-user{color:#cbd5e1}body.dark-mode .sentinela-btn{background:#374151;color:#f3f4f6;border:1px solid #4b5563}
   .sentinela-password-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;align-items:center;justify-content:center;z-index:10001;padding:18px}
   .sentinela-password-modal{background:var(--surface,#fff);color:var(--text,#1a202c);width:min(430px,100%);padding:22px;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
   .sentinela-password-modal input{box-sizing:border-box;width:100%;padding:11px;margin:6px 0 12px;border:1px solid var(--border,#cbd5e1);border-radius:7px;background:var(--surface-2,#fff);color:var(--text,#1a202c)}
@@ -32,7 +31,7 @@
   .ponto-overlay{position:fixed;inset:0;background:rgba(15,23,42,.58);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
   .ponto-modal{background:white;color:#1a202c;width:min(430px,100%);border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
   .ponto-modal h3{margin-top:0}.ponto-modal input{width:100%;box-sizing:border-box;padding:11px;border:1px solid #cbd5e1;border-radius:7px;margin:8px 0 14px;font-size:16px}
-  .ponto-buttons{display:flex;gap:8px}.ponto-buttons button{flex:1;padding:11px;border:0;border-radius:7px;cursor:pointer;font-weight:700}.ponto-confirm{background:#2b6cb0;color:#fff}.ponto-cancel{background:#edf2f7}
+  .ponto-buttons{display:flex;gap:8px}.ponto-buttons button{flex:1;padding:11px;border:0;border-radius:7px;cursor:pointer;font-weight:700}.ponto-confirm{background:#b71f3c;color:#fff}.ponto-cancel{background:#fff1f3}
   `;
   document.head.appendChild(style);
 
