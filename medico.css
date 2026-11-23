@@ -1,0 +1,62 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { min-height: 100vh; padding: 30px; display: flex; justify-content: center; }
+.container { width: 100%; max-width: 1250px; }
+.medico-grid { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
+.coluna-fila, .coluna-form, .consultorio-box { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,.04); }
+.coluna-fila { padding: 24px; height: fit-content; max-height: 85vh; overflow-y: auto; }
+.coluna-form { padding: 35px; }
+.consultorio-box { padding: 15px; margin-bottom: 20px; }
+.consultorio-box input { width: 80px; margin: 0 10px; }
+.form-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 6px; color: #4a5568; font-weight: 600; font-size: 14px; }
+input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; background: #f8fafc; color: #2d3748; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #3182ce; background: #fff; box-shadow: 0 0 0 3px rgba(49,130,206,.15); }
+textarea { height: 110px; resize: none; }
+.card-paciente { background: #fff; border: 1px solid #e2e8f0; border-left: 6px solid #cbd5e1; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+.card-paciente.selecionado { border-color: #3182ce; background: #ebf8ff; }
+.botoes-card, .botoes-acao { display: flex; gap: 8px; }
+button { width: 100%; padding: 14px; background: #3182ce; color: #fff; border: 0; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
+button:hover { background: #2b6cb0; }
+.botoes-card button { margin-top: 8px; padding: 8px; font-size: 12px; }
+.btn-atender { background: #38a169; }
+.btn-atender:hover { background: #2f855a; }
+.btn-pdf { background: #805ad5; }
+.btn-pdf:hover { background: #6b46c1; }
+.alerta-alergia { display: none; padding: 12px; margin-bottom: 15px; border-radius: 6px; background: #fed7d7; color: #9b2c2c; border: 1px solid #e53e3e; }
+.badge-risco { display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; text-transform: uppercase; }
+.badge-risco.vermelho { background: #fed7d7; color: #9b2c2c; }
+.badge-risco.amarelo { background: #feebc8; color: #c05621; }
+.badge-risco.verde { background: #c6f6d5; color: #22543d; }
+.emergencia-card { border: 2px dashed #e53e3e; background: #fff5f5; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+.emergencia-card button { background: #e53e3e; }
+@media (max-width: 900px) { .medico-grid { grid-template-columns: 1fr; } body { padding: 15px; } }
+
+.sintoma-add-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.sintomas-editor input{box-sizing:border-box;width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;margin:4px 0}
+.btn-adicionar-sintoma{width:auto;padding:9px 13px;margin:7px 0;background:#2b6cb0;color:#fff;border:0;border-radius:7px;cursor:pointer}
+.lista-sintomas{display:grid;gap:7px;margin-top:8px}
+.sintoma-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;background:#f1f5f9;border:1px solid #dbe4ee;border-radius:8px;font-size:13px}
+.sintoma-item small{display:block;color:#64748b;margin-top:3px}
+.sintoma-item button{width:auto;margin:0;padding:6px 9px;background:#b83232;color:white;border:0;border-radius:6px}
+body.dark-mode .sintoma-item{background:var(--surface-2);border-color:var(--border);color:var(--text)}
+@media(max-width:600px){.sintoma-add-grid{grid-template-columns:1fr}.sintoma-item{align-items:flex-start;flex-direction:column}.sintoma-item button{width:100%}}
+
+
+/* Estilos extraídos dos atributos inline da página. */
+.extracted-02dd0a00 { margin-top:0; color:#2d3748; margin-bottom:15px; }
+.extracted-1fadc7d7 { display:flex;justify-content:space-between;align-items:flex-start;gap:8px }
+.extracted-26c08ab1 { margin-top:0; color:#2d3748; }
+.extracted-3aa0d1aa { color:#4a5568; font-size:13px; }
+.extracted-3c7371bb { color:#c53030;text-align:center }
+.extracted-4fbc116c { background-color: #edf2f7; font-weight: bold; }
+.extracted-5977a114 { font-size:12px;color:#b83232 }
+.extracted-5b52d149 { color:#888;text-align:center;padding:20px 0 }
+.extracted-6447d4f7 { margin:0; color:#1a365d; }
+.extracted-778528eb { color:#888; text-align:center; }
+.extracted-a27ad5cf { font-size:12px;color:#4a5568 }
+.extracted-b0d6d29b { background:#3182ce; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; }
+.extracted-c57d05b9 { display:none;margin-bottom:12px;padding:12px;border-radius:8px;background:#eef6ff;border:1px solid #bfd7f5; }
+.extracted-ccc5e8e6 { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+.extracted-ce795241 { font-size:12px; margin-top:4px; }
+.extracted-db383b1c { margin-top:10px; width:100%; background:#6c757d; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; }
+.extracted-fa201034 { font-size:12px;margin:4px 0;color:#4a5568 }

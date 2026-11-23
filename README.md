@@ -1,51 +1,75 @@
-# Hospital Sentinela
+<p align="center">
+  <img src="frontend/assets/sentinela-icon.png" alt="Símbolo do Hospital Sentinela" width="156" />
+</p>
 
-Sistema **demonstrativo/escolar** de apoio ao fluxo hospitalar. Interface com painéis de administração, atendimento, triagem, consultório, almoxarifado e TV de chamadas. Layout responsivo em azul-escuro, azul vibrante e superfícies claras, com alternância de tema.
+<h1 align="center">Hospital Sentinela</h1>
+<p align="center"><strong>Sistema demonstrativo de gestão hospitalar</strong><br/>Atendimento integrado • Interface Clinical Premium • Node.js</p>
 
-## Instalação
+---
 
-1. Instale o Node.js LTS (Node 20+).
-2. Extraia o ZIP.
-3. Na pasta principal, execute `npm install` e depois `npm start`.
-4. Acesse `http://localhost:3000`.
+## Sobre o projeto
 
-O lockfile original estava incompleto (não incluía a dependência de PDF); ele foi retirado para que `npm install` resolva todas as dependências corretamente. Um novo `package-lock.json` será gerado na primeira instalação.
+O **Hospital Sentinela** é um projeto acadêmico de desenvolvimento web que demonstra a comunicação entre setores de uma unidade hospitalar. A interface foi criada para oferecer navegação simples, acompanhamento de filas e visão operacional em um único sistema.
 
-No Render, use **Build Command** `npm install` e **Start Command** `npm start`. O servidor lê a porta definida em `PORT`.
+O sistema utiliza **HTML, CSS e JavaScript** no frontend, **Node.js com Express** no backend e armazenamento local em arquivos JSON. Inclui temas claro e escuro e um painel independente para exibição pública das chamadas.
 
-## Áreas e recursos
+## Módulos
 
-- **Administração** — resumo, frequência, auditoria, criação/exclusão de contas, troca de senha e solicitações de redefinição.
-- **Atendimento** — cadastro de pacientes, inclusive fluxo emergencial sem cadastro.
-- **Triagem** — fila de pacientes, classificação, registro de sintomas e chamada na TV.
-- **Médico** — atendimento por prioridade, histórico, prescrições, geração de PDF e conclusão.
-- **Almoxarifado** — consulta de estoque, indicadores, registro de novos itens, entradas/saídas, histórico e consulta de prescrições; admite ajustes por API.
-- **TV** — exibição da chamada atual e histórico.
-- **Acesso e ponto** — login, sessão autenticada via cookie HttpOnly, controles de acesso por área, registro explícito da saída e alteração de senha.
+| Módulo | Principais recursos |
+| --- | --- |
+| **Administração** | Visão geral, usuários, frequência, notificações e auditoria. |
+| **Atendimento** | Cadastro de pacientes, anexos e encaminhamento para triagem. |
+| **Triagem** | Fila, sinais vitais, observações e registro de classificação pelo profissional. |
+| **Médico** | Consultas, sintomas, histórico, prescrições e geração de documentos. |
+| **Farmácia** | Estoque, alertas, entradas, saídas e histórico de movimentações. |
+| **Medicações** | Consulta das informações de medicamentos disponíveis. |
+| **TV hospitalar** | Chamadas para guichês ou consultórios e histórico resumido, sem classificação de risco. |
 
-Os perfis de demonstração são declarados no início de `backend/server.js`. Troque as credenciais padrão antes de expor qualquer instância. O setor anteriormente chamado Farmácia agora usa o perfil e a página **Almoxarifado**; perfis salvos anteriormente são migrados na inicialização.
+## Tecnologias
 
-## Estrutura
+- **Frontend:** HTML5, CSS3 e JavaScript.
+- **Backend:** Node.js, Express e API HTTP.
+- **Documentos:** PDFKit.
+- **Persistência:** arquivos JSON locais gerados durante a execução.
 
-- `backend/server.js` — servidor HTTP, rotas, dados e autenticação de demonstração.
-- `frontend/*.html` — páginas.
-- `frontend/design.css` — identidade visual compartilhada.
-- `frontend/css/` — estilos específicos das áreas.
-- `frontend/js/` — formulários, sessão, design e operações.
+## Como executar
 
-## Limitações importantes
+**Pré-requisitos:** Node.js 20 ou superior e npm.
 
-**Não é apropriado para dados reais ou uso clínico.** Pacientes, consultas, triagens, estoque e ponto ficam em **memória** e são perdidos ao reiniciar ou quando a hospedagem recicla a instância. Usuários e pedidos de redefinição podem ser gravados em arquivos JSON locais, mas isso não garante persistência em plataformas com armazenamento efêmero. As sessões também expiram ao reiniciar.
+Na pasta principal do projeto, execute:
 
-A autenticação com cookie HttpOnly e algumas regras por perfil reduzem acessos acidentais, porém o projeto **não** oferece os controles de segurança, privacidade, auditoria clínica, backup e persistência exigidos para produção. Os usuários padrão são apenas de testes. Antes de uso real, implemente banco de dados, proteção contra CSRF, senhas com hash, políticas de permissão completas, testes especializados e revisão técnica e legal.
+```bash
+npm install
+npm start
+```
 
-## Notas da revisão
+Depois, abra **http://localhost:3000** no navegador. O arquivo de dependências travadas (`package-lock.json`) será gerado pelo npm durante a instalação.
 
-- Corrigido o redirecionamento do setor e removido o endpoint/API duplicado que não correspondia ao servidor principal.
-- Atualização automática do estoque não perde a seleção atual; campos de histórico são escapados contra HTML injetado.
-- Quantidades do estoque exigem inteiros válidos; erros aparecem na tela.
-- Triagens e consultas não podem ser concluídas repetidamente com o mesmo ID de triagem, e campos obrigatórios são validados no backend.
-- O ponto deixa de depender de uma requisição assíncrona disparada ao fechar a aba; o usuário dispõe de ação explícita para saída.
-- Ações administrativas passam a validar a sessão real em vez de confiar no nome enviado em um cabeçalho.
+Para usar um serviço de hospedagem Node.js como o Render, execute o mesmo comando de inicialização (`npm start`) e configure a raiz do projeto como diretório de trabalho. A aplicação utiliza a variável de ambiente `PORT` quando fornecida. O endpoint `/health` permite verificar se o serviço está ativo.
 
-Para checar a sintaxe do backend e scripts principais, execute `npm test`.
+## Organização do código
+
+```text
+Projeto-Sentinela-Hospital-main/
+├── api/                 # Entrada de compatibilidade para hospedagens
+├── backend/             # Servidor, rotas e persistência
+├── frontend/
+│   ├── assets/          # Identidade visual e ilustrações
+│   ├── css/             # Estilos específicos de cada página
+│   ├── js/              # Scripts de interface, sessão e módulos
+│   ├── site.css         # Layout e componentes compartilhados
+│   ├── theme.css        # Variáveis e regras dos temas
+│   └── *.html           # Páginas dos setores e painel de TV
+├── package.json
+└── README.md
+```
+
+## Avisos sobre segurança e uso
+
+Este é um **projeto acadêmico/demonstrativo**, não um sistema homologado para assistência clínica real. A classificação de risco não implementa um protocolo clínico validado e deve ser sempre analisada por profissional habilitado.
+
+A autenticação, as permissões e a proteção dos dados ainda exigem melhorias antes de um uso real. **Não cadastre dados verdadeiros de pacientes**, nem publique arquivos de dados gerados pelo sistema. O armazenamento local em JSON também não oferece a mesma durabilidade de um banco de dados de produção; em hospedagens sem disco persistente, os registros podem ser perdidos após reinicializações ou novas implantações.
+
+---
+
+<p align="center"><sub>Hospital Sentinela • Desenvolvimento web e design de interfaces</sub></p>

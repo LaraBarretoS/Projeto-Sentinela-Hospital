@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+ <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Triagem Hospitalar</title>
+<link href="/theme.css" rel="stylesheet"/>
+<link href="/css/triagem.css" rel="stylesheet"/>
+
+
+<link rel="stylesheet" href="/site.css"/></head>
+<body>
+<button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Triagem</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">✚</div><div class="ref-hero-copy"><h2>Avaliação e classificação</h2><p>Acompanhe a fila e registre a avaliação do paciente com segurança.</p></div><div aria-hidden="true" class="ref-hero-art"><img alt="" loading="eager" src="/assets/hospital-ilustracao.png"/></div></div></section><section aria-label="Acompanhamento da fila" class="v4-triage-status"><div class="v4-status-summary"><span class="v4-status-icon">☷</span><span class="v4-status-copy"><small>Pacientes na fila</small><strong id="v4FilaCount">—</strong></span></div><p class="v4-status-note">A classificação de risco é realizada pelo profissional responsável.</p></section><div class="ref-sector-controls v4-toolbar"><button class="btn-abrir-tv ref-subtle-action" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button></div>
+<!-- Cabeçalho -->
+<div aria-label="Fila de pacientes e ficha de atendimento" class="triagem-grid ref-clinical-grid">
+<!-- Coluna Esquerda: Lista de Pacientes -->
+<div aria-label="Fila de pacientes" class="coluna-fila ref-card">
+<h3 class="extracted-26c08ab1 ref-section-heading">Fila de Atendimento</h3>
+<p class="extracted-c803fdde">Pacientes aguardando avaliação e classificação.</p>
+<div class="emergencia-card">
+<strong>🚨 Paciente de Emergência</strong>
+<p class="extracted-ce795241">Paciente sem cadastro prévio. Use para atendimento imediato/testes.</p>
+<button onclick="selecionarPacienteEmergencia()" type="button">Selecionar Paciente de Emergência</button>
+</div>
+<div id="fila-pacientes">
+<p class="extracted-778528eb">Carregando...</p>
+</div>
+<button class="extracted-0d3c39d5" onclick="carregarPacientes()">🔄 Atualizar Fila</button>
+</div>
+<!-- Coluna Direita: Formulário do Enfermeiro -->
+<div aria-label="Ficha de atendimento" class="coluna-form ref-card">
+<h3 class="extracted-02dd0a00 ref-section-heading">Ficha de Avaliação da Triagem</h3><p class="v4-card-subtitle">Registre os dados e revise a classificação conforme o protocolo do serviço.</p><div class="v4-triage-form-grid"><div class="v4-triage-main"><div class="form-group">
+<label for="nome">Paciente Selecionado *</label>
+<input class="extracted-4fbc116c" id="nome" placeholder="Selecione um paciente na lista ao lado" readonly=""/>
+</div><div class="form-group">
+<label for="sintoma">Sintoma / Queixa Principal *</label>
+<select id="sintoma">
+<option value="">Selecione o sintoma principal</option>
+<option value="dor_leve">Dor leve</option>
+<option value="resfriado">Resfriado</option>
+<option value="coriza">Coriza</option>
+<option value="tosse">Tosse</option>
+<option value="febre">Febre</option>
+<option value="vomito">Vômito</option>
+<option value="diarreia">Diarreia</option>
+<option value="falta_ar_moderada">Falta de ar moderada</option>
+<option value="falta_ar_grave">Falta de ar grave</option>
+<option value="infarto">Suspeita de infarto</option>
+<option value="avc">Suspeita de AVC</option>
+<option value="convulsao">Convulsão</option>
+<option value="hemorragia">Hemorragia</option>
+</select>
+</div><div class="form-group">
+<label for="temp">Temperatura (°C) *</label>
+<input id="temp" placeholder="Ex: 36.5" step="0.1" type="number"/>
+</div><div class="form-group grid-sinais">
+<div><label for="pressao">Pressão arterial (mmHg)</label><input id="pressao" placeholder="Ex.: 120/80"/></div>
+<div><label for="fc">Frequência cardíaca (bpm)</label><input id="fc" min="0" placeholder="Ex.: 82" type="number"/></div>
+<div><label for="fr">Frequência respiratória (irpm)</label><input id="fr" min="0" placeholder="Ex.: 18" type="number"/></div>
+<div><label for="spo2">Saturação SpO₂ (%)</label><input id="spo2" max="100" min="0" placeholder="Ex.: 98" type="number"/></div>
+<div><label for="consciencia">Nível de consciência</label><select id="consciencia"><option value="">Não informado</option><option value="alerta">Alerta</option><option value="confuso">Confuso / desorientado</option><option value="rebaixado">Rebaixado / não responsivo</option></select></div>
+<div><label for="dor">Intensidade da dor (0–10)</label><input id="dor" max="10" min="0" placeholder="0 a 10" type="number"/></div>
+<div><label for="glicemia">Glicemia (mg/dL), quando indicada</label><input id="glicemia" max="2000" min="0" placeholder="Não obrigatório" type="number"/></div>
+</div><div class="form-group">
+<label for="alergia">Alergias Conhecidas</label>
+<input id="alergia" placeholder="Ex: Dipirona, Penicilina, Nenhuma"/>
+</div><div class="form-group">
+<label for="observacao">Observações / Sinais Vitais</label>
+<textarea id="observacao" placeholder="Pressão arterial, batimentos cardíacos, histórico..." rows="3"></textarea>
+</div></div><div class="v4-triage-risk"><div class="form-group v4-risk-alerts">
+<label>Sinais de alerta observados</label>
+<div class="alertas-grid">
+<label><input name="alerta" type="checkbox" value="dificuldade respiratória grave"/> Dificuldade respiratória grave</label>
+<label><input name="alerta" type="checkbox" value="dor no peito"/> Dor no peito</label>
+<label><input name="alerta" type="checkbox" value="convulsão"/> Convulsão</label>
+<label><input name="alerta" type="checkbox" value="sangramento intenso"/> Sangramento intenso</label>
+<label><input name="alerta" type="checkbox" value="alteração importante de consciência"/> Alteração importante de consciência</label>
+<label><input name="alerta" type="checkbox" value="suspeita de AVC"/> Suspeita de AVC</label>
+<label><input name="alerta" type="checkbox" value="sangramento ativo importante"/> Sangramento ativo importante</label>
+<label><input name="alerta" type="checkbox" value="cianose"/> Cianose</label>
+<label><input name="alerta" type="checkbox" value="reação alérgica grave"/> Reação alérgica grave</label>
+<label><input name="alerta" type="checkbox" value="risco imediato identificado pelo profissional"/> Outro sinal crítico identificado</label>
+</div>
+</div><div class="form-group">
+<label for="riscoManual">Classificação sugerida para revisão profissional</label>
+<select id="riscoManual"><option value="amarelo">🟡 Amarelo — requer avaliação prioritária</option><option value="verde">🟢 Verde — menor prioridade</option><option value="vermelho">🔴 Vermelho — avaliação imediata</option></select>
+<small id="avisoClassificacao">Ferramenta de registro e alerta, não é Protocolo de Manchester e não determina prioridade automaticamente. A classificação final é responsabilidade do profissional.</small>
+</div><div class="form-group">
+<label for="justificativa">Justificativa / revisão profissional</label>
+<textarea id="justificativa" placeholder="Registre os achados que fundamentam a classificação e eventuais ajustes" rows="2"></textarea>
+</div></div></div>
+<div id="resultado"></div>
+<button class="btn-salvar" onclick="salvar()">Concluir Triagem e Enviar ao Médico</button>
+</div>
+</div>
+</main>
+<script>
+let pacienteAtual = null;
+
+function carregarPacientes() {
+  fetch("/pacientes")
+    .then(r => r.json())
+    .then(pacientes => {
+      const div = document.getElementById("fila-pacientes");
+
+      // Filtra os pacientes com status "triagem"
+      const fila = pacientes.filter(p => p.status === "triagem");
+
+      if (fila.length === 0) {
+        div.innerHTML = '<p class="extracted-511f9c3e">Nenhum paciente aguardando.</p>';
+        return;
+      }
+
+      div.innerHTML = "";
+      fila.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "fila-item";
+        if (pacienteAtual && pacienteAtual.id === p.id) {
+          item.classList.add("selecionado");
+        }
+
+        item.innerHTML = `
+          <div>
+            <strong>${p.nome}</strong><br>
+            <small class="extracted-d370dae4">CPF: ${p.cpf || "—"} | ${p.tipo || "Geral"}</small>
+          </div>
+          <button class="btn-tv" onclick='selecionarEChamar(${JSON.stringify(p)})'>📺 Chamar na TV</button>
+        `;
+        div.appendChild(item);
+      });
+    })
+    .catch(() => {
+      document.getElementById("fila-pacientes").innerHTML =
+        '<p class="extracted-2d31d2f4">Erro ao carregar pacientes.</p>';
+    });
+}
+
+// Quando clica em "Chamar na TV": envia para a TV e preenche a ficha do enfermeiro
+function selecionarEChamar(paciente) {
+  pacienteAtual = paciente;
+  
+  // Preenche o campo de nome no formulário da direita
+  document.getElementById("nome").value = paciente.nome;
+
+  // Atualiza destaque na lista
+  carregarPacientes();
+
+  // Envia a chamada para o backend/TV
+  fetch("/tv/chamar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      localTipo: "GUICHÊ",
+      localNumero: "01",
+      paciente: paciente.nome
+    })
+  })
+  .then(r => r.json())
+  .then(() => {
+    console.log("Chamada enviada para a TV!");
+  })
+  .catch(err => console.error("Erro ao chamar na TV:", err));
+}
+
+function selecionarPacienteEmergencia() {
+  pacienteAtual = { id: null, nome: "Paciente de Emergência", pacienteEmBranco: true };
+  document.getElementById("nome").value = "Paciente de Emergência";
+  document.getElementById("sintoma").value = "";
+  document.getElementById("temp").value = "";
+  document.getElementById("alergia").value = "";
+  document.getElementById("observacao").value = "";
+  ["pressao","fc","fr","spo2","consciencia","dor","glicemia","justificativa"].forEach(id=>document.getElementById(id).value="");
+  document.querySelectorAll('input[name="alerta"]').forEach(el=>el.checked=false);
+  fetch("/tv/chamar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ localTipo: "GUICHÊ", localNumero: "01", paciente: "Paciente de Emergência" }) });
+}
+
+function classificarRisco(sintoma, sinaisAlerta, consciencia) {
+  const criticos = ["dificuldade respiratória grave", "dor no peito", "convulsão", "sangramento intenso", "alteração importante de consciência", "suspeita de AVC"];
+  if (sinaisAlerta.some(item => criticos.includes(item)) || consciencia === "rebaixado") return "vermelho";
+  // Não há inferência automática de verde/amarelo: sem protocolo validado,
+  // o sistema apenas sinaliza os alertas críticos e exige decisão profissional.
+  return "amarelo";
+}
+
+function salvar() {
+  const nome = document.getElementById("nome").value;
+  const sintoma = document.getElementById("sintoma").value;
+  const temperatura = document.getElementById("temp").value;
+  const alergia = document.getElementById("alergia").value;
+  const observacao = document.getElementById("observacao").value;
+  if (!pacienteAtual) return alert("Selecione um paciente da lista ou o Paciente de Emergência.");
+  if (!sintoma) return alert("Informe a queixa principal.");
+  const sinaisAlerta = [...document.querySelectorAll('input[name="alerta"]:checked')].map(el => el.value);
+  const consciencia = document.getElementById("consciencia").value;
+  const sugestao = classificarRisco(sintoma, sinaisAlerta, consciencia);
+  const risco = document.getElementById("riscoManual").value;
+  const justificativaInformada = document.getElementById("justificativa").value.trim();
+  if (sugestao === "vermelho" && risco !== "vermelho") {
+    if (!justificativaInformada) return alert("Há sinal(is) crítico(s). Para registrar uma classificação diferente de vermelho, documente a justificativa da decisão profissional.");
+    if (!confirm("ATENÇÃO: foram identificados sinais de alerta críticos. Confirma que, após avaliação presencial, a classificação escolhida deve ser diferente de vermelho?")) return;
+  }
+  const justificativa = justificativaInformada || `Sugestão de apoio: ${sugestao}. Classificação confirmada pelo profissional responsável.`;
+  const sinaisVitais = {
+    pressao: document.getElementById("pressao").value.trim(),
+    frequenciaCardiaca: document.getElementById("fc").value,
+    frequenciaRespiratoria: document.getElementById("fr").value,
+    spo2: document.getElementById("spo2").value,
+    consciencia,
+    intensidadeDor: document.getElementById("dor").value,
+    glicemia: document.getElementById("glicemia").value
+  };
+  const ausentes = Object.entries(sinaisVitais).filter(([k,v]) => !v && k !== "consciencia").map(([k]) => k);
+  const justificativaCompleta = `${justificativa}${ausentes.length ? ` Dados não informados: ${ausentes.join(", ")}.` : ""}${risco !== sugestao ? ` Classificação revisada: sugestão ${sugestao}; decisão profissional ${risco}.` : ""}`;
+  fetch("/triagem", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
+    pacienteId:pacienteAtual.id || null, nome, sintoma, temperatura, alergia, observacao, risco, sinaisVitais, sinaisAlerta,
+    justificativaRisco:justificativaCompleta, riscoRevisadoPor:window.sentinelaUser?.nome || window.sentinelaUser?.usuario || "Profissional não identificado"
+  })})
+  .then(async response => { const data=await response.json().catch(()=>({})); if(!response.ok) throw new Error(data.erro || `Erro HTTP ${response.status}`); return data; })
+  .then(data => {
+    const resultado=document.getElementById("resultado"); resultado.className="risco-"+data.risco; resultado.style.display="block";
+    resultado.textContent=`Classificação registrada: ${data.risco.toUpperCase()}. ${data.justificativaRisco}`;
+    alert("Triagem registrada e encaminhada para avaliação médica.");
+    ["nome","sintoma","temp","alergia","observacao","pressao","fc","fr","spo2","consciencia","dor","glicemia","justificativa"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("riscoManual").value="amarelo"; document.querySelectorAll('input[name="alerta"]').forEach(el=>el.checked=false);
+    pacienteAtual=null; carregarPacientes();
+  }).catch(err=>alert("Erro ao salvar triagem: "+err.message));
+}
+
+// Carrega a fila inicial ao abrir
+carregarPacientes();
+
+// Atualiza a lista a cada 10 segundos
+setInterval(carregarPacientes, 10000);
+</script>
+<script src="/js/theme.js"></script>
+<script src="/js/session.js"></script>
+<script src="/js/layout.js"></script>
+</body>
+</html>
