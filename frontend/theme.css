@@ -1,7 +1,143 @@
-/* SENTINELA — Design System Clinical Intelligence */
-:root{color-scheme:light;--navy:#17324D;--petrol:#24566A;--teal:#299D91;--amber:#D99B42;--bg:#F3F6F8;--surface:#FFFFFF;--surface-2:#F7FAFB;--surface-3:#EDF3F6;--text:#243746;--muted:#718391;--heading:#17324D;--border:#DCE5EA;--primary:#24566A;--primary-hover:#1B4658;--success:#218777;--warning:#A96F1D;--danger:#B94A52;--shadow:0 10px 30px rgba(23,50,77,.07);--shadow-soft:0 3px 12px rgba(23,50,77,.05);--radius-card:16px;--radius-control:10px;--focus-ring:0 0 0 3px rgba(41,157,145,.22);--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px}
-body.dark-mode{color-scheme:dark;--navy:#101923;--petrol:#34768A;--teal:#42B8A8;--amber:#E7B45F;--bg:#101923;--surface:#1C3041;--surface-2:#243C4E;--surface-3:#192C3B;--text:#E7F0F4;--muted:#9AAEBB;--heading:#E7F0F4;--border:#304758;--primary:#34768A;--primary-hover:#408DA1;--success:#42B8A8;--warning:#E7B45F;--danger:#F08083;--shadow:0 12px 32px rgba(0,0,0,.20);--shadow-soft:0 4px 14px rgba(0,0,0,.14);--focus-ring:0 0 0 3px rgba(66,184,168,.25)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;line-height:1.55;transition:background-color .2s,color .2s}h1,h2,h3,h4{color:var(--heading);line-height:1.25;letter-spacing:-.025em}button,input,select,textarea{font:inherit}button{cursor:pointer;transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s}button:disabled{opacity:.58;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;box-shadow:var(--focus-ring)}input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),select,textarea{max-width:100%;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface);color:var(--text)}input::placeholder,textarea::placeholder{color:var(--muted)}table{color:var(--text)}th{color:var(--heading)}
-.theme-toggle{position:fixed;top:16px;right:18px;z-index:9999;width:44px;height:44px;padding:0;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);box-shadow:var(--shadow-soft);font-size:19px;line-height:1}.theme-toggle:hover{transform:translateY(-1px);border-color:var(--teal)}.sentinela-topbar{position:relative;margin:12px auto 20px;max-width:1440px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-soft)}.sentinela-user{color:var(--muted)}.form-group{margin-bottom:18px}.form-group small,#avisoClassificacao{display:block;color:var(--muted);margin-top:6px;line-height:1.45}#resultado{border-radius:12px;padding:14px;margin:14px 0;line-height:1.5}
-body.dark-mode .container,body.dark-mode .wrap,body.dark-mode .card,body.dark-mode .coluna-fila,body.dark-mode .coluna-form,body.dark-mode .consultorio-box,body.dark-mode .card-paciente,body.dark-mode .fila-item,body.dark-mode .sentinela-topbar{background-color:var(--surface);color:var(--text);border-color:var(--border)}body.dark-mode input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),body.dark-mode select,body.dark-mode textarea{background:var(--surface-2);color:var(--text);border-color:var(--border)}body.dark-mode th{background:var(--surface-2);color:var(--heading)}body.dark-mode td,body.dark-mode th{border-color:var(--border)}body.dark-mode .theme-toggle{background:var(--surface);color:var(--text);border-color:var(--border)}body.dark-mode .emergencia-card{background:#40272B;border-color:#92545B;color:#F9E5E5}body.dark-mode .risco-vermelho{background:#54272D;color:#FFD6D8}body.dark-mode .risco-amarelo{background:#514022;color:#FDE8B5}body.dark-mode .risco-verde{background:#1F453F;color:#C3F3E8}
-@media(max-width:760px){.container,.wrap{max-width:100%;box-sizing:border-box;margin:10px;padding:14px}.triagem-grid,.medico-grid{grid-template-columns:1fr}.grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}table{display:block;max-width:100%;overflow-x:auto}}@media(max-width:420px){.grid-sinais{grid-template-columns:1fr}.sentinela-left,.sentinela-actions{max-width:100%;width:100%}.sentinela-actions{justify-content:flex-start}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+/* Tema global do Sistema Hospitalar */
+:root {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --text: #2d3748;
+  --muted: #718096;
+  --heading: #1a365d;
+  --border: #cbd5e1;
+  --primary: #3182ce;
+  --primary-hover: #2b6cb0;
+  --shadow: rgba(0,0,0,.06);
+}
+
+body {
+  background-color: var(--bg) !important;
+  color: var(--text);
+}
+
+body.dark-mode {
+  --bg: #111827;
+  --surface: #1f2937;
+  --surface-2: #374151;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --heading: #93c5fd;
+  --border: #4b5563;
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --shadow: rgba(0,0,0,.30);
+}
+
+body.dark-mode .container,
+body.dark-mode .sidebar,
+body.dark-mode .main-content,
+body.dark-mode .coluna-fila,
+body.dark-mode .coluna-form,
+body.dark-mode .consultorio-box,
+body.dark-mode .card,
+body.dark-mode .fila-item,
+body.dark-mode .card-paciente {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+body.dark-mode input[readonly] {
+  background-color: #4b5563 !important;
+  color: #f3f4f6 !important;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode label,
+body.dark-mode strong,
+body.dark-mode .card b,
+body.dark-mode .sidebar h3 {
+  color: var(--text) !important;
+}
+
+body.dark-mode h2,
+body.dark-mode .sidebar h3 {
+  color: var(--heading) !important;
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode small {
+  color: var(--muted);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: auto;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9999;
+  width: 44px !important;
+  height: 44px;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  box-shadow: 0 3px 12px var(--shadow);
+  font-size: 21px !important;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  background: var(--surface-2) !important;
+  transform: scale(1.05);
+}
+
+/* Ajustes gerais para manter o modo escuro legível em todas as telas. */
+body.dark-mode .wrap,
+body.dark-mode .container,
+body.dark-mode main,
+body.dark-mode section,
+body.dark-mode .content,
+body.dark-mode .main,
+body.dark-mode .painel,
+body.dark-mode .panel,
+body.dark-mode .modal,
+body.dark-mode .modal-content,
+body.dark-mode .box,
+body.dark-mode .card,
+body.dark-mode .table-container,
+body.dark-mode .historico,
+body.dark-mode .form-container {
+  color: var(--text) !important;
+}
+body.dark-mode table { color: var(--text) !important; }
+body.dark-mode th,
+body.dark-mode td { border-color: var(--border) !important; }
+body.dark-mode th { background-color: var(--surface-2) !important; color: var(--text) !important; }
+body.dark-mode tr:nth-child(even) { background-color: rgba(255,255,255,.025); }
+body.dark-mode button:not(.theme-toggle),
+body.dark-mode .btn,
+body.dark-mode input[type="button"],
+body.dark-mode input[type="submit"] { color: inherit; }
+body.dark-mode textarea,
+body.dark-mode input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),
+body.dark-mode select {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder { color: #9ca3af !important; }
+body.dark-mode .theme-toggle { background: var(--surface) !important; color: var(--text) !important; }
+body.dark-mode .sentinela-password-modal { background: var(--surface) !important; color: var(--text) !important; }

@@ -1,66 +1,13 @@
-<!DOCTYPE html>
-
-<html lang="pt-BR">
-<head>
- <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="/theme.css" rel="stylesheet"/>
-<link href="/css/medicacoes.css" rel="stylesheet"/>
-
-
-<link rel="stylesheet" href="/site.css"/></head>
-<body>
-<button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
-<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Medicações</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">✚</div><div class="ref-hero-copy"><h2>Prescrições registradas</h2><p>Consulte os registros de medicação e acesse o estoque da Farmácia.</p></div><div aria-hidden="true" class="ref-hero-art"><img alt="" loading="eager" src="/assets/hospital-ilustracao.png"/></div></div></section>
-<!-- IMPLEMENTADO: local onde a lista de medicações será exibida -->
-<section class="ref-card ref-medicines"><h3 class="ref-section-heading">Medicações prescritas</h3><p><a href="/farmacia.html">→ Abrir módulo completo da Farmácia</a></p><div id="listaMedicacoes"></div></section></main>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prescrições | Hospital Sentinela</title><link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/design.css"></head><body>
+<main class="wrap"><section class="stock-panel"><h2>Prescrições registradas</h2><p>Registros das consultas concluídas no sistema.</p>
+<div class="stock-table-scroll"><table class="table"><thead><tr><th>Paciente</th><th>Medicação</th><th>Diagnóstico</th><th>Observações</th></tr></thead><tbody id="listaMedicacoes"><tr><td colspan="4" class="empty-message">Carregando...</td></tr></tbody></table></div>
+<p><a id="voltarSetor" href="/almoxarifado.html">Voltar ao setor</a></p></section></main>
 <script>
-
-// IMPLEMENTADO: busca as consultas salvas e mostra as medicações
-function carregarMedicacoesPrescritas() {
-  fetch("/medicacoes")
-    .then(r => r.json())
-    .then(data => {
-      const div = document.getElementById("listaMedicacoes");
-
-      div.innerHTML = "";
-
-      if (data.length === 0) {
-        div.innerHTML = "<p>Nenhuma medicação prescrita.</p>";
-        return;
-      }
-
-      data.forEach(c => {
-        div.innerHTML += `
-          <div class="card">
-            <h3>${c.paciente}</h3>
-
-            <p>
-              <b>Medicação:</b>
-              ${c.medicacao}
-            </p>
-
-            <p>
-              <b>Diagnóstico:</b>
-              ${c.diagnostico}
-            </p>
-
-            <p>
-              <b>Observações:</b>
-              ${c.obs || "Nenhuma"}
-            </p>
-          </div>
-        `;
-      });
-    });
-}
-
+const escapeHTML = v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function carregarMedicacoesPrescritas(){const list=document.getElementById('listaMedicacoes');try{const r=await fetch('/medicacoes');const data=await r.json();if(!r.ok||!Array.isArray(data))throw Error(data.erro||'Falha ao carregar prescrições.');
+list.innerHTML=data.map(c=>`<tr><td>${escapeHTML(c.paciente)}</td><td>${escapeHTML(c.medicacao||'—')}</td><td>${escapeHTML(c.diagnostico||'—')}</td><td>${escapeHTML(c.obs||'—')}</td></tr>`).join('')||'<tr><td colspan="4" class="empty-message">Nenhuma prescrição registrada.</td></tr>';
+}catch(e){list.textContent=e.message}}
 carregarMedicacoesPrescritas();
-
-</script>
-<script src="/js/theme.js"></script>
-<script src="/js/session.js"></script>
-<script src="/js/layout.js"></script>
-</body>
-</html>
+</script><script src="/js/session.js"></script><script src="/js/theme.js"></script><script src="/js/ui.js"></script>
+<script>document.getElementById('voltarSetor').href=window.sentinelaUser?.tipo==='medico'?'/medico.html':'/almoxarifado.html';</script></body></html>

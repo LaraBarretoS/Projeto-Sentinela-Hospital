@@ -1,17 +1,18 @@
 (() => {
   const user = JSON.parse(localStorage.getItem("sentinelaUser") || "null");
-  if (!user) { window.location.href = "/index.html"; return; }
+  if (!user) { window.location.replace("/index.html"); return; }
 
   const paginaPorTipo = {
     admin: "/admin.html",
     medico: "/medico.html",
     triagem: "/triagem.html",
     atendimento: "/atendimento.html",
-    farmacia: "/farmacia.html"
+    almoxarifado: "/almoxarifado.html"
   };
   const paginaAtual = window.location.pathname.toLowerCase();
   const paginaPermitida = paginaPorTipo[user.tipo];
-  if (!paginaPermitida || paginaAtual !== paginaPermitida) {
+  const paginaExtraPermitida = paginaAtual === "/medicacoes.html" && ["medico","almoxarifado"].includes(user.tipo);
+  if (!paginaExtraPermitida && (!paginaPermitida || paginaAtual !== paginaPermitida)) {
     window.location.replace(paginaPermitida || "/index.html");
     return;
   }
@@ -36,14 +37,24 @@
   `;
   document.head.appendChild(style);
 
+  // A sessão real fica em cookie HttpOnly; os dados locais servem só à interface.
+  fetch("/session").then(r => {
+    if (!r.ok) { localStorage.removeItem("sentinelaUser"); window.location.replace("/index.html"); }
+  }).catch(() => {});
   const bar = document.createElement("div");
   bar.className = "sentinela-topbar";
-  bar.innerHTML = `<div class="sentinela-left"><button class="sentinela-btn" id="btnTrocarUsuario" type="button">← Trocar usuário</button><span class="sentinela-user">👤 <b>${user.nome || user.usuario}</b> · ${user.tipo}</span></div><div class="sentinela-actions"><button class="sentinela-btn" id="btnMinhaSenha" type="button">🔐 Minha senha</button><button class="sentinela-btn primary" id="btnPontoManual" type="button">🕐 Ponto</button></div>`;
-  bar.querySelector("#btnTrocarUsuario").addEventListener("click", () => { window.location.href = "/index.html"; });
+  bar.innerHTML = `<div class="sentinela-left"><button class="sentinela-btn" id="btnTrocarUsuario" type="button">← Trocar usuário</button><span class="sentinela-user"><b id="headerUserName"></b> <small id="headerUserRole"></small></span></div><div class="sentinela-actions"><button class="sentinela-btn" id="btnMinhaSenha" type="button">🔐 Minha senha</button><button class="sentinela-btn primary" id="btnPontoManual" type="button">🕐 Ponto</button></div>`;
+  bar.querySelector("#headerUserName").textContent = user.nome || user.usuario;
+  bar.querySelector("#headerUserRole").textContent = "· " + ({ admin:"Administração", medico:"Médico", triagem:"Triagem", atendimento:"Atendimento", almoxarifado:"Almoxarifado" }[user.tipo] || user.tipo);
+  bar.querySelector("#btnTrocarUsuario").addEventListener("click", async () => {
+    await fetch("/logout", { method: "POST" }).catch(() => {});
+    localStorage.removeItem("sentinelaUser");
+    window.location.replace("/index.html");
+  });
   document.body.prepend(bar);
 
   const overlay = document.createElement("div"); overlay.className="ponto-overlay"; overlay.id="pontoOverlay";
-  overlay.innerHTML=`<div class="ponto-modal"><h3>🕐 Registrar ponto</h3><p>Olá, <b>${user.nome || user.usuario}</b>! Confirme o horário em que chegou.</p><label>Horário atual do computador</label><input id="pontoHora" type="time"><p style="font-size:12px;color:#718096">O sistema também guarda o horário em que o registro foi enviado.</p><div class="ponto-buttons"><button class="ponto-cancel" id="pontoCancelar">Agora não</button><button class="ponto-confirm" id="pontoConfirmar">Registrar entrada</button></div></div>`;
+  overlay.innerHTML=`<div class="ponto-modal"><h3>🕐 Registrar ponto</h3><p>Confirme seu horário de chegada.</p><label>Horário atual do computador</label><input id="pontoHora" type="time"><p style="font-size:12px;color:#718096">O sistema também guarda o horário em que o registro foi enviado.</p><div class="ponto-buttons"><button class="ponto-cancel" id="pontoCancelar">Agora não</button><button class="ponto-confirm" id="pontoConfirmar">Registrar entrada</button></div></div>`;
   document.body.appendChild(overlay);
 
   const passwordOverlay = document.createElement("div");
@@ -86,10 +97,13 @@
   async function conferirEntrada(){ const reg=await status(); if(!reg || !reg.horaEntrada){ setTimeout(abrirPonto,350); } }
   conferirEntrada();
 
-  window.addEventListener('beforeunload', e => {
-    fetch('/ponto?usuario='+encodeURIComponent(user.usuario)).then(r=>r.json()).then(reg=>{ if(reg && !reg.saida) navigator.sendBeacon('/ponto/saida', new Blob([JSON.stringify({usuario:user.usuario})],{type:'application/json'})); }).catch(()=>{});
-  });
 
-  window.registrarSaida = async function(){ const r=await fetch('/ponto/saida',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:user.usuario})}); if(r.ok) alert('Saída registrada.'); };
+  window.registrarSaida = async function(){ const r=await fetch('/ponto/saida',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:user.usuario})}); if(r.ok) alert('Saída registrada.'); else alert('Não foi possível registrar a saída.'); };
+  const saidaButton = document.createElement("button");
+  saidaButton.type = "button";
+  saidaButton.className = "sentinela-btn";
+  saidaButton.textContent = "Registrar saída";
+  saidaButton.onclick = window.registrarSaida;
+  bar.querySelector(".sentinela-actions").appendChild(saidaButton);
   window.sentinelaUser=user;
 })();

@@ -1,66 +1,29 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
- <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Hospitalar - Login</title>
-<link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/css/index.css">
-  
-</head>
-<body>
-<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
-<div class="container">
-  <h2>🏥 Sistema Hospitalar</h2>
-  <input id="usuario" placeholder="Usuário">
-  <input id="senha" type="password" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
-  <div id="mensagem-erro"></div>
-</div>
-
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Entrar | Hospital Sentinela</title>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/design.css"><style>body.sentinela-login{background:var(--bg)!important}</style></head>
+<body class="sentinela-login">
+<main class="login-shell">
+<section class="login-visual"><div class="login-brand"><span class="logo-mark" aria-hidden="true">+</span>sentinela.</div>
+<div><span class="login-eyebrow">PLATAFORMA HOSPITALAR</span><h1>Cuidado<br>com clareza.</h1><p>Uma interface unificada para atendimento, triagem, consultas, estoque e gestão da unidade.</p></div>
+<div class="login-footer">HOSPITAL SENTINELA <span aria-hidden="true"> · </span> AMBIENTE DEMONSTRATIVO</div></section>
+<section class="login-form-panel"><span class="overline">Bem-vindo</span><h2>Acessar sistema</h2><p class="subheading">Entre com suas credenciais para continuar.</p>
+<form id="loginForm"><label for="usuario">Usuário<input id="usuario" name="usuario" placeholder="Seu usuário" autocomplete="username" required></label>
+<label for="senha">Senha<input id="senha" type="password" name="senha" placeholder="Sua senha" autocomplete="current-password" required></label>
+<button id="loginBtn" type="submit">Entrar na plataforma</button><div id="mensagem-erro" role="alert" aria-live="polite"></div></form>
+<p class="footnote">Acesso destinado a usuários autorizados. Esta é uma aplicação demonstrativa, não destinada a prontuários reais.</p></section>
+</main>
 <script>
-function login() {
-  const usuarioInput = document.getElementById("usuario").value.trim();
-  const senhaInput = document.getElementById("senha").value.trim();
-  const msgErro = document.getElementById("mensagem-erro");
-
-  if (!usuarioInput || !senhaInput) {
-    msgErro.textContent = "Preencha usuário e senha.";
-    msgErro.style.display = "block";
-    return;
-  }
-
-  fetch("/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      usuario: usuarioInput,
-      senha: senhaInput
-    })
-  })
-  .then(async response => {
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.erro || "Usuário ou senha incorretos.");
-    }
-    return response.json();
-  })
-  .then(data => {
-    localStorage.setItem("sentinelaUser", JSON.stringify(data));
-    // Redireciona de acordo com o tipo do usuário retornado
-    if (data.tipo === "admin") location.href = "admin.html";
-    else if (data.tipo === "farmacia") location.href = "farmacia.html";
-    else if (data.tipo === "triagem") location.href = "triagem.html";
-    else if (data.tipo === "medico") location.href = "medico.html";
-    else location.href = "atendimento.html";
-  })
-  .catch(err => {
-    msgErro.textContent = err.message;
-    msgErro.style.display = "block";
-  });
-}
-</script>
-<script src="/js/theme.js"></script>
-</body>
-</html>
+const destino = { admin:'admin.html', atendimento:'atendimento.html', triagem:'triagem.html', medico:'medico.html', almoxarifado:'almoxarifado.html' };
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+  event.preventDefault(); const btn=document.getElementById('loginBtn'); const error=document.getElementById('mensagem-erro');
+  btn.disabled=true;error.textContent='';
+  try {
+    const response=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:document.getElementById('usuario').value.trim(),senha:document.getElementById('senha').value})});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(data.erro||'Não foi possível entrar.');
+    if(!destino[data.tipo]) throw new Error('Área de acesso não configurada.');
+    localStorage.setItem('sentinelaUser', JSON.stringify(data));
+    window.location.assign('/'+destino[data.tipo]);
+  }catch(err){error.textContent=err.message;btn.disabled=false;}
+});
+</script><script src="/js/theme.js"></script></body></html>

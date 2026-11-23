@@ -1,1 +1,34 @@
-(function(){"use strict";const storageKey="sentinela-theme";function lerTema(){try{return localStorage.getItem(storageKey)==="dark"}catch(_){return false}}function atualizarIcone(){const b=document.getElementById("themeToggle");if(!b)return;const dark=document.body.classList.contains("dark-mode");b.textContent=dark?"☀️":"🌙";b.title=dark?"Modo claro":"Modo escuro";b.setAttribute("aria-label",dark?"Ativar modo claro":"Ativar modo escuro")}function aplicarTema(){document.body.classList.toggle("dark-mode",lerTema());atualizarIcone()}function garantirBotao(){let b=document.getElementById("themeToggle");if(!b){b=document.createElement("button");b.id="themeToggle";b.className="theme-toggle";b.type="button";document.body.appendChild(b)}b.onclick=window.alternarTema;atualizarIcone()}window.alternarTema=function(){const dark=!document.body.classList.contains("dark-mode");document.body.classList.toggle("dark-mode",dark);try{localStorage.setItem(storageKey,dark?"dark":"light")}catch(_){}atualizarIcone()};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{aplicarTema();garantirBotao()});else{aplicarTema();garantirBotao()}})();
+(function () {
+  const storageKey = "sentinela-theme";
+  function aplicarTema() {
+    const savedTheme = localStorage.getItem(storageKey);
+    document.body.classList.toggle("dark-mode", savedTheme === "dark");
+    atualizarIcone();
+  }
+  function atualizarIcone() {
+    const botao = document.getElementById("themeToggle");
+    if (!botao) return;
+    const escuro = document.body.classList.contains("dark-mode");
+    botao.textContent = escuro ? "☀️" : "🌙";
+    botao.title = escuro ? "Modo claro" : "Modo escuro";
+    botao.setAttribute("aria-label", escuro ? "Ativar modo claro" : "Ativar modo escuro");
+  }
+  function garantirBotao() {
+    if (!document.getElementById("themeToggle")) {
+      const botao = document.createElement("button");
+      botao.id = "themeToggle"; botao.className = "theme-toggle"; botao.type = "button";
+      botao.textContent = "🌙"; botao.title = "Modo escuro"; botao.setAttribute("aria-label", "Ativar modo escuro");
+      document.body.appendChild(botao);
+    }
+    document.getElementById("themeToggle").onclick = alternarTema;
+    atualizarIcone();
+  }
+  window.alternarTema = function () {
+    const escuro = !document.body.classList.contains("dark-mode");
+    document.body.classList.toggle("dark-mode", escuro);
+    localStorage.setItem(storageKey, escuro ? "dark" : "light");
+    atualizarIcone();
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { aplicarTema(); garantirBotao(); });
+  else { aplicarTema(); garantirBotao(); }
+})();

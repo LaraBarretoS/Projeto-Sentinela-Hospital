@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Almoxarifado | Hospital Sentinela</title>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/design.css"></head><body>
+<main class="wrap">
+<div class="stock-metrics" aria-label="Resumo do estoque">
+  <div class="metric dark"><span class="metric-label">Itens cadastrados</span><strong class="metric-number" id="metricItems">—</strong></div>
+  <div class="metric"><span class="metric-label">Unidades em estoque</span><strong class="metric-number" id="metricUnits">—</strong></div>
+  <div class="metric"><span class="metric-label">Estoque abaixo do mínimo</span><strong class="metric-number" id="metricLow">—</strong></div>
+</div>
+<div class="stock-layout">
+  <section class="stock-panel"><h2>Estoque atual</h2><p>Acompanhe a disponibilidade dos insumos e medicamentos.</p>
+    <div class="stock-table-scroll"><table class="table"><thead><tr><th>Item</th><th>Quantidade</th><th>Mínimo</th><th>Status</th></tr></thead><tbody id="estoque"><tr><td colspan="4" class="empty-message">Carregando estoque...</td></tr></tbody></table></div>
+  </section>
+  <section class="stock-panel"><h2>Movimentar estoque</h2><p>Selecione o item e registre entradas ou saídas.</p>
+    <form id="movementForm" class="stock-form">
+      <label for="med">Item do almoxarifado<select id="med" required></select></label>
+      <label for="qtd">Quantidade<input id="qtd" type="number" min="1" step="1" value="1" required></label>
+      <label for="paciente">Paciente / Destino (para saídas)<input id="paciente" placeholder="Opcional" maxlength="120"></label>
+      <div class="stock-actions"><button type="button" id="btnEntrada">Registrar entrada</button><button type="button" id="btnSaida">Registrar saída</button></div>
+    </form><p id="stockMessage" class="stock-message" role="status" aria-live="polite"></p>
+    <details class="stock-new-item"><summary>Cadastrar novo item</summary>
+      <form id="newItemForm" class="stock-form">
+        <label for="novoItemNome">Nome do item<input id="novoItemNome" required maxlength="100" placeholder="Ex.: Luvas descartáveis"></label>
+        <label for="novoItemUnidade">Unidade de medida<input id="novoItemUnidade" required maxlength="40" value="unidades"></label>
+        <div class="stock-mini-grid"><label for="novoItemQtd">Quantidade inicial<input id="novoItemQtd" required type="number" min="0" step="1" value="0"></label>
+        <label for="novoItemMin">Estoque mínimo<input id="novoItemMin" required type="number" min="0" step="1" value="5"></label></div>
+        <button type="submit">Salvar novo item</button><p id="newItemMsg" class="stock-message" aria-live="polite"></p>
+      </form>
+    </details>
+  </section>
+</div>
+<section class="stock-panel"><div class="stock-heading-actions"><h2>Histórico de movimentações</h2><a href="/medicacoes.html">Ver prescrições</a></div><p>Registro recente de entradas, saídas e ajustes.</p>
+  <div class="stock-table-scroll"><table class="table"><thead><tr><th>Data / Hora</th><th>Movimentação</th><th>Item</th><th>Quantidade</th><th>Paciente / Destino</th><th>Responsável</th></tr></thead>
+    <tbody id="hist"><tr><td colspan="6" class="empty-message">Carregando histórico...</td></tr></tbody>
+  </table></div>
+</section>
+</main>
+<script src="/js/almoxarifado.js"></script><script src="/js/session.js"></script><script src="/js/theme.js"></script><script src="/js/ui.js"></script></body></html>
