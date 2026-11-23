@@ -1,4 +1,4 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 body { min-height: 100vh; padding: 30px; display: flex; justify-content: center; }
 .container { width: 100%; max-width: 1200px; }
 .triagem-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
@@ -32,7 +32,7 @@ button:hover { background: #2f855a; }
 .alertas-grid label { display:flex; align-items:center; gap:8px; margin:0; font-weight:500; }
 .alertas-grid input { width:auto; margin:0; }
 #avisoClassificacao { display:block; margin-top:7px; color:#718096; }
-
+body.dark-mode .alertas-grid { background:var(--surface-2); border-color:var(--border); }
 @media(max-width:560px){.grid-sinais,.alertas-grid{grid-template-columns:1fr}.coluna-fila,.coluna-form{padding:16px}.fila-item{align-items:flex-start;flex-direction:column}.fila-item .btn-tv{width:100%}}
 
 

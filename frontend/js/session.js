@@ -20,10 +20,11 @@
   style.textContent = `
   .sentinela-topbar{position:absolute;top:12px;left:16px;right:16px;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0;padding:0;flex-wrap:wrap;width:auto;box-sizing:border-box}
   .sentinela-left,.sentinela-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}.sentinela-actions{margin-left:auto;justify-content:flex-end}
-  .sentinela-user{font-size:12px;color:#6b5b62;margin-left:4px}
-  .sentinela-btn{border:1px solid #ddd0d5;border-radius:4px;padding:9px 12px;min-height:38px;white-space:nowrap;cursor:pointer;background:#fff;color:#2b1f23;font-weight:600;line-height:1.2;box-shadow:none}
-  .sentinela-btn.primary{background:#a92843;color:white;border-color:#a92843}.sentinela-btn.danger{background:#8f263b;color:white;border-color:#8f263b}
+  .sentinela-user{font-size:13px;color:#4a5568;margin-left:4px}
+  .sentinela-btn{border:0;border-radius:7px;padding:9px 12px;min-height:38px;white-space:nowrap;cursor:pointer;background:#edf2f7;color:#2d3748;font-weight:600;line-height:1.2}
+  .sentinela-btn.primary{background:#2b6cb0;color:white}.sentinela-btn.danger{background:#c53030;color:white}
   @media(max-width:520px){.sentinela-topbar{position:absolute;top:10px;left:10px;right:10px;align-items:flex-start}.sentinela-left,.sentinela-actions{width:auto;max-width:48%;flex-wrap:wrap}.sentinela-actions{margin-left:auto;justify-content:flex-end}.sentinela-btn{flex:0 1 auto;white-space:normal}}
+  body.dark-mode .sentinela-user{color:#cbd5e1}body.dark-mode .sentinela-btn{background:#374151;color:#f3f4f6;border:1px solid #4b5563}
   .sentinela-password-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;align-items:center;justify-content:center;z-index:10001;padding:18px}
   .sentinela-password-modal{background:var(--surface,#fff);color:var(--text,#1a202c);width:min(430px,100%);padding:22px;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
   .sentinela-password-modal input{box-sizing:border-box;width:100%;padding:11px;margin:6px 0 12px;border:1px solid var(--border,#cbd5e1);border-radius:7px;background:var(--surface-2,#fff);color:var(--text,#1a202c)}
@@ -31,23 +32,23 @@
   .ponto-overlay{position:fixed;inset:0;background:rgba(15,23,42,.58);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
   .ponto-modal{background:white;color:#1a202c;width:min(430px,100%);border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
   .ponto-modal h3{margin-top:0}.ponto-modal input{width:100%;box-sizing:border-box;padding:11px;border:1px solid #cbd5e1;border-radius:7px;margin:8px 0 14px;font-size:16px}
-  .ponto-buttons{display:flex;gap:8px}.ponto-buttons button{flex:1;padding:11px;border:0;border-radius:7px;cursor:pointer;font-weight:700}.ponto-confirm{background:#b71f3c;color:#fff}.ponto-cancel{background:#fff1f3}
+  .ponto-buttons{display:flex;gap:8px}.ponto-buttons button{flex:1;padding:11px;border:0;border-radius:7px;cursor:pointer;font-weight:700}.ponto-confirm{background:#2b6cb0;color:#fff}.ponto-cancel{background:#edf2f7}
   `;
   document.head.appendChild(style);
 
   const bar = document.createElement("div");
   bar.className = "sentinela-topbar";
-  bar.innerHTML = `<div class="sentinela-left"><button class="sentinela-btn" id="btnTrocarUsuario" type="button">Trocar usuário</button><span class="sentinela-user"><b>${user.nome || user.usuario}</b> · ${user.tipo}</span></div><div class="sentinela-actions"><button class="sentinela-btn" id="btnMinhaSenha" type="button">Minha senha</button><button class="sentinela-btn primary" id="btnPontoManual" type="button">Ponto</button></div>`;
+  bar.innerHTML = `<div class="sentinela-left"><button class="sentinela-btn" id="btnTrocarUsuario" type="button">← Trocar usuário</button><span class="sentinela-user">👤 <b>${user.nome || user.usuario}</b> · ${user.tipo}</span></div><div class="sentinela-actions"><button class="sentinela-btn" id="btnMinhaSenha" type="button">🔐 Minha senha</button><button class="sentinela-btn primary" id="btnPontoManual" type="button">🕐 Ponto</button></div>`;
   bar.querySelector("#btnTrocarUsuario").addEventListener("click", () => { window.location.href = "/index.html"; });
   document.body.prepend(bar);
 
   const overlay = document.createElement("div"); overlay.className="ponto-overlay"; overlay.id="pontoOverlay";
-  overlay.innerHTML=`<div class="ponto-modal"><h3>Registrar ponto</h3><p>Olá, <b>${user.nome || user.usuario}</b>! Confirme o horário em que chegou.</p><label>Horário atual do computador</label><input id="pontoHora" type="time"><p style="font-size:12px;color:#718096">O sistema também guarda o horário em que o registro foi enviado.</p><div class="ponto-buttons"><button class="ponto-cancel" id="pontoCancelar">Agora não</button><button class="ponto-confirm" id="pontoConfirmar">Registrar entrada</button></div></div>`;
+  overlay.innerHTML=`<div class="ponto-modal"><h3>🕐 Registrar ponto</h3><p>Olá, <b>${user.nome || user.usuario}</b>! Confirme o horário em que chegou.</p><label>Horário atual do computador</label><input id="pontoHora" type="time"><p style="font-size:12px;color:#718096">O sistema também guarda o horário em que o registro foi enviado.</p><div class="ponto-buttons"><button class="ponto-cancel" id="pontoCancelar">Agora não</button><button class="ponto-confirm" id="pontoConfirmar">Registrar entrada</button></div></div>`;
   document.body.appendChild(overlay);
 
   const passwordOverlay = document.createElement("div");
   passwordOverlay.className = "sentinela-password-backdrop";
-  passwordOverlay.innerHTML = `<div class="sentinela-password-modal" role="dialog" aria-modal="true" aria-labelledby="sentinelaPasswordTitle"><h2 id="sentinelaPasswordTitle">Minha senha</h2><p>Para alterar a senha, informe a senha atual. Se esqueceu, envie uma solicitação para o administrador aprovar.</p><form id="sentinelaPasswordForm"><label>Senha antiga<input id="sentinelaOldPassword" type="password" autocomplete="current-password" required></label><label>Nova senha<input id="sentinelaNewPassword" type="password" minlength="3" autocomplete="new-password" required></label><label>Confirmar nova senha<input id="sentinelaConfirmPassword" type="password" minlength="3" autocomplete="new-password" required></label><div id="sentinelaPasswordMessage" class="sentinela-password-msg" role="status"></div><div class="sentinela-password-actions"><button class="sentinela-btn primary" type="submit">Salvar senha</button><button class="sentinela-btn" id="sentinelaForgotPassword" type="button">Esqueci a senha</button><button class="sentinela-btn" id="sentinelaClosePassword" type="button">Fechar</button></div></form></div>`;
+  passwordOverlay.innerHTML = `<div class="sentinela-password-modal" role="dialog" aria-modal="true" aria-labelledby="sentinelaPasswordTitle"><h2 id="sentinelaPasswordTitle">🔐 Minha senha</h2><p>Para alterar a senha, informe a senha atual. Se esqueceu, envie uma solicitação para o administrador aprovar.</p><form id="sentinelaPasswordForm"><label>Senha antiga<input id="sentinelaOldPassword" type="password" autocomplete="current-password" required></label><label>Nova senha<input id="sentinelaNewPassword" type="password" minlength="3" autocomplete="new-password" required></label><label>Confirmar nova senha<input id="sentinelaConfirmPassword" type="password" minlength="3" autocomplete="new-password" required></label><div id="sentinelaPasswordMessage" class="sentinela-password-msg" role="status"></div><div class="sentinela-password-actions"><button class="sentinela-btn primary" type="submit">Salvar senha</button><button class="sentinela-btn" id="sentinelaForgotPassword" type="button">Esqueci a senha</button><button class="sentinela-btn" id="sentinelaClosePassword" type="button">Fechar</button></div></form></div>`;
   document.body.appendChild(passwordOverlay);
   document.getElementById("btnMinhaSenha").addEventListener("click", () => { document.getElementById("sentinelaPasswordForm").reset(); document.getElementById("sentinelaPasswordMessage").textContent = ""; passwordOverlay.style.display = "flex"; });
   document.getElementById("sentinelaClosePassword").addEventListener("click", () => { passwordOverlay.style.display = "none"; });

@@ -2,16 +2,17 @@
 
 <html lang="pt-BR">
 <head>
- <link rel="icon" type="image/svg+xml" href="/assets/sentinela-icon.svg"/>
+ <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Almoxarifado | Sentinela Hospitalar</title>
+<title>Farmácia | Sentinela Hospitalar</title>
 <link href="/theme.css" rel="stylesheet"/>
 <link href="/css/farmacia.css" rel="stylesheet"/>
 
 
 <link rel="stylesheet" href="/site.css"/></head>
 <body>
-<main class="pharmacy sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">Inicio</a><span aria-hidden="true">›</span><span>Almoxarifado</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">✚</div><div class="ref-hero-copy"><h2>Estoque e movimentações</h2><p>Controle os medicamentos, acompanhe alertas e registre movimentações.</p></div></div></section>
+<button aria-label="Alternar tema" class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="pharmacy sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Farmácia</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">✚</div><div class="ref-hero-copy"><h2>Estoque e movimentações</h2><p>Controle os medicamentos, acompanhe alertas e registre movimentações.</p></div><div aria-hidden="true" class="ref-hero-art"><img alt="" loading="eager" src="/assets/hospital-ilustracao.png"/></div></div></section>
 <section class="pharmacy-grid ref-kpi-row">
 <article class="pharmacy-stat"><span class="v4-stat-icon">◈</span><small>Medicamentos cadastrados</small><strong id="totalMeds">—</strong></article>
 <article class="pharmacy-stat"><span class="v4-stat-icon">▣</span><small>Itens com estoque baixo</small><strong id="lowCount">—</strong></article>
@@ -52,7 +53,7 @@ function renderEstoque(){
 async function carregar(){
  try{
   const [stock,hist]=await Promise.all([fetch("/farmacia/estoque"),fetch("/farmacia/movimentacoes")]);
-  if(!stock.ok||!hist.ok)throw new Error("Não foi possível carregar os dados do almoxarifado.");
+  if(!stock.ok||!hist.ok)throw new Error("Não foi possível carregar os dados da farmácia.");
   meds=await stock.json();const h=await hist.json();
   document.getElementById("totalMeds").textContent=meds.length;
   document.getElementById("lowCount").textContent=meds.filter(m=>m.quantidade<=m.minimo).length;
@@ -73,6 +74,6 @@ document.getElementById("searchMed").addEventListener("input",renderEstoque);
 document.getElementById("filterStock").addEventListener("change",renderEstoque);
 carregar();setInterval(carregar,15000);
 </script>
-<script src="/js/session.js"></script>
+<script src="/js/session.js"></script><script src="/js/theme.js"></script>
 <script src="/js/layout.js"></script>
 </body></html>

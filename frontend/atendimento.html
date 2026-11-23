@@ -2,7 +2,7 @@
 
 <html lang="pt-BR">
 <head>
- <link rel="icon" type="image/svg+xml" href="/assets/sentinela-icon.svg"/>
+ <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Recepção - Atendimento</title>
@@ -12,7 +12,8 @@
 
 <link rel="stylesheet" href="/site.css"/></head>
 <body>
-<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">Inicio</a><span aria-hidden="true">›</span><span>Atendimento</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">♙</div><div class="ref-hero-copy"><h2>Cadastro e encaminhamento</h2><p>Identifique o paciente e encaminhe com segurança para a triagem.</p></div></div></section>
+<button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
+<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Atendimento</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">♙</div><div class="ref-hero-copy"><h2>Cadastro e encaminhamento</h2><p>Identifique o paciente e encaminhe com segurança para a triagem.</p></div><div aria-hidden="true" class="ref-hero-art"><img alt="" loading="eager" src="/assets/hospital-ilustracao.png"/></div></div></section>
 <!-- Nome Completo -->
 <!-- CPF e Data de Nascimento -->
 <!-- Sexo e Estado Civil -->
@@ -54,7 +55,7 @@
 </select>
 </div><div class="form-group ref-full"><label for="foto">Documento / Anexo</label>
 <input id="foto" type="file"/>
-</div></div><div class="ref-action-row patient-routing"><button class="ref-primary-action" id="btnCadastrar" onclick="cadastrar()">Enviar para triagem</button><button class="ref-danger-action" id="btnPacienteEmergencia" onclick="cadastrarPacienteEmBranco()">Paciente em branco / emergência</button></div><div id="mensagem-status"></div></section></main>
+</div></div><div class="ref-action-row patient-routing"><button class="ref-primary-action" id="btnCadastrar" onclick="cadastrar()">➤  Enviar para Triagem</button><button class="ref-danger-action" id="btnPacienteEmergencia" onclick="cadastrarPacienteEmBranco()">♧  Paciente em Branco / Emergência</button></div><div id="mensagem-status"></div></section></main>
 <script>
 
 let idadeCalculada = null;
@@ -393,7 +394,7 @@ function limparFormulario() {
 }
 
 </script>
-
+<script src="/js/theme.js"></script>
 <script src="/js/session.js"></script>
 <script src="/js/layout.js"></script>
 </body>

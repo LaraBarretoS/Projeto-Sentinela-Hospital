@@ -3,7 +3,7 @@
 body{background:var(--bg)!important;color:var(--text)!important}h1,h2,h3,h4{color:var(--heading)!important}.container,.wrap,.pharmacy{background:transparent!important;color:var(--text)!important}.container{max-width:1320px}.wrap{max-width:1440px;padding:28px 30px}
 .card,.section.card,.pharmacy-card,.coluna-fila,.coluna-form,.consultorio-box,.pharmacy-stat,.sentinela-topbar{background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:var(--radius-card)!important;box-shadow:var(--shadow-soft)!important}
 .admin-heading{padding:10px 2px 20px;border-bottom:1px solid var(--border)}.admin-heading h1,.container>h2,.pharmacy-header h1{font-size:clamp(1.45rem,2.5vw,2rem);font-weight:750;letter-spacing:-.04em}.admin-heading p,.pharmacy-sub{color:var(--muted)}.tabs{padding:6px;background:var(--surface-3);border:1px solid var(--border);border-radius:14px}.tab{background:transparent!important;color:var(--muted)!important;border:1px solid transparent!important;border-radius:10px!important}.tab.active{background:var(--surface)!important;color:var(--petrol)!important;border-color:var(--border)!important;box-shadow:var(--shadow-soft)}
-button,.btn,.btn-salvar,.btn-adicionar-sintoma{border-radius:10px!important}button.secondary,.btn.secondary{background:var(--surface-3)!important;color:var(--text)!important;border-color:var(--border)!important}
+button,.btn,.btn-salvar,.btn-adicionar-sintoma{border-radius:10px!important}button:not(.theme-toggle):not(.tab):not(.bell-button){background-color:var(--primary);color:#fff;border:1px solid transparent}button:not(.theme-toggle):not(.tab):not(.bell-button):hover{background-color:var(--primary-hover);filter:none;transform:translateY(-1px)}button.secondary,.btn.secondary{background:var(--surface-3)!important;color:var(--text)!important;border-color:var(--border)!important}
 input:not([type=checkbox]):not([type=radio]),select,textarea{padding:11px 13px!important;border-radius:10px!important;background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important;min-height:42px}textarea{min-height:100px}label,.field{color:var(--text)}.field input,.field select{width:100%}
 table{border-collapse:separate!important;border-spacing:0;width:100%}th{background:var(--surface-3)!important;color:var(--heading)!important;font-weight:700}th,td{padding:12px 14px!important;border-bottom:1px solid var(--border)!important}tr:last-child td{border-bottom:0!important}.table,.pharmacy-table-wrap{border:1px solid var(--border);border-radius:12px;overflow:auto}.status,.role-pill,.badge-risco{border-radius:999px!important}.notice,.fila-item,.card-paciente,.sintoma-item{background:var(--surface-2)!important;border:1px solid var(--border)!important;border-radius:12px!important;color:var(--text)!important}.card-paciente.selecionado,.fila-item.selecionado{border-color:var(--teal)!important;box-shadow:0 0 0 2px rgba(41,157,145,.12)}.emergencia-card{border-radius:12px!important}.modal{background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)}.modal-backdrop{backdrop-filter:blur(5px)}
 #mensagem-erro,.erro,.error{color:var(--danger)}#mensagem-erro{display:none;margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
@@ -30,7 +30,7 @@ body.sentinela-app{min-height:100vh;padding-top:0!important;background:var(--bg)
 .sentinela-header-title .eyebrow{display:block;margin-bottom:3px}.sentinela-header-title h1{font-size:20px;margin:0}.sentinela-header-title p{margin:2px 0 0;color:var(--muted);font-size:13px}.sentinela-header-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
 .sentinela-header .sentinela-topbar{position:static!important;top:auto!important;left:auto!important;right:auto!important;display:flex!important;margin:0!important;padding:0!important;max-width:none!important;width:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;gap:10px!important;z-index:auto!important}
 .sentinela-header .sentinela-user{color:var(--muted)}.sentinela-header .sentinela-btn{background:var(--surface-3)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:10px!important}.sentinela-header .sentinela-btn.primary{background:var(--petrol)!important;color:white!important}
-.sentinela-shell .sentinela-content{width:100%;max-width:1560px!important;margin:0 auto!important;padding:clamp(16px,2.5vw,36px)!important;min-width:0;flex:1}
+.sentinela-header .theme-toggle{position:static!important;inset:auto!important;flex:none;box-shadow:none}.sentinela-shell .sentinela-content{width:100%;max-width:1560px!important;margin:0 auto!important;padding:clamp(16px,2.5vw,36px)!important;min-width:0;flex:1}
 .sentinela-shell .sentinela-content.container{background:transparent!important;box-shadow:none!important;border:0!important;border-radius:0!important}
 .sentinela-shell .sentinela-content.wrap{background:transparent!important}
 .eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--teal);text-transform:uppercase}.section-intro,.sector-intro{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 0 22px}.section-intro h2,.sector-intro h2{font-size:clamp(22px,2vw,28px);margin:4px 0}.section-intro p,.sector-intro p{color:var(--muted);font-size:14px;margin:0}
@@ -53,7 +53,7 @@ body.sentinela-app:has(.reference-v3){background:var(--bg)!important}
 .sentinela-shell:has(.reference-v3) .sentinela-rail-button.is-active{outline:2px solid #61D7B2;outline-offset:0;box-shadow:none}
 .sentinela-shell:has(.reference-v3) .sentinela-header{background:var(--surface);padding:17px clamp(22px,3vw,46px);min-height:96px;gap:18px}
 .sentinela-shell:has(.reference-v3) .sentinela-header-title{padding-left:60px;position:relative;min-width:220px}
-.sentinela-shell:has(.reference-v3) .sentinela-header-title:before{content:"✚";position:absolute;left:0;top:8px;width:43px;height:43px;display:grid;place-items:center;color:#32AA70;font-size:37px;line-height:1}
+.sentinela-shell:has(.reference-v3) .sentinela-header-title:before{content:'✚';position:absolute;left:0;top:8px;width:43px;height:43px;display:grid;place-items:center;color:#32AA70;font-size:37px;line-height:1}
 .sentinela-shell:has(.reference-v3) .sentinela-header-title .eyebrow{color:var(--heading);font-size:12px;letter-spacing:.12em}
 .sentinela-shell:has(.reference-v3) .sentinela-header-title h1{font-size:23px;line-height:1.12;color:var(--heading)}
 .sentinela-shell:has(.reference-v3) .sentinela-header-title p{font-size:14px;margin-top:4px}
@@ -63,7 +63,7 @@ body.sentinela-app:has(.reference-v3){background:var(--bg)!important}
 .sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-btn{width:auto!important;min-width:135px;padding:11px 16px!important;min-height:44px!important;font-size:13px!important;border:1px solid var(--border)!important;border-radius:12px!important;background:var(--surface-2)!important;color:var(--heading)!important;box-shadow:var(--shadow-soft)!important;margin:0!important}
 .sentinela-shell:has(.reference-v3) .sentinela-header #btnMinhaSenha{background:color-mix(in srgb,var(--success) 7%,var(--surface))!important}
 .sentinela-shell:has(.reference-v3) .sentinela-header #btnPontoManual{background:var(--petrol)!important;color:#fff!important;min-width:150px}
-
+.sentinela-shell:has(.reference-v3) .sentinela-header .theme-toggle{width:44px!important;height:44px!important;border-radius:12px!important;flex:none;order:4}
 .sentinela-shell .reference-v3{max-width:none!important;padding:20px clamp(20px,3vw,52px) 44px!important}
 .reference-v3 .ref-hero{position:relative;margin:0 0 18px;overflow:hidden;min-height:170px}
 .reference-v3 .ref-breadcrumb{display:flex;gap:13px;align-items:center;font-size:13px;color:var(--success);font-weight:600;min-height:30px;margin-bottom:18px}
@@ -77,7 +77,7 @@ body.sentinela-app:has(.reference-v3){background:var(--bg)!important}
 .reference-v3 .ref-hero-art svg{width:100%;display:block;height:auto}
 .reference-v3 .ref-card{background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:20px!important;box-shadow:var(--shadow)!important;padding:clamp(20px,2.3vw,32px)!important;color:var(--text)!important;min-width:0}
 .reference-v3 .ref-section-heading{font-size:15px!important;letter-spacing:.055em!important;text-transform:uppercase;font-weight:800!important;color:var(--success)!important;text-align:left!important;margin:0 0 22px!important;line-height:1.3!important}
-.reference-v3 .ref-section-heading:before{content:"";display:inline-block;height:18px;width:4px;background:#39B975;border-radius:3px;vertical-align:-3px;margin-right:10px}
+.reference-v3 .ref-section-heading:before{content:'';display:inline-block;height:18px;width:4px;background:#39B975;border-radius:3px;vertical-align:-3px;margin-right:10px}
 .reference-v3 label{font-size:13px;font-weight:700;color:var(--heading);margin-bottom:6px;display:block}
 .reference-v3 input:not([type=checkbox]):not([type=radio]),.reference-v3 select,.reference-v3 textarea{min-height:42px;width:100%;padding:10px 15px;border-radius:10px!important;background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)!important;font-size:14px;box-shadow:0 1px 2px rgba(23,50,77,.04)}
 .reference-v3 input:focus,.reference-v3 select:focus,.reference-v3 textarea:focus{outline:0;box-shadow:var(--focus-ring)!important;border-color:var(--teal)!important}
@@ -118,7 +118,7 @@ body.sentinela-app:has(.reference-v3){background:var(--bg)!important}
 .reference-v3 .pharmacy-card .btn{width:auto!important;min-height:42px!important;margin:4px 0!important}
 .reference-v3 .ref-medicines #listaMedicacoes{display:grid;gap:12px}
 .reference-v3 .ref-medicines #listaMedicacoes .card{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px}
-
+body.dark-mode .reference-v3 .ref-hero-art{opacity:.55}
 @media(max-width:1250px){.sentinela-shell:has(.reference-v3) .sentinela-header{align-items:flex-start;flex-direction:column}.sentinela-shell:has(.reference-v3) .sentinela-header-actions{width:100%;justify-content:flex-start}.reference-v3 .pharmacy-workspace{grid-template-columns:1fr}.reference-v3 .ref-hero-main{padding-right:230px}.reference-v3 .ref-hero-art{width:230px}}
 @media(max-width:850px){.reference-v3 .ref-clinical-grid{grid-template-columns:1fr!important}.reference-v3 .ref-hero-main{padding-right:0}.reference-v3 .ref-hero-art{opacity:.12;width:280px}.reference-v3 .consultorio-box{flex-wrap:wrap}}
 @media(max-width:760px){.sentinela-shell:has(.reference-v3){grid-template-columns:56px minmax(0,1fr)}.sentinela-shell .reference-v3{padding:16px!important}.reference-v3 .ref-hero-main{gap:12px;padding-left:0}.reference-v3 .ref-hero-emblem{width:52px;height:52px;flex-basis:52px;font-size:25px}.reference-v3 .ref-hero-copy{padding-left:14px}.reference-v3 .ref-hero-copy h2{font-size:23px}.reference-v3 .ref-action-row{grid-template-columns:1fr;gap:12px}.reference-v3 .ref-form-grid .ref-pair{grid-template-columns:1fr;gap:14px}.reference-v3 .ref-card{padding:18px!important}.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-btn{min-width:0!important;flex:1 1 auto}.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-topbar{display:flex!important;width:100%!important}.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-left,.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-actions{max-width:100%!important;flex:1 1 100%}}
@@ -135,7 +135,7 @@ body.sentinela-app:has(.design-v4){background:var(--bg)!important}
 .sentinela-shell:has(.design-v4) .sentinela-sidebar{left:70px}
 .sentinela-shell:has(.design-v4) .sentinela-header{min-height:93px;padding:13px clamp(22px,3vw,46px);background:var(--surface);box-shadow:0 2px 13px #102b4012}
 .sentinela-shell:has(.design-v4) .sentinela-header-title{position:relative;padding-left:58px}
-.sentinela-shell:has(.design-v4) .sentinela-header-title:before{content:"✚";position:absolute;left:0;top:8px;font-size:38px;line-height:1;color:#25af72;font-weight:800}
+.sentinela-shell:has(.design-v4) .sentinela-header-title:before{content:'✚';position:absolute;left:0;top:8px;font-size:38px;line-height:1;color:#25af72;font-weight:800}
 .sentinela-shell:has(.design-v4) .sentinela-header-title .eyebrow{font-size:12px;letter-spacing:.04em;color:var(--heading)}
 .sentinela-shell:has(.design-v4) .sentinela-header-title h1{font-size:clamp(21px,1.6vw,28px);line-height:1.13;font-weight:800;color:var(--heading)}
 .sentinela-shell:has(.design-v4) .sentinela-header-title p{font-size:13px;color:var(--muted)}
@@ -144,7 +144,7 @@ body.sentinela-app:has(.design-v4){background:var(--bg)!important}
 .sentinela-shell:has(.design-v4) .sentinela-header .sentinela-left,.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sentinela-shell:has(.design-v4) .sentinela-header .sentinela-btn{width:auto!important;min-width:144px!important;min-height:43px;border:1px solid var(--border)!important;border-radius:11px!important;color:var(--heading)!important;background:var(--surface-2)!important;box-shadow:0 3px 9px #102b4010!important;font-size:13px!important;margin:0!important}
 .sentinela-shell:has(.design-v4) .sentinela-header #btnPontoManual{background:#075e62!important;color:#fff!important}
-
+.sentinela-shell:has(.design-v4) .sentinela-header .theme-toggle{position:static!important;margin:0!important;width:45px!important;height:45px!important;border:1px solid var(--border)!important;border-radius:13px!important;box-shadow:0 3px 9px #102b4011!important}
 .sentinela-shell .sentinela-content.design-v4{max-width:none!important;padding:18px clamp(20px,2.2vw,44px) 50px!important}
 .design-v4 .ref-hero{min-height:155px;margin:0 0 16px}
 .design-v4 .ref-breadcrumb{margin:0 0 12px}
@@ -186,14 +186,14 @@ body.sentinela-app:has(.design-v4){background:var(--bg)!important}
 .design-v4 .admin-metrics .grid{grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:11px!important}
 .design-v4 .admin-metrics .card{border-radius:17px!important;padding:16px 12px!important;min-width:0;border:1px solid var(--border);box-shadow:0 5px 16px #123b5010;background:var(--surface);text-align:center;min-height:103px}
 .design-v4 .admin-metrics .card b{display:block;font-size:12.5px;color:var(--heading);white-space:normal;line-height:1.25}
-.design-v4 .admin-metrics .card b:before{content:"◉";display:grid;place-items:center;margin:0 auto 8px;width:32px;height:32px;border-radius:10px;font-size:19px;color:#00975d;background:#e6f8ee}
-.design-v4 .admin-metrics .card:nth-child(2) b:before{content:"▤"}
-.design-v4 .admin-metrics .card:nth-child(3) b:before{content:"⚕"}
-.design-v4 .admin-metrics .card:nth-child(4) b:before{content:"●";color:#23b478}
-.design-v4 .admin-metrics .card:nth-child(5) b:before{content:"●";color:#ecae25;background:#fff7e4}
-.design-v4 .admin-metrics .card:nth-child(6) b:before{content:"●";color:#d34c5e;background:#fff0f0}
-.design-v4 .admin-metrics .card:nth-child(7) b:before{content:"♙"}
-.design-v4 .admin-metrics .card:nth-child(8) b:before{content:"⬡"}
+.design-v4 .admin-metrics .card b:before{content:'◉';display:grid;place-items:center;margin:0 auto 8px;width:32px;height:32px;border-radius:10px;font-size:19px;color:#00975d;background:#e6f8ee}
+.design-v4 .admin-metrics .card:nth-child(2) b:before{content:'▤'}
+.design-v4 .admin-metrics .card:nth-child(3) b:before{content:'⚕'}
+.design-v4 .admin-metrics .card:nth-child(4) b:before{content:'●';color:#23b478}
+.design-v4 .admin-metrics .card:nth-child(5) b:before{content:'●';color:#ecae25;background:#fff7e4}
+.design-v4 .admin-metrics .card:nth-child(6) b:before{content:'●';color:#d34c5e;background:#fff0f0}
+.design-v4 .admin-metrics .card:nth-child(7) b:before{content:'♙'}
+.design-v4 .admin-metrics .card:nth-child(8) b:before{content:'⬡'}
 .design-v4 .admin-metrics .num{font-size:29px;color:var(--heading);margin-top:5px;line-height:1.1}
 .design-v4 .admin-columns{grid-template-columns:minmax(0,1.35fr) minmax(350px,1fr);gap:18px}
 .design-v4 .admin-columns .card{margin:0;border-radius:18px!important;border:1px solid var(--border);box-shadow:0 7px 20px #123b5011!important}
@@ -245,19 +245,19 @@ body.sentinela-app:has(.design-v4){background:var(--bg)!important}
 .design-v4 .pharmacy-table-wrap th{background:color-mix(in srgb,#d7eaf0 65%,var(--surface));color:var(--heading);font-weight:750}
 .design-v4 .pharmacy-tools{display:grid;grid-template-columns:1.45fr .85fr;gap:12px}
 .design-v4 .pharmacy-form{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
-.design-v4 .pharmacy-form>div:nth-child(n/**/+3){grid-column:1/-1}
+.design-v4 .pharmacy-form>div:nth-child(n+3){grid-column:1/-1}
 .design-v4 .pharmacy-secondary .pharmacy-card>p:has(button){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .design-v4 .pharmacy-secondary .btn{width:100%!important;min-height:43px!important;background:#006965!important;color:white!important}
 .design-v4 .pharmacy-secondary .btn:last-child{background:#dff2ee!important;color:#005d57!important;border:1px solid #27877c!important}
 /* Responsive and dark-mode parity */
-
-
-
-
+body.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(110deg,transparent,#103f3b30)}
+body.dark-mode .design-v4 .tab.active{background:#155f53!important;color:#effff7!important}
+body.dark-mode .design-v4 .v4-risk-alerts{background:var(--surface-2)}
+body.dark-mode .design-v4 .ref-hero-art img,body.dark-mode .design-v4 .v4-admin-hero img{opacity:.78}
 @media(max-width:1450px){.design-v4 .admin-metrics .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.design-v4 .v4-triage-main .grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1200px){.design-v4 .admin-columns,.design-v4 .pharmacy-workspace{grid-template-columns:1fr!important}.design-v4 .ref-clinical-grid{grid-template-columns:minmax(240px,.85fr) minmax(0,1.4fr)!important}.design-v4 .v4-triage-form-grid{grid-template-columns:1fr}.design-v4 .v4-risk-alerts .alertas-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:850px){.design-v4 .ref-clinical-grid{grid-template-columns:1fr!important}.design-v4 .v4-admin-hero img{opacity:.28}.design-v4 .v4-admin-hero .v4-admin-copy{max-width:100%}.design-v4 .ref-hero-main{padding-right:0}.design-v4 .ref-hero-art{opacity:.23;width:45%}.design-v4 .pharmacy-grid{grid-template-columns:1fr!important}.design-v4 .v4-triage-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.design-v4 .v4-triage-main .grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:680px){.sentinela-shell:has(.design-v4){grid-template-columns:56px minmax(0,1fr)}.sentinela-shell:has(.design-v4) .sentinela-sidebar{left:56px}.sentinela-shell .sentinela-content.design-v4{padding:15px!important}.design-v4 .admin-metrics .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.design-v4 .v4-admin-hero{padding:22px 6px}.design-v4 .v4-triage-form-grid,.design-v4 .v4-doctor-top,.design-v4 .v4-doctor-bottom{grid-template-columns:1fr}.design-v4 .v4-doctor-form .sintoma-add-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.design-v4 .v4-triage-status{flex-wrap:wrap}.design-v4 .v4-status-note{text-align:left}.design-v4 .ref-hero-art{display:none}.design-v4 .pharmacy-tools{grid-template-columns:1fr}.design-v4 .pharmacy-form{grid-template-columns:1fr!important}.design-v4 .pharmacy-form>div:nth-child(n/**/+3){grid-column:auto}.design-v4 .tabs{gap:3px}.design-v4 .tab{font-size:12px;padding:8px 9px}.design-v4 .botoes-acao{grid-template-columns:1fr}}
+@media(max-width:680px){.sentinela-shell:has(.design-v4){grid-template-columns:56px minmax(0,1fr)}.sentinela-shell:has(.design-v4) .sentinela-sidebar{left:56px}.sentinela-shell .sentinela-content.design-v4{padding:15px!important}.design-v4 .admin-metrics .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.design-v4 .v4-admin-hero{padding:22px 6px}.design-v4 .v4-triage-form-grid,.design-v4 .v4-doctor-top,.design-v4 .v4-doctor-bottom{grid-template-columns:1fr}.design-v4 .v4-doctor-form .sintoma-add-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.design-v4 .v4-triage-status{flex-wrap:wrap}.design-v4 .v4-status-note{text-align:left}.design-v4 .ref-hero-art{display:none}.design-v4 .pharmacy-tools{grid-template-columns:1fr}.design-v4 .pharmacy-form{grid-template-columns:1fr!important}.design-v4 .pharmacy-form>div:nth-child(n+3){grid-column:auto}.design-v4 .tabs{gap:3px}.design-v4 .tab{font-size:12px;padding:8px 9px}.design-v4 .botoes-acao{grid-template-columns:1fr}}
 
 
 /* visual-fixes-v5.css */
@@ -310,23 +310,37 @@ body.sentinela-app input[type="file"]::file-selector-button{
 }
 body.sentinela-app input[type="file"]:hover::file-selector-button{border-color:var(--teal)}
 /* Day/night art versions: avoid pasting a white rectangle over the dark background. */
-
-
+body.sentinela-app.dark-mode .design-v4 .ref-hero-art img,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{opacity:1!important;filter:none!important}
+body.sentinela-app.dark-mode .design-v4 .ref-hero-art,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{isolation:isolate}
 /* Layered dark theme; do not overwrite any inline data text or business status. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+body.sentinela-app.dark-mode .design-v4,
+body.sentinela-app.dark-mode .design-v4 .ref-card,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-card{color:var(--text)!important}
+body.sentinela-app.dark-mode .design-v4 .ref-hero-emblem,
+body.sentinela-app.dark-mode .design-v4 .v4-stat-icon,
+body.sentinela-app.dark-mode .design-v4 .v4-status-icon,
+body.sentinela-app.dark-mode .design-v4 .admin-metrics .card b:before{
+  background:#204a4c!important;color:#78e0c7!important
+}
+body.sentinela-app.dark-mode .design-v4 .v4-status-copy strong,
+body.sentinela-app.dark-mode .design-v4 .pharmacy-stat strong{color:#8de6d5!important}
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(110deg,transparent,#153d4055)!important}
+body.sentinela-app.dark-mode .design-v4 .v4-risk-alerts,
+body.sentinela-app.dark-mode .design-v4 .fila-item,
+body.sentinela-app.dark-mode .design-v4 .pharmacy-table-wrap{background:var(--surface-2)!important;color:var(--text)!important}
+body.sentinela-app.dark-mode .design-v4 .coluna-fila .emergencia-card{background:#482b35!important;color:#ffe4e7!important}
+body.sentinela-app.dark-mode .design-v4 .coluna-fila .emergencia-card :is(h3,h4,p,strong){color:#ffe4e7!important}
+body.sentinela-app.dark-mode .design-v4 .tab.active{background:#21554a!important;color:#dcfff3!important}
+body.sentinela-app.dark-mode .design-v4 .pharmacy-secondary .btn:last-child{background:#254d4a!important;color:#d8fff1!important;border-color:#398b80!important}
+body.sentinela-app.dark-mode .design-v4 .admin-columns .table th,
+body.sentinela-app.dark-mode .design-v4 .pharmacy-table-wrap th{background:#294759!important;color:var(--heading)!important}
+body.sentinela-app.dark-mode :is(input,select,textarea){color-scheme:dark}
+body.sentinela-app.dark-mode input[type="file"]{background:var(--surface-2)!important;color:#c3dbe3!important}
+body.sentinela-app.dark-mode input[type="file"]::file-selector-button{background:#285951!important;color:#e8fff5!important;border-color:#34776c}
+body.sentinela-app.dark-mode .design-v4 .ref-hero-copy,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{color:var(--text)!important}
 /* Keep image and text legible at laptop widths without horizontal clipping. */
 @media(max-width:1250px){
  body.sentinela-app .design-v4 .ref-hero-main{padding-right:min(30%,350px)!important}
@@ -348,190 +362,8 @@ body.sentinela-app input[type="file"]:hover::file-selector-button{border-color:v
 }
 
 /* Night-specific copy of the supplied hospital illustration; avoids a bright rectangular background. */
-
-
-
-/* Sentinela — Vermelho Clean. Camada final: identidade leve, sem tema alternável. */
-:root {accent-color:#b71f3c}
-body.sentinela-app{background:#faf7f8!important}
-body.sentinela-app .sentinela-rail,
-.sentinela-shell:has(.design-v4) .sentinela-rail,
-.sentinela-shell:has(.reference-v3) .sentinela-rail{
- background:#881b33!important;border-right:1px solid #751529!important;
-}
-body.sentinela-app .sentinela-brand,body.sentinela-app .sentinela-rail-button{
- background:transparent!important;border:1px solid transparent!important;color:#fff2f4!important;box-shadow:none!important;
-}
-body.sentinela-app .sentinela-brand{background:#ffffff14!important;border-color:#ffffff20!important}
-body.sentinela-app .sentinela-rail-button:hover,
-body.sentinela-app .sentinela-rail-button.is-active{
- background:#ffffff24!important;border-color:#ffffff20!important;outline:none!important;box-shadow:inset 3px 0 0 #fff!important;color:#fff!important;
-}
-body.sentinela-app .sentinela-sidebar{background:#fff!important;border-color:var(--border)!important;box-shadow:0 14px 30px #5e22320f!important}
-body.sentinela-app .sentinela-nav-link.is-active,
-body.sentinela-app .sentinela-nav-link:hover{background:#fff0f2!important;color:#94172f!important}
-body.sentinela-app .sentinela-header,
-.sentinela-shell:has(.design-v4) .sentinela-header,
-.sentinela-shell:has(.reference-v3) .sentinela-header{
- background:#fff!important;box-shadow:none!important;border-bottom:1px solid var(--border)!important;min-height:82px!important;
-}
-.sentinela-shell:has(.design-v4) .sentinela-header-title:before,
-.sentinela-shell:has(.reference-v3) .sentinela-header-title:before{color:#bb2645!important;font-size:32px!important;top:5px!important}
-.sentinela-shell:has(.design-v4) .sentinela-header-title,
-.sentinela-shell:has(.reference-v3) .sentinela-header-title{padding-left:50px!important}
-.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-btn,
-.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-btn{
- background:#fff!important;color:#5a2b39!important;border:1px solid var(--border)!important;box-shadow:none!important;min-width:0!important;
-}
-.sentinela-shell:has(.design-v4) .sentinela-header #btnPontoManual,
-.sentinela-shell:has(.reference-v3) .sentinela-header #btnPontoManual{
- background:#b71f3c!important;color:white!important;border-color:#b71f3c!important;
-}
-.sentinela-shell:has(.design-v4) .sentinela-header .sentinela-btn:hover,
-.sentinela-shell:has(.reference-v3) .sentinela-header .sentinela-btn:hover{border-color:#dfb9c2!important}
-.design-v4 .ref-hero,.design-v4 .v4-admin-hero{
- background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important;
-}
-.design-v4 .ref-hero{min-height:auto!important;margin:0 0 22px!important}
-.design-v4 .ref-hero-main,
-body.sentinela-app .design-v4 .ref-hero-main{
- min-height:82px!important;padding:0 0 8px 0!important;gap:17px!important;
-}
-.design-v4 .ref-hero-copy{border-left:2px solid #efd5db!important;padding-left:18px!important}
-.design-v4 .ref-hero-emblem{width:62px!important;height:62px!important;flex:0 0 62px!important;
- background:#fff0f2!important;border-radius:16px!important;color:#bd2947!important;font-size:28px!important;
-}
-.design-v4 .ref-hero-copy h2{font-size:clamp(23px,2.1vw,31px)!important;letter-spacing:-.028em!important}
-.design-v4 .ref-hero-copy p{max-width:65ch!important}
-.design-v4 .ref-breadcrumb,.design-v4 .ref-breadcrumb a{color:#b71f3c!important}
-.design-v4 .ref-section-heading{color:#a31d37!important}
-.design-v4 .ref-section-heading:before{background:#b71f3c!important}
-.design-v4 .ref-hero-art,.design-v4 .v4-admin-hero img{display:none!important}
-.design-v4 .v4-admin-hero{padding:14px 6px 18px!important;min-height:115px!important;margin-bottom:14px!important}
-.design-v4 .v4-admin-hero .v4-admin-copy{max-width:100%!important}
-.design-v4 .v4-admin-hero .eyebrow{color:#ab2541!important}
-.design-v4 .tabs{background:#fff!important;border-color:var(--border)!important;box-shadow:none!important}
-.design-v4 .tab{color:#77616b!important}
-.design-v4 .tab.active{background:#fff0f3!important;color:#a31d37!important;border:1px solid #f3d6dd!important;box-shadow:none!important}
-.design-v4 .admin-metrics .card,
-.design-v4 .admin-columns .card,
-.design-v4 .ref-card,
-.design-v4 .pharmacy-card,
-.design-v4 .pharmacy-stat,
-.design-v4 .v4-status-summary{
- background:#fff!important;border:1px solid #ecdee2!important;box-shadow:0 3px 12px rgba(100,30,47,.035)!important;
- border-radius:15px!important;
-}
-.design-v4 .admin-metrics .card{min-height:90px!important;padding:14px 9px!important}
-.design-v4 .admin-metrics .card b:before{background:#fff0f2!important;color:#ad2340!important}
-.design-v4 .admin-metrics .card:nth-child(4) b:before{color:#26765b!important;background:#e9f6ef!important}
-.design-v4 .admin-metrics .card:nth-child(5) b:before{color:#b77b18!important;background:#fff7e8!important}
-.design-v4 .admin-metrics .card:nth-child(6) b:before{color:#c42e45!important;background:#fff0f2!important}
-.design-v4 .admin-metrics .num,.design-v4 .pharmacy-stat strong,
-.design-v4 .v4-status-copy strong{color:#98213b!important}
-.design-v4 .v4-stat-icon,.design-v4 .v4-status-icon{
- background:#fff0f3!important;color:#b71f3c!important;
-}
-.design-v4 .pharmacy-stat:nth-child(2) .v4-stat-icon{background:#fff0f3!important;color:#b71f3c!important}
-.design-v4 .pharmacy-stat:nth-child(3) .v4-stat-icon{background:#fff6e9!important;color:#a66b1d!important}
-.design-v4 .admin-columns .table th,
-.design-v4 .pharmacy-table-wrap th{background:#fff3f5!important;color:#5c2c3a!important}
-.design-v4 .pharmacy-table-wrap,.design-v4 .admin-columns .table{border-color:var(--border)!important}
-.design-v4 .v4-risk-alerts{background:#fffafb!important}
-.design-v4 .fila-item{background:#fffafb!important}
-.design-v4 .coluna-fila>button:last-child,
-.design-v4 .btn-salvar,
-.design-v4 .pharmacy-secondary .btn,
-.design-v4 .admin-quick-link,
-.design-v4 .ref-primary-action,
-.design-v4 .ref-subtle-action{
- background:#b71f3c!important;color:#fff!important;box-shadow:none!important;
-}
-.design-v4 .ref-danger-action,.design-v4 .coluna-fila .emergencia-card button{background:#8e1730!important;color:#fff!important}
-.design-v4 .pharmacy-secondary .btn:last-child{background:#fff0f2!important;color:#971a33!important;border:1px solid #e9bdc7!important}
-.design-v4 .botoes-acao .btn-pdf{background:#a44463!important;color:#fff!important}
-.design-v4 .v4-sector-heading{color:var(--heading)!important}
-.design-v4 :is(input,select,textarea){background:#fff!important;border:1px solid var(--border)!important;color:var(--text)!important;box-shadow:none!important}
-.design-v4 :is(input,select,textarea):focus{border-color:#be3653!important;box-shadow:var(--focus-ring)!important}
-body.sentinela-app input[type="file"]{background:#fff!important;border-color:var(--border)!important;color:#725862!important}
-body.sentinela-app input[type="file"]::file-selector-button{background:#fff0f3!important;color:#9d2440!important;border:1px solid #f0cbd3!important}
-body.sentinela-app .sentinela-content.design-v4{background:transparent!important}
-.design-v4 .admin-quick-link:hover,.design-v4 .btn-salvar:hover{background:#94172f!important}
-.design-v4 .role-pill{background:#fff0f3!important;color:#9a1b36!important}
-.design-v4 .bell-button{border-color:var(--border)!important;background:white!important;color:#8e1730!important}
-.design-v4 .patient-routing button,.design-v4 .btn-adicionar-sintoma{background:#b71f3c!important;color:white!important}
-/* Deliberately retain distinct, clinically meaningful risk/stock-status colors. */
-@media(max-width:900px){
- .design-v4 .ref-hero-main,body.sentinela-app .design-v4 .ref-hero-main{padding:0!important}
- .design-v4 .v4-admin-hero{min-height:90px!important}
-}
-@media(max-width:680px){
- .sentinela-shell:has(.design-v4) .sentinela-header-title,
- .sentinela-shell:has(.reference-v3) .sentinela-header-title{padding-left:38px!important}
- .sentinela-shell:has(.design-v4) .sentinela-header-title:before,
- .sentinela-shell:has(.reference-v3) .sentinela-header-title:before{font-size:27px!important}
- .design-v4 .ref-hero-emblem{width:52px!important;height:52px!important;flex-basis:52px!important}
+body.sentinela-app.dark-mode .design-v4 .ref-hero-art img,
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{
+  content:url('/assets/hospital-ilustracao-dark.png')!important;
 }
 
-
-/* v9 minimal reset */
-body.sentinela-app{background:var(--bg)!important}
-.sentinela-shell{grid-template-columns:64px minmax(0,1fr)!important}
-.sentinela-rail{background:#6f2032!important;padding:16px 8px!important;gap:10px!important}
-.sentinela-brand,.sentinela-rail-button{width:42px!important;height:42px!important;border-radius:4px!important;border:1px solid rgba(255,255,255,.12)!important;background:transparent!important;box-shadow:none!important;color:#fff!important;font-size:16px!important}
-.sentinela-rail-button:hover,.sentinela-rail-button.is-active,.sentinela-brand:hover{background:rgba(255,255,255,.08)!important;box-shadow:none!important}
-.sentinela-sidebar{left:64px!important;width:230px!important;border-right:1px solid var(--border)!important;box-shadow:none!important;padding:18px 12px!important;background:#fff!important}
-.sentinela-sidebar h2{font-size:16px!important;margin-bottom:4px!important}.sentinela-sidebar p{font-size:12px!important;margin-bottom:16px!important}
-.sentinela-nav-link{border-radius:4px!important;padding:10px 12px!important;font-size:13px!important;font-weight:600!important;margin:2px 0!important}
-.sentinela-nav-link:hover,.sentinela-nav-link.is-active{background:var(--surface-3)!important;color:var(--primary)!important}
-.sentinela-header{min-height:76px!important;padding:14px 24px!important;background:#fff!important;border-bottom:1px solid var(--border)!important}
-.sentinela-header-title .eyebrow{font-size:11px!important;letter-spacing:.08em!important;color:var(--muted)!important;text-transform:uppercase!important}
-.sentinela-header-title h1{font-size:28px!important;font-weight:750!important}.sentinela-header-title p{font-size:14px!important;color:var(--muted)!important}
-.sentinela-header-actions .sentinela-btn,.sentinela-btn,.btn,button,.btn-salvar,.btn-adicionar-sintoma{border-radius:4px!important;box-shadow:none!important}
-.sentinela-header .sentinela-btn{background:#fff!important;border:1px solid var(--border)!important;color:var(--text)!important;padding:10px 14px!important;min-height:40px!important}
-.sentinela-header .sentinela-btn.primary,.btn-atender,.btn-salvar,.ref-primary-action{background:var(--primary)!important;border-color:var(--primary)!important;color:#fff!important}
-#btnPacienteEmergencia,.ref-danger-action,.danger,.btn-pdf{background:#8f263b!important;border-color:#8f263b!important;color:#fff!important}
-.container,.wrap,.pharmacy{max-width:1380px!important}
-.card,.section.card,.pharmacy-card,.coluna-fila,.coluna-form,.consultorio-box,.pharmacy-stat,.sentinela-topbar,.ref-card,.box{background:#fff!important;border:1px solid var(--border)!important;border-radius:6px!important;box-shadow:none!important}
-.notice,.fila-item,.card-paciente,.sintoma-item,.admin-quick-link,#historicoPaciente,#listaMedicacoes .card{border-radius:4px!important;box-shadow:none!important}
-.tabs{padding:4px!important;border-radius:6px!important;background:#f7f1f2!important}.tab{border-radius:4px!important}.tab.active{box-shadow:none!important}
-input:not([type=checkbox]):not([type=radio]),select,textarea{border-radius:4px!important;min-height:40px!important;background:#fff!important}
-.table,.pharmacy-table-wrap{border-radius:6px!important}th,td{padding:11px 12px!important}.status,.role-pill,.badge-risco{border-radius:4px!important}
-
-/* reduce decorative visuals */
-.ref-hero{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:14px!important;padding:22px 24px!important;border:1px solid var(--border)!important;border-radius:6px!important;background:#fff!important;box-shadow:none!important}
-.ref-breadcrumb{margin-bottom:0!important;font-size:13px!important}.ref-hero-main{display:flex!important;align-items:flex-start!important;gap:18px!important}.ref-hero-emblem{width:56px!important;height:56px!important;border-radius:4px!important;border:1px solid var(--border)!important;background:var(--surface-2)!important;color:transparent!important;position:relative;flex:0 0 56px!important}
-.ref-hero-emblem::before{content:"";position:absolute;inset:16px;border:2px solid var(--primary);border-radius:2px}
-.ref-hero-copy h2{font-size:22px!important;margin:0 0 6px!important}.ref-hero-copy p{font-size:14px!important;color:var(--muted)!important;max-width:780px!important}
-.ref-section-heading,.v4-section-heading,.section h2,.card h2{font-size:16px!important;letter-spacing:0!important}
-.eyebrow{color:var(--primary)!important;font-weight:700!important;font-size:11px!important;letter-spacing:.08em!important;text-transform:uppercase!important}
-.hint,.section-intro p,.v4-stat-label,.admin-heading p,.pharmacy-sub{color:var(--muted)!important}
-
-/* grid more squared / wireframe-like */
-.admin-overview,.v4-stats-grid,.pharmacy-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
-.admin-main-grid,.pharmacy-main,.triagem-grid,.medico-grid{gap:12px!important}
-.triagem-grid,.medico-grid{grid-template-columns:minmax(280px, .9fr) minmax(0,1.45fr)!important}
-.admin-main-grid{display:grid!important;grid-template-columns:minmax(0,1.45fr) minmax(280px,.9fr)!important}
-.pharmacy-main{display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(320px,.85fr)!important}
-.coluna-fila{position:static!important}.consultorio-box{justify-content:flex-start!important;padding:12px 14px!important}
-.botoes-card,.botoes-acao,.ref-action-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
-.ref-action-row button{width:100%!important}
-.admin-quick-link{display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:10px 12px!important;text-decoration:none!important;background:#fff!important;border:1px solid var(--border)!important;color:var(--text)!important}
-
-/* strip emoji feel from some repeated UI blocks */
-.sentinela-user b{font-weight:700!important}.sentinela-user{font-size:12px!important}
-.modal,.sentinela-password-modal,.ponto-modal{border-radius:6px!important;box-shadow:none!important;border:1px solid var(--border)!important}
-.sentinela-password-backdrop,.ponto-overlay{background:rgba(40,22,28,.28)!important}
-
-/* login */
-body:has(#usuario){background:var(--bg)!important}
-body:has(#usuario) .container{border-radius:6px!important;box-shadow:none!important;border:1px solid var(--border)!important;padding:28px!important}
-body:has(#usuario) h2{font-size:24px!important}
-
-/* tv simplified */
-body.tv-display{background:#f4f0f1!important}
-.tv-container,.tv-container .box{box-shadow:none!important}.tv-container .box{border-radius:6px!important;border:1px solid #ddd0d5!important}
-
-/* responsive */
-@media(max-width:1100px){.admin-overview,.v4-stats-grid,.pharmacy-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.admin-main-grid,.pharmacy-main,.triagem-grid,.medico-grid{grid-template-columns:1fr!important}}
-@media(max-width:760px){.sentinela-header{padding:12px 14px!important}.sentinela-shell{grid-template-columns:56px minmax(0,1fr)!important}.sentinela-sidebar{left:56px!important}.botoes-card,.botoes-acao,.ref-action-row{grid-template-columns:1fr!important}.admin-overview,.v4-stats-grid,.pharmacy-grid{grid-template-columns:1fr 1fr!important}}

@@ -11,7 +11,7 @@
     "express": "^5.2.1",
     "pdfkit": "^0.15.0"
   },
-  "description": "Hospital Sentinela - gestão hospitalar demonstrativa, com almoxarifado e interface clean vermelha",
+  "description": "Hospital Sentinela - sistema de gestão hospitalar com atendimento, frequência, farmácia e administração",
   "keywords": [],
   "author": "",
   "license": "ISC",

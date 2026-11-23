@@ -2,7 +2,7 @@
   const user = JSON.parse(localStorage.getItem('sentinelaUser') || 'null');
   if (!user || user.tipo !== 'admin') { location.replace('/index.html'); return; }
   const headers = { 'Content-Type': 'application/json', 'X-Sentinela-User': user.usuario };
-  const roleNames = { admin: 'Administrador', medico: 'Médico', triagem: 'Triagem', atendimento: 'Atendimento', farmacia: 'Almoxarifado' };
+  const roleNames = { admin: 'Administrador', medico: 'Médico', triagem: 'Triagem', atendimento: 'Atendimento', farmacia: 'Farmácia' };
   let usuarioAlvoSenha = null;
 
   async function api(url, options = {}) {

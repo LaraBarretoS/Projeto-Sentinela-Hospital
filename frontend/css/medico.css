@@ -1,4 +1,4 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 body { min-height: 100vh; padding: 30px; display: flex; justify-content: center; }
 .container { width: 100%; max-width: 1250px; }
 .medico-grid { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
@@ -38,7 +38,7 @@ button:hover { background: #2b6cb0; }
 .sintoma-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;background:#f1f5f9;border:1px solid #dbe4ee;border-radius:8px;font-size:13px}
 .sintoma-item small{display:block;color:#64748b;margin-top:3px}
 .sintoma-item button{width:auto;margin:0;padding:6px 9px;background:#b83232;color:white;border:0;border-radius:6px}
-
+body.dark-mode .sintoma-item{background:var(--surface-2);border-color:var(--border);color:var(--text)}
 @media(max-width:600px){.sintoma-add-grid{grid-template-columns:1fr}.sintoma-item{align-items:flex-start;flex-direction:column}.sintoma-item button{width:100%}}
 
 

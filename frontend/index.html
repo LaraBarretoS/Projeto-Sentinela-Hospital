@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
- <link rel="icon" type="image/svg+xml" href="/assets/sentinela-icon.svg"/>
+ <link rel="icon" type="image/png" href="/assets/sentinela-icon.png"/>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistema Hospitalar - Login</title>
@@ -10,10 +10,9 @@
   
 </head>
 <body>
+<button id="themeToggle" class="theme-toggle" onclick="alternarTema()" type="button">🌙</button>
 <div class="container">
-  <img class="login-mark" src="/assets/sentinela-icon.svg" alt="Sentinela" width="76" height="76"/>
-  <h2>Hospital Sentinela</h2>
-  <p class="login-subtitle">Acesse seu setor para continuar</p>
+  <h2>🏥 Sistema Hospitalar</h2>
   <input id="usuario" placeholder="Usuário">
   <input id="senha" type="password" placeholder="Senha">
   <button onclick="login()">Entrar</button>
@@ -62,6 +61,6 @@ function login() {
   });
 }
 </script>
-
+<script src="/js/theme.js"></script>
 </body>
 </html>
