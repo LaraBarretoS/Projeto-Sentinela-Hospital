@@ -46,14 +46,16 @@ function integrar(items){
  for(const m of items){if(!m.grupo){m.grupo='legado-'+m.id;m.categoria='Outros';m.apresentacao='Apresentação anterior (a conferir)';m.exigeValidade=true;}estoque.migrar(m);}
  return items;
 }
-function validar(m,apresentacao,validade,validadeApos,hoje,tipo){
+function validar(m,apresentacao,dataEntrada,validade,hoje,tipo){
  if(!m||String(apresentacao||'')!==String(m.id))throw Error('Selecione a apresentação específica do item.');
- if(tipo!=='entrada')return null;
- if(m.exigeValidade&&!validade)throw Error('Informe a validade indicada na embalagem do lote.');
+ if(tipo!=='entrada')return {dataEntrada:null,validade:null};
+ if(!dataEntrada)throw Error('Informe a data de entrada/abertura do lote.');
+ if(!estoque.dataValida(dataEntrada))throw Error('Informe uma data válida para entrada/abertura.');
+ if(dataEntrada>hoje)throw Error('A data de entrada/abertura não pode ser futura.');
+ if(m.exigeValidade&&!validade)throw Error('Informe a validade do produto indicada na embalagem/bula.');
  if(validade&&!estoque.dataValida(validade))throw Error('Informe uma data de validade válida.');
- if(validadeApos&&!estoque.dataValida(validadeApos))throw Error('Informe uma data válida após abertura/preparo.');
- const efetiva=[validade,validadeApos].filter(Boolean).sort()[0]||null;
- if(efetiva&&efetiva<hoje)throw Error('Este lote já está vencido. Confira a validade da embalagem.');
- return efetiva;
+ if(validade&&validade<dataEntrada)throw Error('A validade do produto não pode ser anterior à data de entrada/abertura.');
+ if(validade&&validade<hoje)throw Error('Este lote já está vencido. Confira a validade informada.');
+ return {dataEntrada,validade:validade||null};
 }
 module.exports={catalogo,integrar,validar};

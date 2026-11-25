@@ -3,8 +3,10 @@ let meds=[];let ocupado=false;let carregando=false;let versao=0;
 const expandidos=new Set();
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const dateLabel=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||'')?v.split('-').reverse().join('/'):'Não informada';
+const dateLabel=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||'')?v.split('-').reverse().join('/'): 'Não informada';
 const saldo=m=>m.quantidadeDisponivel??m.quantidade;
+const todayLocal=()=>{ const d=new Date(); const tz=new Date(d.toLocaleString('en-US',{timeZone:'America/Sao_Paulo'})); return `${tz.getFullYear()}-${String(tz.getMonth()+1).padStart(2,'0')}-${String(tz.getDate()).padStart(2,'0')}`; };
+function preencherDataEntradaPadrao(){ if($('dataEntrada')) $('dataEntrada').value=todayLocal(); }
 function statusMed(m){
  if(!m.quantidade)return ['Sem estoque','unknown'];
  if(m.quantidadeVencida>0)return ['Há lote vencido','expired'];
@@ -17,7 +19,7 @@ function statusMed(m){
 const statusLote={vence_hoje:['Vence hoje','low'],normal:['Normal','ok'],proximo:['Próximo do vencimento','low'],vencido:['Vencido · bloqueado','expired'],sem_validade:['Validade a conferir','unknown'],esgotado:['Esgotado','unknown']};
 function renderLotes(m){
  const lotes=m.lotes||[];
- return `<div class="lotes-panel"><div class="lotes-title"><strong>Lotes de ${esc(m.nome)} — ${esc(m.apresentacao)}</strong><span>${lotes.length} registro(s) · ordem de entrada</span></div><div class="lotes-scroll"><table class="lotes-table"><thead><tr><th>Data de entrada</th><th>Validade</th><th>Quantidade inicial</th><th>Saldo</th><th>Situação</th></tr></thead><tbody>${lotes.map(l=>{const [label,cls]=(l.situacao==='sem_validade'&&!m.exigeValidade?['Sem data registrada','unknown']:statusLote[l.situacao])||statusLote.sem_validade;return `<tr><td>${l.dataEntrada?dateLabel(l.dataEntrada):'Estoque anterior'}${l.origem==='ajuste'?'<small>Ajuste de estoque</small>':l.origem==='legado'?'<small>Data original não registrada</small>':''}</td><td>${dateLabel(l.validade)}${l.validadeApos?`<small>Embalagem: ${dateLabel(l.validadeEmbalagem)} · Após abertura: ${dateLabel(l.validadeApos)}</small>`:''}${l.situacao==='sem_validade'&&m.exigeValidade?`<button type="button" class="lote-toggle" data-conferir="${esc(l.id)}" data-item="${esc(m.id)}" title="Registrar validade conferida">✓</button>`:''}</td><td>${esc(l.quantidadeInicial)}</td><td><strong>${esc(l.quantidade)}</strong> ${esc(m.unidade||'')}</td><td><span class="status ${cls}">${label}</span></td></tr>`}).join('')||'<tr><td colspan="5">Nenhum lote registrado.</td></tr>'}</tbody></table></div></div>`;
+ return `<div class="lotes-panel"><div class="lotes-title"><strong>Lotes de ${esc(m.nome)} — ${esc(m.apresentacao)}</strong><span>${lotes.length} registro(s) · ordem de entrada</span></div><div class="lotes-scroll"><table class="lotes-table"><thead><tr><th>Data de entrada / abertura</th><th>Validade do produto</th><th>Quantidade inicial</th><th>Saldo</th><th>Situação</th></tr></thead><tbody>${lotes.map(l=>{const [label,cls]=(l.situacao==='sem_validade'&&!m.exigeValidade?['Sem data registrada','unknown']:statusLote[l.situacao])||statusLote.sem_validade;return `<tr><td>${l.dataEntrada?dateLabel(l.dataEntrada):'Estoque anterior'}${l.origem==='ajuste'?'<small>Ajuste de estoque</small>':l.origem==='legado'?'<small>Data original não registrada</small>':''}</td><td>${dateLabel(l.validade)}${l.situacao==='sem_validade'&&m.exigeValidade?`<button type="button" class="lote-toggle" data-conferir="${esc(l.id)}" data-item="${esc(m.id)}" title="Registrar validade conferida">✓</button>`:''}</td><td>${esc(l.quantidadeInicial)}</td><td><strong>${esc(l.quantidade)}</strong> ${esc(m.unidade||'')}</td><td><span class="status ${cls}">${label}</span></td></tr>`}).join('')||'<tr><td colspan="5">Nenhum lote registrado.</td></tr>'}</tbody></table></div></div>`;
 }
 function renderEstoque(){
  const q=$('searchMed').value.toLocaleLowerCase('pt-BR'), f=$('filterStock').value;
@@ -71,13 +73,11 @@ function atualizarFormas(){
 function atualizarInfoForma(){
  const m=meds.find(x=>String(x.id)===$('forma').value);
  $('unidadeHint').textContent=m?'Quantidade em '+m.unidade+'.':'';
- $('validadeHint').textContent=m?(m.exigeValidade?'Obrigatória na entrada: copie a data do lote.':'Informe se houver validade na embalagem.'):'';
- const applicable=!!m&&['Medicamentos','Soluções hospitalares'].includes(m.categoria);
- $('aposGroup').hidden=!applicable;
- if(!applicable)$('validadeApos').value='';
+ $('dataEntradaHint').textContent=m?'Obrigatória na entrada: informe quando o lote chegou ou foi aberto.':'';
+ $('validadeHint').textContent=m?(m.exigeValidade?'Obrigatória na entrada: copie a data final da embalagem/bula.':'Preencha apenas se houver validade na embalagem.'):'';
 }
-$('med').addEventListener('change',()=>{$('forma').value='';$('validade').value='';$('validadeApos').value='';atualizarFormas();});
-$('forma').addEventListener('change',()=>{$('validade').value='';$('validadeApos').value='';atualizarInfoForma();});
+$('med').addEventListener('change',()=>{$('forma').value='';$('validade').value='';preencherDataEntradaPadrao();atualizarFormas();});
+$('forma').addEventListener('change',()=>{$('validade').value='';preencherDataEntradaPadrao();atualizarInfoForma();});
 $('filterCategory').addEventListener('change',renderEstoque);
 function mensagem(texto,erro=false){const el=$('movStatus');el.hidden=false;el.className=erro?'mov-error':'mov-success';el.textContent=texto;}
 async function mov(tipo){
@@ -86,31 +86,38 @@ async function mov(tipo){
  if(!Number.isSafeInteger(quantidade)||quantidade<=0)return mensagem('Informe uma quantidade inteira maior que zero.',true);
  const m=meds.find(x=>String(x.id)===$('forma').value&&x.grupo===$('med').value);
  if(!m)return mensagem('Selecione o item e sua apresentação.',true);
- if(tipo==='entrada'&&m.exigeValidade&&!$('validade').value)return mensagem('Informe a validade da embalagem.',true);
- const body={medicamentoId:m.id,apresentacaoId:m.id,quantidade,paciente:$('paciente').value,validade:tipo==='entrada'?$('validade').value:'',validadeApos:tipo==='entrada'?$('validadeApos').value:'',usuario:window.sentinelaUser?.usuario};
+ if(tipo==='entrada'&&!$('dataEntrada').value)return mensagem('Informe a data de entrada/abertura do lote.',true);
+ if(tipo==='entrada'&&m.exigeValidade&&!$('validade').value)return mensagem('Informe a validade do produto.',true);
+ const body={medicamentoId:m.id,apresentacaoId:m.id,quantidade,paciente:$('paciente').value,dataEntrada:tipo==='entrada'?$('dataEntrada').value:'',validade:tipo==='entrada'?$('validade').value:'',usuario:window.sentinelaUser?.usuario};
  ocupado=true;versao++;$('btnEntrada').disabled=$('btnSaida').disabled=true;
  try{
   const r=await fetch('/farmacia/'+tipo,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw Error(d.erro||'Falha na movimentação.');
   expandidos.add(String(body.medicamentoId));
   const detalhes=d.movimentacao?.lotes||[];
-  mensagem(tipo==='entrada'?`Entrada registrada: ${quantidade} ${d.unidade} de ${d.nome} (${d.apresentacao}). ${dateLabel(d.movimentacao?.validade)==='Não informada'?'Validade não informada.':`Validade: ${dateLabel(d.movimentacao?.validade)}.`}`:`Saída registrada: ${quantidade} ${d.unidade} de ${d.nome} (${d.apresentacao}). Lotes: ${detalhes.map(l=>`${l.quantidade} de ${l.dataEntrada?dateLabel(l.dataEntrada):'estoque anterior'}`).join('; ')}.`);
-  $('qtd').value='1';$('paciente').value='';$('validade').value='';$('validadeApos').value='';
+  mensagem(tipo==='entrada'?`Entrada registrada: ${quantidade} ${d.unidade} de ${d.nome} (${d.apresentacao}). Entrada: ${dateLabel(d.movimentacao?.dataEntrada)}. Validade: ${dateLabel(d.movimentacao?.validade)}.`:`Saída registrada: ${quantidade} ${d.unidade} de ${d.nome} (${d.apresentacao}). Lotes: ${detalhes.map(l=>`${l.quantidade} de ${l.dataEntrada?dateLabel(l.dataEntrada):'estoque anterior'}`).join('; ')}.`);
+  $('qtd').value='1';$('paciente').value='';$('validade').value='';preencherDataEntradaPadrao();
  }catch(e){mensagem(e.message,true);}
  finally{ocupado=false;$('btnEntrada').disabled=$('btnSaida').disabled=false;carregar();}
 }
 $('estoque').addEventListener('click',event=>{const conferir=event.target.closest('[data-conferir]');if(conferir){abrirConferencia(conferir.dataset.item,conferir.dataset.conferir);return;}const b=event.target.closest('[data-lote-toggle]');if(!b)return;const id=b.dataset.loteToggle;if(expandidos.has(id))expandidos.delete(id);else expandidos.add(id);renderEstoque();});
-$('searchMed').addEventListener('input',renderEstoque);$('filterStock').addEventListener('change',renderEstoque);
-carregar();setInterval(carregar,15000);
-
-function abrirConferencia(id,loteId){
- const m=meds.find(x=>String(x.id)===id);const l=m?.lotes.find(x=>x.id===loteId);if(!l)return;
- $('conferencia').hidden=false;$('conferencia').dataset.item=id;$('conferencia').dataset.lote=loteId;
- $('conferenciaTitulo').textContent=m.nome+' — '+m.apresentacao+' · '+l.quantidade+' '+m.unidade;
- $('dataConferida').value='';$('dataConferida').focus();
+let conferenciaAtual=null;
+function abrirConferencia(itemId,loteId){
+ conferenciaAtual={itemId,loteId};
+ const m=meds.find(x=>String(x.id)===String(itemId));
+ $('conferencia').hidden=false;
+ $('conferenciaTitulo').textContent=m?`${m.nome} — ${m.apresentacao}`:'Lote';
+ $('dataConferida').value='';
+ $('dataConferida').focus();
 }
-$('cancelarConferencia').onclick=()=>$('conferencia').hidden=true;
+$('cancelarConferencia').onclick=()=>{conferenciaAtual=null;$('conferencia').hidden=true;};
 $('salvarConferencia').onclick=async()=>{
- if(ocupado)return;const data=$('dataConferida').value;if(!data)return mensagem('Informe a data conferida na embalagem.',true);
- ocupado=true;versao++;$('salvarConferencia').disabled=true;
- try{const r=await fetch('/farmacia/conferir-validade',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({medicamentoId:$('conferencia').dataset.item,loteId:$('conferencia').dataset.lote,validade:data,usuario:window.sentinelaUser?.usuario})});const d=await r.json();if(!r.ok)throw Error(d.erro||'Falha na conferência.');$('conferencia').hidden=true;mensagem('Validade conferida e registrada.');}catch(e){mensagem(e.message,true);}finally{ocupado=false;$('salvarConferencia').disabled=false;carregar();}
+ if(!conferenciaAtual)return;
+ if(!$('dataConferida').value)return mensagem('Informe a validade conferida.',true);
+ ocupado=true;$('salvarConferencia').disabled=true;
+ try{const r=await fetch('/farmacia/conferir-validade',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({medicamentoId:conferenciaAtual.itemId,loteId:conferenciaAtual.loteId,validade:$('dataConferida').value,usuario:window.sentinelaUser?.usuario})});const d=await r.json();if(!r.ok)throw Error(d.erro||'Falha ao salvar a validade.');mensagem('Validade conferida com sucesso.');conferenciaAtual=null;$('conferencia').hidden=true;}
+ catch(e){mensagem(e.message,true);}finally{ocupado=false;$('salvarConferencia').disabled=false;carregar();}
 };
+$('searchMed').addEventListener('input',renderEstoque);
+$('filterStock').addEventListener('change',renderEstoque);
+preencherDataEntradaPadrao();
+carregar();setInterval(carregar,15000);

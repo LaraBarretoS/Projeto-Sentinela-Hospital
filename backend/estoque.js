@@ -11,8 +11,8 @@ function dataValida(v){
   const d=new Date(v+'T00:00:00Z');return !Number.isNaN(+d)&&d.toISOString().slice(0,10)===v;
 }
 function quantidadeValida(v,min=1){return (typeof v==='number'||(typeof v==='string'&&/^\d+$/.test(v)))&&Number.isSafeInteger(Number(v))&&Number(v)>=min;}
-function novoLote(q,validade,now=new Date(),origem='entrada'){
-  return {id:randomUUID(),dataEntrada:dataLocal(now),registradoEm:now.toISOString(),validade:validade||null,quantidadeInicial:q,quantidade:q,origem};
+function novoLote(q,{dataEntrada,validade}={},now=new Date(),origem='entrada'){
+  return {id:randomUUID(),dataEntrada:dataValida(dataEntrada)?dataEntrada:dataLocal(now),registradoEm:now.toISOString(),validade:validade||null,quantidadeInicial:q,quantidade:q,origem};
 }
 function migrar(m){
   if(!Array.isArray(m.lotes)){
@@ -34,7 +34,10 @@ function situacao(l,hoje){
   if(l.validade<hoje)return 'vencido';
   return (Date.parse(l.validade)-Date.parse(hoje))/DAY<=90?'proximo':'normal';
 }
-function ordenar(lotes){return [...lotes].sort((a,b)=>(a.dataEntrada||'').localeCompare(b.dataEntrada||'')||(a.registradoEm||'').localeCompare(b.registradoEm||''));}
+function ordenar(lotes){
+  const marker='9999-12-31';
+  return [...lotes].sort((a,b)=>(a.dataEntrada||marker).localeCompare(b.dataEntrada||marker)||(a.registradoEm||'').localeCompare(b.registradoEm||''));
+}
 function resumo(m,hoje=dataLocal()){
   sincronizar(m);
   const lotes=ordenar(m.lotes).map(l=>({...l,situacao:situacao(l,hoje)}));
@@ -42,10 +45,11 @@ function resumo(m,hoje=dataLocal()){
   const quantidadeVencida=lotes.filter(l=>l.situacao==='vencido').reduce((s,l)=>s+l.quantidade,0);
   return {...m,lotes,quantidadeDisponivel:m.quantidade-quantidadeVencida-quantidadeSemValidade,quantidadeVencida,quantidadeSemValidade,temValidadeProxima:lotes.some(l=>['proximo','vence_hoje'].includes(l.situacao)),temValidadeDesconhecida:m.exigeValidade!==false&&lotes.some(l=>l.situacao==='sem_validade')};
 }
-function entrada(m,q,validade,now=new Date()){
+function entrada(m,q,{dataEntrada,validade}={},now=new Date()){
   if(!quantidadeValida(q)||!Number.isSafeInteger(m.quantidade+Number(q)))throw Error('Informe uma quantidade inteira válida.');
+  if(dataEntrada!==undefined&&dataEntrada!==null&&dataEntrada!==''&&!dataValida(dataEntrada))throw Error('Informe uma data de entrada/abertura válida.');
   if(validade!==undefined&&validade!==null&&validade!==''&&!dataValida(validade))throw Error('Informe uma data de validade válida.');
-  const lote=novoLote(Number(q),validade,now);m.lotes.push(lote);sincronizar(m);return {...lote};
+  const lote=novoLote(Number(q),{dataEntrada,validade},now);m.lotes.push(lote);sincronizar(m);return {...lote};
 }
 function retirar(m,q,{hoje=dataLocal(),ajuste=false}={}){
   if(!quantidadeValida(q))throw Error('Informe uma quantidade inteira maior que zero.');
@@ -58,7 +62,7 @@ function retirar(m,q,{hoje=dataLocal(),ajuste=false}={}){
 function ajustar(m,q,now=new Date()){
   if(!quantidadeValida(q,0))throw Error('Informe uma quantidade inteira não negativa.');
   const delta=Number(q)-m.quantidade;
-  if(delta>0){const l=novoLote(delta,null,now,'ajuste');m.lotes.push(l);sincronizar(m);return [{loteId:l.id,dataEntrada:l.dataEntrada,validade:null,quantidade:delta}];}
+  if(delta>0){const l=novoLote(delta,{dataEntrada:dataLocal(now),validade:null},now,'ajuste');m.lotes.push(l);sincronizar(m);return [{loteId:l.id,dataEntrada:l.dataEntrada,validade:null,quantidade:delta}];}
   if(delta<0)return retirar(m,-delta,{ajuste:true});
   return [];
 }
