@@ -29,7 +29,7 @@ function sincronizar(m){
 }
 function situacao(l,hoje){
   if(!l.quantidade)return 'esgotado';
-  if(!l.validade)return 'sem_validade';
+  if(!dataValida(l.validade))return 'sem_validade';
   if(l.validade===hoje)return 'vence_hoje';
   if(l.validade<hoje)return 'vencido';
   return (Date.parse(l.validade)-Date.parse(hoje))/DAY<=90?'proximo':'normal';
@@ -53,8 +53,8 @@ function entrada(m,q,{dataEntrada,validade}={},now=new Date()){
 }
 function retirar(m,q,{hoje=dataLocal(),ajuste=false}={}){
   if(!quantidadeValida(q))throw Error('Informe uma quantidade inteira maior que zero.');
-  const elegiveis=ordenar(m.lotes).filter(l=>l.quantidade>0&&(ajuste||(situacao(l,hoje)!=='vencido'&&!(m.exigeValidade===true&&!l.validade))));
-  if(elegiveis.reduce((s,l)=>s+l.quantidade,0)<Number(q))throw Error('Estoque disponível insuficiente. Lotes vencidos ou com validade obrigatória não conferida estão bloqueados.');
+  const elegiveis=ordenar(m.lotes).filter(l=>l.quantidade>0&&(ajuste||(situacao(l,hoje)!=='vencido'&&!(m.exigeValidade===true&&!dataValida(l.validade)))));
+  if(elegiveis.reduce((s,l)=>s+l.quantidade,0)<Number(q))throw Error(`Estoque disponível insuficiente: ${elegiveis.reduce((s,l)=>s+l.quantidade,0)} unidade(s) liberada(s). Confira a apresentação e a validade dos lotes.`);
   let restante=Number(q);const detalhes=[];
   for(const l of elegiveis){if(!restante)break;const retirada=Math.min(l.quantidade,restante);l.quantidade-=retirada;restante-=retirada;detalhes.push({loteId:l.id,dataEntrada:l.dataEntrada,validade:l.validade,quantidade:retirada});}
   sincronizar(m);return detalhes;
@@ -66,4 +66,5 @@ function ajustar(m,q,now=new Date()){
   if(delta<0)return retirar(m,-delta,{ajuste:true});
   return [];
 }
-module.exports={dataLocal,dataValida,quantidadeValida,migrar,resumo,entrada,retirar,ajustar};
+function zerarCatalogo(items){for(const m of items){m.lotes=[];m.quantidade=0;m.validade=null;}}
+module.exports={zerarCatalogo,dataLocal,dataValida,quantidadeValida,migrar,resumo,entrada,retirar,ajustar};

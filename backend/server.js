@@ -6,6 +6,9 @@ const PDFDocument = require("pdfkit");
 
 const estoque = require("./estoque");
 const catalogo = require("./catalogo");
+const cadastro = require("./cadastro");
+const crypto = require("node:crypto");
+const sessoes = new Map();
 const app = express();
 
 app.use(express.json());
@@ -28,7 +31,7 @@ app.use(express.static(frontendPath, {
   lastModified: true,
   maxAge: 0,
   setHeaders(res, filePath) {
-    if (/\.(?:css|html)$/i.test(filePath)) {
+    if (/\.(?:css|html|js)$/i.test(filePath)) {
       res.setHeader("Cache-Control", "no-cache, must-revalidate");
     }
   }
@@ -95,12 +98,13 @@ const db = {
   ponto: [],
   auditoria: [],
   movimentacoesEstoque: [],
+  resetEstoqueV85: false,
   medicamentosEstoque: [
-    { id: 1, nome: "Dipirona", quantidade: 120, minimo: 20, unidade: "comprimidos" },
-    { id: 2, nome: "Paracetamol", quantidade: 80, minimo: 20, unidade: "comprimidos" },
-    { id: 3, nome: "Ibuprofeno", quantidade: 50, minimo: 15, unidade: "comprimidos" },
-    { id: 4, nome: "Amoxicilina", quantidade: 30, minimo: 10, unidade: "cápsulas" },
-    { id: 5, nome: "Soro fisiológico", quantidade: 25, minimo: 5, unidade: "unidades" }
+    { id: 1, nome: "Dipirona", quantidade: 0, minimo: 20, unidade: "comprimidos" },
+    { id: 2, nome: "Paracetamol", quantidade: 0, minimo: 20, unidade: "comprimidos" },
+    { id: 3, nome: "Ibuprofeno", quantidade: 0, minimo: 15, unidade: "comprimidos" },
+    { id: 4, nome: "Amoxicilina", quantidade: 0, minimo: 10, unidade: "cápsulas" },
+    { id: 5, nome: "Soro fisiológico", quantidade: 0, minimo: 5, unidade: "unidades" }
   ],
   tv_chamada: null,
   tv_historico: [],
@@ -117,7 +121,7 @@ const DATA_FILE = path.join(__dirname, "sentinela-data.json");
 try {
   if (fs.existsSync(DATA_FILE)) {
     const savedData = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-    for (const key of ["pacientes", "triagens", "consultas", "prescricoes", "ponto", "auditoria", "movimentacoesEstoque", "medicamentosEstoque", "tv_chamada", "tv_historico", "tv_conteudos"]) {
+    for (const key of ["pacientes", "triagens", "consultas", "prescricoes", "ponto", "auditoria", "movimentacoesEstoque", "medicamentosEstoque", "tv_chamada", "tv_historico", "tv_conteudos", "resetEstoqueV85"]) {
       if (Object.prototype.hasOwnProperty.call(savedData, key)) db[key] = savedData[key];
     }
   }
@@ -126,15 +130,22 @@ try {
 }
 const antesCatalogo = JSON.stringify(db.medicamentosEstoque);
 catalogo.integrar(db.medicamentosEstoque);
-const precisaMigrarEstoque = antesCatalogo !== JSON.stringify(db.medicamentosEstoque);
+const resetNecessario = !db.resetEstoqueV85;
+if (resetNecessario) {
+  estoque.zerarCatalogo(db.medicamentosEstoque);
+  db.resetEstoqueV85 = true;
+  db.auditoria.unshift({id:Date.now(),usuarioAcao:'sistema',acao:'Estoque zerado na migração V8.5',alvo:'Almoxarifado',dataHora:new Date().toISOString()});
+}
+const precisaMigrarEstoque = resetNecessario || antesCatalogo !== JSON.stringify(db.medicamentosEstoque);
 function salvarDados() {
   const temporario = `${DATA_FILE}.tmp`;
   const { usuarios: _usuarios, ...dadosOperacionais } = db;
   fs.writeFileSync(temporario, JSON.stringify(dadosOperacionais, null, 2), "utf8");
   fs.renameSync(temporario, DATA_FILE);
 }
-if (precisaMigrarEstoque && fs.existsSync(DATA_FILE)) {
-  try { salvarDados(); } catch (error) { console.error("Falha ao persistir migração de estoque:", error.message); }
+if (precisaMigrarEstoque) {
+  if (resetNecessario && fs.existsSync(DATA_FILE)) fs.copyFileSync(DATA_FILE, DATA_FILE + '.pre-v85.bak');
+  salvarDados();
 }
 // Todas as rotas mutáveis persistem o estado após uma resposta bem-sucedida.
 app.use((req, res, next) => {
@@ -166,7 +177,8 @@ try {
   console.error("Não foi possível carregar usuários salvos:", error.message);
 }
 function salvarUsuarios() {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(db.usuarios, null, 2), "utf8");
+  fs.writeFileSync(USERS_FILE+".tmp", JSON.stringify(db.usuarios, null, 2), "utf8");
+  fs.renameSync(USERS_FILE+".tmp", USERS_FILE);
 }
 
 // Solicitações de redefinição de senha: persistidas entre reinicializações.
@@ -192,7 +204,7 @@ app.post("/login", (req, res) => {
   const user = db.usuarios.find(
     u =>
       u.usuario === usuario &&
-      u.senha === senha
+      cadastro.confereSenha(senha, u.senha)
   );
 
   if (!user) {
@@ -201,7 +213,11 @@ app.post("/login", (req, res) => {
     });
   }
 
+  const token=crypto.randomBytes(32).toString('hex');
+  for(const [key,value] of sessoes) if(value.expiraEm<=Date.now()) sessoes.delete(key);
+  sessoes.set(token,{usuario:user.usuario,expiraEm:Date.now()+12*60*60*1000});
   res.json({
+    token,
     usuario: user.usuario,
     nome: user.nome || user.usuario,
     tipo: user.tipo
@@ -212,8 +228,13 @@ app.post("/login", (req, res) => {
 // ADMIN: GERENCIAMENTO DE USUÁRIOS
 // ======================================================
 function requisicaoAdmin(req) {
-  const solicitante = String(req.headers["x-sentinela-user"] || "");
-  return db.usuarios.some(u => u.usuario === solicitante && u.tipo === "admin");
+  const token = String(req.headers['authorization']||'').replace(/^Bearer /,'');
+  const sessao=sessoes.get(token);
+  if(!sessao||sessao.expiraEm<=Date.now())return false;
+  const admin=db.usuarios.find(u=>u.usuario===sessao.usuario&&u.tipo==='admin');
+  if(!admin)return false;
+  req.headers['x-sentinela-user']=admin.usuario;
+  return true;
 }
 app.get("/admin/usuarios", (req, res) => {
   if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode gerenciar usuários." });
@@ -230,7 +251,7 @@ app.post("/admin/usuarios", (req, res) => {
   if (senha.length < 3 || senha.length > 100) return res.status(400).json({ erro: "A senha deve ter pelo menos 3 caracteres." });
   if (!tiposPermitidos.includes(tipo)) return res.status(400).json({ erro: "Selecione uma função válida." });
   if (db.usuarios.some(u => u.usuario.toLowerCase() === usuario.toLowerCase())) return res.status(409).json({ erro: "Já existe um usuário com esse login." });
-  const novoUsuario = { usuario, senha, nome: nome || usuario, tipo };
+  const novoUsuario = { usuario, senha: cadastro.hashSenha(senha), nome: nome || usuario, tipo };
   db.usuarios.push(novoUsuario);
   try { salvarUsuarios(); } catch (error) {
     db.usuarios.pop(); console.error("Erro ao salvar usuário:", error);
@@ -260,9 +281,9 @@ app.post("/admin/usuarios/:usuario/senha", (req, res) => {
   if (!alvo) return res.status(404).json({ erro: "Usuário não encontrado." });
   const senhaAntiga = String(req.body.senhaAntiga || "");
   const novaSenha = String(req.body.novaSenha || "");
-  if (senhaAntiga !== alvo.senha) return res.status(401).json({ erro: "A senha antiga não confere. Se ela foi esquecida, envie uma solicitação para o administrador aprovar." });
+  if (!cadastro.confereSenha(senhaAntiga, alvo.senha)) return res.status(401).json({ erro: "A senha antiga não confere. Se ela foi esquecida, envie uma solicitação para o administrador aprovar." });
   if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "A nova senha deve ter entre 3 e 100 caracteres." });
-  const anterior = alvo.senha; alvo.senha = novaSenha;
+  const anterior = alvo.senha; alvo.senha = cadastro.hashSenha(novaSenha);
   try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
   db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Alterou senha de usuário", alvo: alvo.usuario, dataHora: new Date().toISOString() });
   res.json({ sucesso: true });
@@ -273,10 +294,10 @@ app.post("/senha/alterar", (req, res) => {
   const usuario = String(req.body.usuario || "").trim();
   const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === usuario.toLowerCase());
   if (!alvo) return res.status(404).json({ erro: "Usuário não encontrado." });
-  if (String(req.body.senhaAntiga || "") !== alvo.senha) return res.status(401).json({ erro: "Senha antiga incorreta. Se você a esqueceu, solicite redefinição ao administrador." });
+  if (!cadastro.confereSenha(String(req.body.senhaAntiga || ""), alvo.senha)) return res.status(401).json({ erro: "Senha antiga incorreta. Se você a esqueceu, solicite redefinição ao administrador." });
   const novaSenha = String(req.body.novaSenha || "");
   if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "A nova senha deve ter entre 3 e 100 caracteres." });
-  const anterior = alvo.senha; alvo.senha = novaSenha;
+  const anterior = alvo.senha; alvo.senha = cadastro.hashSenha(novaSenha);
   try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
   db.auditoria.unshift({ id: Date.now(), usuarioAcao: alvo.usuario, acao: "Alterou a própria senha", alvo: alvo.usuario, dataHora: new Date().toISOString() });
   res.json({ sucesso: true });
@@ -294,9 +315,37 @@ app.post("/senha/solicitar-redefinicao", (req, res) => {
   try { salvarSolicitacoesSenha(); } catch (error) { solicitacoesSenha = solicitacoesSenha.filter(n => n.id !== solicitacao.id); return res.status(500).json({ erro: "Não foi possível enviar a notificação." }); }
   res.status(201).json({ sucesso: true, mensagem: "Solicitação enviada ao administrador." });
 });
+// Cadastro em duas etapas: o código nunca é devolvido ao solicitante.
+const CADASTROS_FILE=path.join(__dirname,'cadastros.json');
+let pedidosCadastro=fs.existsSync(CADASTROS_FILE)?JSON.parse(fs.readFileSync(CADASTROS_FILE,'utf8')):[];
+function salvarCadastros(){fs.writeFileSync(CADASTROS_FILE+'.tmp',JSON.stringify(pedidosCadastro,null,2),'utf8');fs.renameSync(CADASTROS_FILE+'.tmp',CADASTROS_FILE);}
+const limitesCadastro=new Map();
+function limitarCadastro(req,res,next){const agora=Date.now();for(const [k,v] of limitesCadastro)if(v.fim<=agora)limitesCadastro.delete(k);const key=req.ip;let v=limitesCadastro.get(key);if(!v){v={n:0,fim:agora+15*60*1000};limitesCadastro.set(key,v);}if(++v.n>30)return res.status(429).json({erro:'Muitas tentativas. Tente novamente mais tarde.'});next();}
+app.post('/cadastro/solicitar',limitarCadastro,(req,res)=>{
+  let pedido;try{pedido=cadastro.preparar(req.body,db.usuarios,pedidosCadastro);}catch(e){return res.status(400).json({erro:e.message});}
+  pedidosCadastro.unshift(pedido);try{salvarCadastros();}catch(e){pedidosCadastro.shift();return res.status(500).json({erro:'Não foi possível registrar a solicitação.'});}
+  res.status(201).json({id:pedido.id,expiraEm:pedido.expiraEm,mensagem:'Código enviado às notificações do administrador.'});
+});
+app.post('/cadastro/confirmar',limitarCadastro,(req,res)=>{
+ const pedido=pedidosCadastro.find(p=>p.id===req.body?.id);
+ try{cadastro.verificar(pedido,req.body?.codigo);}catch(e){if(pedido)salvarCadastros();return res.status(400).json({erro:e.message});}
+ if(db.usuarios.some(u=>u.usuario.toLowerCase()===pedido.usuario.toLowerCase()))return res.status(409).json({erro:'Este login já está cadastrado.'});
+ const user={usuario:pedido.usuario,nome:pedido.nome,tipo:pedido.tipo,senha:pedido.senha};
+ db.usuarios.push(user);try{salvarUsuarios();}catch(e){db.usuarios.pop();return res.status(500).json({erro:'Não foi possível criar a conta.'});}
+ pedido.status='aprovada';delete pedido.codigo;delete pedido.senha;salvarCadastros();
+ db.auditoria.unshift({id:Date.now(),usuarioAcao:'cadastro confirmado',acao:'Criou usuário ('+user.tipo+')',alvo:user.usuario,dataHora:new Date().toISOString()});
+ res.status(201).json({sucesso:true,mensagem:'Conta criada. Você já pode entrar.'});
+});
+app.post('/admin/cadastros/:id/recusar',(req,res)=>{
+ if(!requisicaoAdmin(req))return res.status(403).json({erro:'Acesso restrito ao administrador.'});
+ const p=pedidosCadastro.find(p=>p.id===req.params.id);if(!p||cadastro.estado(p)!=='pendente')return res.status(404).json({erro:'Solicitação não encontrada.'});
+ p.status='recusada';delete p.codigo;delete p.senha;salvarCadastros();res.json({sucesso:true});
+});
+app.post('/logout',(req,res)=>{sessoes.delete(String(req.headers.authorization||'').replace(/^Bearer /,''));res.json({sucesso:true});});
+
 app.get("/admin/notificacoes", (req, res) => {
   if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode ver notificações." });
-  res.json(solicitacoesSenha);
+  res.json([...solicitacoesSenha,...pedidosCadastro.map(p=>cadastro.aviso(p))].sort((a,b)=>b.dataHora.localeCompare(a.dataHora)));
 });
 app.post("/admin/notificacoes/:id/decidir", (req, res) => {
   if (!requisicaoAdmin(req)) return res.status(403).json({ erro: "Apenas o administrador pode decidir solicitações." });
@@ -308,7 +357,7 @@ app.post("/admin/notificacoes/:id/decidir", (req, res) => {
     if (novaSenha.length < 3 || novaSenha.length > 100) return res.status(400).json({ erro: "Informe uma nova senha de 3 a 100 caracteres." });
     const alvo = db.usuarios.find(u => u.usuario.toLowerCase() === pedido.usuario.toLowerCase());
     if (!alvo) return res.status(404).json({ erro: "Este usuário não existe mais." });
-    const anterior = alvo.senha; alvo.senha = novaSenha;
+    const anterior = alvo.senha; alvo.senha = cadastro.hashSenha(novaSenha);
     try { salvarUsuarios(); } catch (error) { alvo.senha = anterior; return res.status(500).json({ erro: "Não foi possível salvar a nova senha." }); }
     pedido.status = "aprovada"; pedido.decididaPor = String(req.headers["x-sentinela-user"]); pedido.decisaodataHora = new Date().toISOString();
     db.auditoria.unshift({ id: Date.now(), usuarioAcao: String(req.headers["x-sentinela-user"]), acao: "Aprovou redefinição de senha", alvo: pedido.usuario, dataHora: new Date().toISOString() });
@@ -624,6 +673,7 @@ app.post("/ponto/saida", (req, res) => {
 });
 
 app.get("/admin/frequencia", (req, res) => {
+  if(!requisicaoAdmin(req)) return res.status(403).json({erro:"Acesso administrativo necessário."});
   const hoje = new Date().toISOString().slice(0, 10);
   const registros = db.usuarios.filter(u => u.tipo !== "admin").map(u => ({
     usuario: u.usuario, nome: u.nome || u.usuario, tipo: u.tipo,
@@ -632,7 +682,7 @@ app.get("/admin/frequencia", (req, res) => {
   res.json(registros);
 });
 
-app.get("/admin/auditoria", (req, res) => res.json(db.auditoria.slice(0, 100)));
+app.get("/admin/auditoria", (req, res) => {if(!requisicaoAdmin(req))return res.status(403).json({erro:"Acesso administrativo necessário."});res.json(db.auditoria.slice(0,100));});
 
 // ======================================================
 // HISTÓRICO DO PACIENTE
@@ -703,6 +753,7 @@ for (const tipo of ["entrada","saida","ajuste"]) app.post(`/farmacia/${tipo}`, (
 // ADMIN / RESUMO
 // ======================================================
 app.get("/admin/resumo", (req, res) => {
+  if(!requisicaoAdmin(req)) return res.status(403).json({erro:"Acesso administrativo necessário."});
   const risco = { verde: 0, amarelo: 0, vermelho: 0 };
   db.triagens.forEach(t => { if (risco[t.risco] !== undefined) risco[t.risco]++; });
   const hoje = new Date().toISOString().slice(0, 10);

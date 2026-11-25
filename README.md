@@ -99,3 +99,15 @@ Testes automatizados de estoque (sem dependências externas): `npm test`.
 Referências: Anvisa, *Saiba como conservar medicamentos em casa* (2019); Ministério da Saúde, RENAME; HU Brasil, *Catálogo de Materiais de Uso Hospitalar*.
 
 Faça backup de `backend/sentinela-data.json` antes de atualizar. Execute `npm test` para verificar as regras de estoque e catálogo.
+
+## V8.4 — Datas manuais
+
+Cada nova entrada registra a data de entrada/abertura e a validade final conferida manualmente. A data de entrada define a ordem FIFO. Não há cálculo automático de prazo.
+
+## V8.5 — Cadastro com código e reinicialização de estoque
+
+- Na primeira inicialização desta versão, todos os saldos e lotes são zerados, preservando o catálogo, usuários, pacientes e histórico de movimentações. O arquivo de dados anterior é copiado para `backend/sentinela-data.json.pre-v85.bak` se existir. O marcador `resetEstoqueV85` é gravado no arquivo operacional para impedir que novos saldos sejam zerados em reinicializações futuras. Faça backup antes da atualização. Em hospedagem sem disco persistente, os arquivos locais podem ser perdidos.
+- Para testar uma retirada, registre antes uma entrada com quantidade e validade conferida (quando exigida), selecione a mesma apresentação e retire até o saldo liberado. Lotes vencidos e sem validade obrigatória permanecem bloqueados.
+- Na tela de login, a aba Cadastrar solicita nome, login, área de acesso, senha e confirmação. O administrador recebe uma notificação “Criação de user” com um código de seis caracteres, exibido como XXX.XXX. O código não é retornado ao navegador do solicitante. O administrador deve verificar a identidade e área antes de comunicar o código. O solicitante confirma o código e só então a conta é criada. O código expira em 15 minutos, admite cinco tentativas e não pode ser reutilizado. O admin pode recusar.
+- As novas senhas e alterações são armazenadas com scrypt. O administrador deve entrar novamente após atualizar/reiniciar o servidor: as rotas administrativas agora exigem um token de sessão emitido no login, válido por até 12 horas. Não exponha as credenciais de demonstração. O protótipo não é apropriado para uso hospitalar real; a segurança das demais rotas legadas não foi auditada nesta versão.
+- `npm test`: testes unitários e de rotas com dependências simuladas; não substituem teste integrado com Express/Render.

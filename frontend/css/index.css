@@ -69,3 +69,8 @@ body.sentinela-login .theme-toggle{position:fixed;z-index:9999}
 
 /* V8.2 — login sem emblema central */
 .login-showcase{justify-content:flex-start;gap:24px}.login-showcase-copy{margin-top:auto;margin-bottom:auto}.login-pills{margin-top:auto}
+
+/* V8.5: abas reais e cadastro no mesmo painel */
+.login-card [hidden]{display:none!important}.login-card .login-tabs button{width:auto;margin:0;padding:8px 14px;box-shadow:none;background:transparent;color:var(--muted);border-radius:999px;font-size:13px}.login-card .login-tabs button.active{background:var(--surface);color:var(--heading);box-shadow:var(--shadow-soft)}.login-card select{width:100%;padding:14px 16px;margin:0 0 14px;border-radius:16px;background:var(--surface-2);color:var(--text);border:1px solid var(--border)}.login-card .cad-secondary{background:var(--surface-2);color:var(--heading);border:1px solid var(--border);box-shadow:none}.cad-resumo,#cadStatus{padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);font-size:14px}#cadStatus{margin-top:14px;color:var(--heading)}#cadStatus.erro{color:var(--danger)}#cadCodigo{font-size:20px;letter-spacing:.16em;text-transform:uppercase}.login-card form h2{margin-top:0}.login-shell{min-height:auto}.login-panel{padding-block:32px}
+
+body.dark-mode .login-card .login-tabs button{background:transparent;box-shadow:none;color:var(--muted)}body.dark-mode .login-card .login-tabs button.active{background:var(--surface);color:var(--heading);box-shadow:var(--shadow-soft)}body.dark-mode .login-card .cad-secondary{background:var(--surface-2);color:var(--heading);box-shadow:none}

@@ -72,7 +72,7 @@ function atualizarFormas(){
 }
 function atualizarInfoForma(){
  const m=meds.find(x=>String(x.id)===$('forma').value);
- $('unidadeHint').textContent=m?'Quantidade em '+m.unidade+'.':'';
+ $('unidadeHint').textContent=m?'Quantidade em '+m.unidade+'. Disponível para saída: '+saldo(m)+'.':'';
  $('dataEntradaHint').textContent=m?'Obrigatória na entrada: informe quando o lote chegou ou foi aberto.':'';
  $('validadeHint').textContent=m?(m.exigeValidade?'Obrigatória na entrada: copie a data final da embalagem/bula.':'Preencha apenas se houver validade na embalagem.'):'';
 }
@@ -93,6 +93,7 @@ async function mov(tipo){
  try{
   const r=await fetch('/farmacia/'+tipo,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw Error(d.erro||'Falha na movimentação.');
   expandidos.add(String(body.medicamentoId));
+  meds=meds.map(item=>String(item.id)===String(d.id)?d:item);atualizarInfoForma();renderEstoque();
   const detalhes=d.movimentacao?.lotes||[];
   mensagem(tipo==='entrada'?`Entrada registrada: ${quantidade} ${d.unidade} de ${d.nome} (${d.apresentacao}). Entrada: ${dateLabel(d.movimentacao?.dataEntrada)}. Validade: ${dateLabel(d.movimentacao?.validade)}.`:`Saída registrada: ${quantidade} ${d.unidade} de ${d.nome} (${d.apresentacao}). Lotes: ${detalhes.map(l=>`${l.quantidade} de ${l.dataEntrada?dateLabel(l.dataEntrada):'estoque anterior'}`).join('; ')}.`);
   $('qtd').value='1';$('paciente').value='';$('validade').value='';preencherDataEntradaPadrao();

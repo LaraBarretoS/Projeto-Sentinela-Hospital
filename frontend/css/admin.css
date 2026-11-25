@@ -4,3 +4,5 @@ body.dark-mode{background:#111827!important;color:#e5e7eb!important}body.dark-mo
 
 /* Estilos extraídos dos atributos inline da página. */
 .extracted-a632715a { overflow:auto }
+
+.cadastro-code{display:inline-block;font-family:monospace;font-size:25px;letter-spacing:.15em;color:var(--primary);padding:10px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px}

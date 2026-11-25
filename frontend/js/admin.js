@@ -1,13 +1,14 @@
 (() => {
   const user = JSON.parse(localStorage.getItem('sentinelaUser') || 'null');
   if (!user || user.tipo !== 'admin') { location.replace('/index.html'); return; }
-  const headers = { 'Content-Type': 'application/json', 'X-Sentinela-User': user.usuario };
+  const headers = { 'Content-Type': 'application/json', 'X-Sentinela-User': user.usuario, 'Authorization': 'Bearer ' + (user.token || '') };
   const roleNames = { admin: 'Administrador', medico: 'Médico', triagem: 'Triagem', atendimento: 'Atendimento', farmacia: 'Almoxarifado' };
   let usuarioAlvoSenha = null;
 
   async function api(url, options = {}) {
     const response = await fetch(url, { ...options, headers: { ...headers, ...(options.headers || {}) } });
     const data = await response.json().catch(() => ({}));
+    if (response.status === 403) { localStorage.removeItem('sentinelaUser'); location.replace('/index.html'); throw new Error('Sessão administrativa expirada. Entre novamente.'); }
     if (!response.ok) throw new Error(data.erro || 'Não foi possível concluir a operação.');
     return data;
   }
@@ -98,17 +99,19 @@
     } catch (error) { console.error(error); return []; }
   }
   async function carregarNotificacoes() {
-    const container = document.getElementById('notificationsList'); container.textContent = 'Carregando notificações...';
+    const container = document.getElementById('notificationsList');
     try {
       const notices = await atualizarContagemNotificacoes();
       if (!notices.length) { container.innerHTML = '<p>Nenhuma notificação até o momento.</p>'; return; }
-      container.innerHTML = notices.map(n => `<article class="notice"><strong>${escapeHTML(n.usuario)}</strong> — ${escapeHTML(n.nome || n.usuario)}<p>Solicitou redefinição de senha em ${new Date(n.dataHora).toLocaleString('pt-BR')}.</p><p>Status: <strong>${n.status === 'pendente' ? '⏳ Aguardando aprovação' : n.status === 'aprovada' ? '✅ Aprovada' : '❌ Recusada'}</strong></p>${n.status === 'pendente' ? `<div class="notice-actions"><button class="btn" data-notice-action="approve" data-id="${n.id}" data-user="${escapeHTML(n.usuario)}">Aprovar e definir senha</button><button class="btn danger" data-notice-action="reject" data-id="${n.id}">Recusar</button></div>` : ''}</article>`).join('');
+      const markup = notices.map(n => n.categoria==='cadastro' ? `<article class="notice"><strong>Criação de user</strong><p>${escapeHTML(n.nome)} · @${escapeHTML(n.usuario)} · ${escapeHTML(roleNames[n.tipo]||n.tipo)}</p><p>Status: ${escapeHTML(n.status)}</p>${n.status==='pendente'?`<p>Código de confirmação</p><strong class="cadastro-code">${escapeHTML(n.codigo.slice(0,3)+'.'+n.codigo.slice(3))}</strong><p class="hint">Compartilhe apenas com o profissional autorizado. Expira às ${new Date(n.expiraEm).toLocaleTimeString('pt-BR')}.</p><button class="btn danger" data-notice-action="reject-registration" data-id="${escapeHTML(n.id)}">Recusar cadastro</button>`:''}</article>` : `<article class="notice"><strong>${escapeHTML(n.usuario)}</strong> — ${escapeHTML(n.nome || n.usuario)}<p>Solicitou redefinição de senha em ${new Date(n.dataHora).toLocaleString('pt-BR')}.</p><p>Status: <strong>${n.status === 'pendente' ? '⏳ Aguardando aprovação' : n.status === 'aprovada' ? '✅ Aprovada' : '❌ Recusada'}</strong></p>${n.status === 'pendente' ? `<div class="notice-actions"><button class="btn" data-notice-action="approve" data-id="${n.id}" data-user="${escapeHTML(n.usuario)}">Aprovar e definir senha</button><button class="btn danger" data-notice-action="reject" data-id="${n.id}">Recusar</button></div>` : ''}</article>`).join('');
+      if(container.innerHTML!==markup)container.innerHTML=markup;
     } catch (error) { container.textContent = error.message; }
   }
   document.getElementById('notificationsList').addEventListener('click', async event => {
     const button = event.target.closest('button[data-notice-action]'); if (!button) return;
     const id = button.dataset.id;
     try {
+      if(button.dataset.noticeAction==='reject-registration'){if(!confirm('Recusar esta solicitação de cadastro?'))return;await api(`/admin/cadastros/${encodeURIComponent(id)}/recusar`,{method:'POST'});await carregarNotificacoes();return;}
       let payload;
       if (button.dataset.noticeAction === 'approve') {
         const novaSenha = prompt(`Defina uma nova senha para ${button.dataset.user} (mínimo de 3 caracteres):`);
@@ -137,5 +140,5 @@
     } catch (error) { message.className = 'status-msg error'; message.textContent = error.message; }
     finally { submit.disabled = false; }
   });
-  carregarAdmin(); carregarUsuarios(); atualizarContagemNotificacoes(); setInterval(carregarAdmin, 10000); setInterval(atualizarContagemNotificacoes, 5000);
+  carregarAdmin(); carregarUsuarios(); atualizarContagemNotificacoes(); setInterval(carregarAdmin, 10000); setInterval(()=>{if(document.getElementById("panel-notificacoes").classList.contains("active"))carregarNotificacoes();else atualizarContagemNotificacoes();}, 5000);
 })();

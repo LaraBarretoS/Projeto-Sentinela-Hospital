@@ -29,19 +29,31 @@
 
       <div class="login-panel">
         <div class="login-card">
-          <div class="login-tabs"><span class="active">Entrar</span><span>Sentinela</span></div>
-          <h2>Acesse sua conta</h2>
-          <p class="login-subtitle">Use seu login institucional para continuar.</p>
-
-          <label for="usuario">Usuário</label>
-          <input id="usuario" autocomplete="username" placeholder="Digite seu usuário">
-
-          <label for="senha">Senha</label>
-          <input id="senha" autocomplete="current-password" type="password" placeholder="Digite sua senha">
-
-          <button id="btnEntrar" onclick="login()">Entrar no sistema</button>
-          <div id="mensagem-erro" role="alert"></div>
-
+          <div class="login-tabs" role="tablist" aria-label="Acesso"><button type="button" id="tabEntrar" role="tab" aria-selected="true" class="active">Entrar</button><button type="button" id="tabCadastrar" role="tab" aria-selected="false">Cadastrar</button></div>
+          <form id="loginForm">
+            <h2>Acesse sua conta</h2><p class="login-subtitle">Use seu login institucional para continuar.</p>
+            <label for="usuario">Usuário</label><input id="usuario" autocomplete="username" placeholder="Digite seu usuário" required>
+            <label for="senha">Senha</label><input id="senha" autocomplete="current-password" type="password" placeholder="Digite sua senha" required>
+            <button id="btnEntrar" type="submit">Entrar no sistema</button>
+            <div id="mensagem-erro" role="alert"></div>
+          </form>
+          <form id="cadastroForm" hidden>
+            <h2>Crie sua conta</h2><p class="login-subtitle">Solicite um código ao administrador para liberar seu acesso.</p>
+            <label for="cadNome">Nome</label><input id="cadNome" maxlength="80" autocomplete="name" placeholder="Nome exibido no sistema" required>
+            <label for="cadUser">Usuário</label><input id="cadUser" minlength="3" maxlength="40" pattern="[a-zA-Z0-9._\-]+" autocomplete="username" placeholder="Seu login" required>
+            <label for="cadTipo">Área de acesso</label><select id="cadTipo" required><option value="">Selecione a área</option><option value="atendimento">Atendimento</option><option value="triagem">Triagem</option><option value="medico">Médico</option><option value="farmacia">Almoxarifado</option></select>
+            <label for="cadSenha">Senha</label><input id="cadSenha" type="password" minlength="6" maxlength="100" autocomplete="new-password" required>
+            <label for="cadConfirmacao">Confirmar senha</label><input id="cadConfirmacao" type="password" minlength="6" maxlength="100" autocomplete="new-password" required>
+            <button id="btnSolicitar" type="submit">Enviar código ao administrador</button>
+          </form>
+          <form id="confirmarForm" hidden>
+            <h2>Confirme seu cadastro</h2><p class="login-subtitle">O administrador recebeu o código em Notificações. Solicite a ele os seis caracteres.</p>
+            <p id="cadResumo" class="cad-resumo"></p>
+            <label for="cadCodigo">Código de confirmação</label><input id="cadCodigo" placeholder="XXX.XXX" maxlength="7" autocomplete="off" spellcheck="false" required>
+            <button id="btnConfirmar" type="submit">Confirmar código</button>
+            <button type="button" class="cad-secondary" id="btnVoltarCadastro">Voltar ao cadastro</button>
+          </form>
+          <div id="cadStatus" role="status" aria-live="polite" hidden></div>
           <div class="login-footer-note">
             <span>Configurações de tema e efeitos ficam disponíveis após o login.</span>
           </div>
@@ -50,57 +62,7 @@
     </section>
   </main>
 
-<script>
-function login() {
-  const usuarioInput = document.getElementById("usuario").value.trim();
-  const senhaInput = document.getElementById("senha").value.trim();
-  const msgErro = document.getElementById("mensagem-erro");
-  const botao = document.getElementById("btnEntrar");
-
-  msgErro.style.display = "none";
-  if (!usuarioInput || !senhaInput) {
-    msgErro.textContent = "Preencha usuário e senha.";
-    msgErro.style.display = "block";
-    return;
-  }
-
-  botao.disabled = true;
-  botao.textContent = "Entrando...";
-
-  fetch("/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ usuario: usuarioInput, senha: senhaInput })
-  })
-  .then(async response => {
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err.erro || "Usuário ou senha incorretos.");
-    }
-    return response.json();
-  })
-  .then(data => {
-    localStorage.setItem("sentinelaUser", JSON.stringify(data));
-    if (data.tipo === "admin") location.href = "admin.html";
-    else if (data.tipo === "farmacia") location.href = "farmacia.html";
-    else if (data.tipo === "triagem") location.href = "triagem.html";
-    else if (data.tipo === "medico") location.href = "medico.html";
-    else location.href = "atendimento.html";
-  })
-  .catch(err => {
-    msgErro.textContent = err.message;
-    msgErro.style.display = "block";
-  })
-  .finally(() => {
-    botao.disabled = false;
-    botao.textContent = "Entrar no sistema";
-  });
-}
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Enter") login();
-});
-</script>
+<script src="/js/login.js?v=85"></script>
 <script src="/js/theme.js"></script>
 </body>
 </html>

@@ -157,7 +157,7 @@
   settingsOverlay.addEventListener("click", event => { if (event.target === settingsOverlay) closeSettings(); });
   document.getElementById("visualEffectsToggle").addEventListener("change", event => setEffects(event.target.checked));
   document.getElementById("btnSettingsTv").addEventListener("click", () => window.open("/tv.html", "_blank", "noopener"));
-  document.getElementById("btnSettingsSwitchUser").addEventListener("click", () => { localStorage.removeItem("sentinelaUser"); window.location.href = "/index.html"; });
+  document.getElementById("btnSettingsSwitchUser").addEventListener("click", () => { fetch("/logout",{method:"POST",headers:{Authorization:"Bearer "+(user.token||"")},keepalive:true}).catch(()=>{}); localStorage.removeItem("sentinelaUser"); window.location.href = "/index.html"; });
   document.getElementById("btnSettingsPassword").addEventListener("click", openPasswordModal);
 
   document.getElementById("sentinelaClosePassword").addEventListener("click", () => { passwordOverlay.style.display = "none"; });
