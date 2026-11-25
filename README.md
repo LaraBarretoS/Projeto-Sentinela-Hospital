@@ -77,3 +77,13 @@ A autenticação, as permissões e a proteção dos dados ainda exigem melhorias
 ## V8.1
 
 Correções de sobreposição de diálogos, temas, navegação e responsividade. Lista de queixas e achados observados ampliada para registro acadêmico, sem alteração da regra de classificação. O painel TV acompanha as preferências do navegador. O identificador interno `farmacia` permanece para compatibilidade. Protótipo educacional, não validado para uso clínico.
+
+## V8.2 — Estoque por lotes
+
+- Cada entrada cria um lote independente, com data/hora de registro no fuso de Brasília, validade opcional, quantidade inicial e saldo. O botão `+` expande os lotes e mantém a seleção durante as atualizações automáticas.
+- A coluna de validade mostra a menor data conhecida entre os lotes com saldo. Os lotes vencidos permanecem visíveis e não são consumidos em saídas. FIFO (primeiro a entrar, primeiro a sair) entre lotes não vencidos, inclusive em saídas divididas entre lotes. Quantidades sem validade registrada são sinalizadas e exigem conferência física. Não se trata de um sistema de dispensação clínica validado.
+- O histórico das movimentações registra os lotes utilizados. Os ajustes de estoque existentes continuam funcionando, mantendo a soma dos saldos.
+- Na migração da V8.1, o saldo agregado é preservado como lote legado, com data de entrada desconhecida; a validade agregada anterior, se existir, é preservada como informação legada. Não é possível recuperar datas de validade descartadas pelo erro antigo ou identificar quais entradas anteriores ainda estão em estoque com precisão. Faça backup do arquivo local de dados antes de atualizar. No Render, a persistência depende de armazenamento persistente configurado.
+- Correções visuais: emblema grande removido do login, navegação e estados normais de estoque acompanham o tema. Cores semânticas de alerta e risco clínico preservadas. Retorno de movimentação mostrado dentro do formulário, sem alerta nativo do navegador.
+
+Testes automatizados de estoque (sem dependências externas): `npm test`.

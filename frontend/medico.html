@@ -222,8 +222,8 @@ async function carregarMedicacoes() {
     const data = await requisicaoJSON("/farmacia/estoque");
     if (!Array.isArray(data)) throw new Error("Estoque inválido.");
     select.replaceChildren(new Option("Selecione a medicação", ""));
-    data.filter(m => Number(m.quantidade) > 0).forEach(m => {
-      const option = new Option(`${m.nome} (${m.quantidade} em estoque)${Number(m.quantidade) <= Number(m.minimo) ? " ⚠️ baixo" : ""}`, m.nome);
+    data.filter(m => Number(m.quantidadeDisponivel ?? m.quantidade) > 0).forEach(m => {
+      const option = new Option(`${m.nome} (${m.quantidadeDisponivel ?? m.quantidade} em estoque)${Number(m.quantidadeDisponivel ?? m.quantidade) <= Number(m.minimo) ? " ⚠️ baixo" : ""}`, m.nome);
       select.add(option);
     });
     if (select.options.length === 1) select.add(new Option("Nenhuma medicação disponível", ""));

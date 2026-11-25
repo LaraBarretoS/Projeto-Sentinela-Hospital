@@ -40,6 +40,7 @@
   `;
   document.head.appendChild(style);
 
+  if (user.usuario === "farmacia" && user.nome === "Farmácia") user.nome = "Almoxarifado";
   const prettyRole = roleNames[user.tipo] || user.tipo;
 
   const bar = document.createElement("div");

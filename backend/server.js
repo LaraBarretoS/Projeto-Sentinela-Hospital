@@ -4,6 +4,7 @@ const path = require("path");
 const cors = require("cors");
 const PDFDocument = require("pdfkit");
 
+const estoque = require("./estoque");
 const app = express();
 
 app.use(express.json());
@@ -81,7 +82,7 @@ const db = {
       tipo: "medico",
       nome: "Dr. Médico"
     },
-    { usuario: "farmacia", senha: "123", tipo: "farmacia", nome: "Farmácia" },
+    { usuario: "farmacia", senha: "123", tipo: "farmacia", nome: "Almoxarifado" },
     { usuario: "enfermeira2", senha: "123", tipo: "triagem", nome: "Enfermeira Ana" },
     { usuario: "medico2", senha: "123", tipo: "medico", nome: "Dr. Carlos" }
   ],
@@ -122,11 +123,16 @@ try {
 } catch (error) {
   console.error("Não foi possível carregar os dados persistidos:", error.message);
 }
+const precisaMigrarEstoque = db.medicamentosEstoque.some(m => !Array.isArray(m.lotes));
+db.medicamentosEstoque.forEach(estoque.migrar);
 function salvarDados() {
   const temporario = `${DATA_FILE}.tmp`;
   const { usuarios: _usuarios, ...dadosOperacionais } = db;
   fs.writeFileSync(temporario, JSON.stringify(dadosOperacionais, null, 2), "utf8");
   fs.renameSync(temporario, DATA_FILE);
+}
+if (precisaMigrarEstoque && fs.existsSync(DATA_FILE)) {
+  try { salvarDados(); } catch (error) { console.error("Falha ao persistir migração de estoque:", error.message); }
 }
 // Todas as rotas mutáveis persistem o estado após uma resposta bem-sucedida.
 app.use((req, res, next) => {
@@ -151,6 +157,7 @@ try {
       // O arquivo é a lista completa, não apenas usuários extras: assim, usuários excluídos
       // não reaparecem depois que o servidor é reiniciado.
       db.usuarios = savedUsers;
+      for (const u of db.usuarios) if (u.usuario === "farmacia" && u.nome === "Farmácia") u.nome = "Almoxarifado";
     }
   }
 } catch (error) {
@@ -648,51 +655,33 @@ app.get("/historico-paciente", (req, res) => {
 // ======================================================
 // FARMÁCIA / ESTOQUE
 // ======================================================
-app.get("/farmacia/estoque", (req, res) => res.json(db.medicamentosEstoque));
+app.get("/farmacia/estoque", (req, res) => res.json(db.medicamentosEstoque.map(m => estoque.resumo(m))));
 app.get("/farmacia/movimentacoes", (req, res) => res.json(db.movimentacoesEstoque.slice(0, 100)));
-app.get("/farmacia/alertas", (req, res) => {
-  const hoje = new Date(); hoje.setHours(0,0,0,0);
-  res.json(db.medicamentosEstoque.filter(m => {
-    const baixo = m.quantidade <= m.minimo;
-    const vencido = m.validade && new Date(`${m.validade}T00:00:00`) < hoje;
-    const proximo = m.validade && !vencido && (new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 <= 90;
-    return baixo || vencido || proximo;
-  }).map(m => ({...m, alertaValidade: m.validade ? ((new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 < 0 ? "vencido" : ((new Date(`${m.validade}T00:00:00`) - hoje) / 86400000 <= 90 ? "proximo" : null)) : null})));
-});
+app.get("/farmacia/alertas", (req, res) => res.json(db.medicamentosEstoque.map(m => estoque.resumo(m)).filter(m => m.quantidadeDisponivel <= m.minimo || m.quantidadeVencida || m.temValidadeProxima).map(m => ({...m, alertaValidade: m.quantidadeVencida ? "vencido" : m.temValidadeProxima ? "proximo" : null}))));
 
-app.post("/farmacia/entrada", (req, res) => {
-  const { medicamentoId, quantidade, usuario } = req.body;
+function registrarMovimento(tipo, req, res) {
+  const {medicamentoId, quantidade, usuario, paciente, validade, motivo} = req.body || {};
   const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
-  if (!med || Number(quantidade) <= 0) return res.status(400).json({ erro: "Dados inválidos." });
-  med.quantidade += Number(quantidade);
-  if (req.body.validade && /^\\d{4}-\\d{2}-\\d{2}$/.test(String(req.body.validade))) med.validade = String(req.body.validade);
-  const mov = { id: Date.now(), tipo: "entrada", medicamento: med.nome, quantidade: Number(quantidade), validade: med.validade || null, usuario: usuario || "farmacia", dataHora: agoraISO() };
-  db.movimentacoesEstoque.unshift(mov);
-  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Entrada de ${quantidade} ${med.nome}`, alvo: med.nome, dataHora: agoraISO() });
-  res.json(med);
-});
-
-app.post("/farmacia/saida", (req, res) => {
-  const { medicamentoId, quantidade, usuario, paciente } = req.body;
-  const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
-  if (!med || Number(quantidade) <= 0 || med.quantidade < Number(quantidade)) return res.status(400).json({ erro: "Estoque insuficiente ou dados inválidos." });
-  med.quantidade -= Number(quantidade);
-  const mov = { id: Date.now(), tipo: "saida", medicamento: med.nome, quantidade: Number(quantidade), paciente: paciente || "Não informado", usuario: usuario || "farmacia", dataHora: agoraISO() };
-  db.movimentacoesEstoque.unshift(mov);
-  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Saída de ${quantidade} ${med.nome}`, alvo: paciente || med.nome, dataHora: agoraISO() });
-  res.json(med);
-});
-
-app.post("/farmacia/ajuste", (req, res) => {
-  const { medicamentoId, quantidade, usuario, motivo } = req.body;
-  const med = db.medicamentosEstoque.find(m => String(m.id) === String(medicamentoId));
-  if (!med || Number(quantidade) < 0) return res.status(400).json({ erro: "Dados inválidos." });
+  if (!med) return res.status(400).json({erro:"Medicamento não encontrado."});
   const anterior = med.quantidade;
-  med.quantidade = Number(quantidade);
-  db.movimentacoesEstoque.unshift({ id: Date.now(), tipo: "ajuste", medicamento: med.nome, quantidade: Number(quantidade), quantidadeAnterior: anterior, motivo: motivo || "Correção de estoque", usuario: usuario || "farmacia", dataHora: agoraISO() });
-  db.auditoria.unshift({ id: Date.now()+1, usuarioAcao: usuario || "farmacia", acao: `Ajustou estoque de ${med.nome}`, alvo: motivo || "Correção", dataHora: agoraISO() });
-  res.json(med);
-});
+  const now = new Date();
+  let detalhes, lote;
+  try {
+    if (tipo === "entrada") {
+      lote = estoque.entrada(med, quantidade, validade, now);
+      detalhes = [{loteId:lote.id,dataEntrada:lote.dataEntrada,validade:lote.validade,quantidade:lote.quantidade}];
+    } else if (tipo === "saida") detalhes = estoque.retirar(med, quantidade, {hoje:estoque.dataLocal(now)});
+    else detalhes = estoque.ajustar(med, quantidade, now);
+  } catch (error) { return res.status(400).json({erro:error.message}); }
+  const mov = {id:require('node:crypto').randomUUID(),tipo,medicamentoId:med.id,medicamento:med.nome,quantidade:Number(quantidade),usuario:usuario||"farmacia",dataHora:now.toISOString(),lotes:detalhes};
+  if(tipo === "entrada") {mov.validade=lote.validade;mov.dataEntrada=lote.dataEntrada;}
+  if(tipo === "saida") mov.paciente=paciente||"Não informado";
+  if(tipo === "ajuste") {mov.quantidadeAnterior=anterior;mov.motivo=motivo||"Correção de estoque";}
+  db.movimentacoesEstoque.unshift(mov);
+  db.auditoria.unshift({id:Date.now(),usuarioAcao:mov.usuario,acao:`${tipo}: ${quantidade} ${med.nome}`,alvo:paciente||motivo||med.nome,dataHora:mov.dataHora});
+  res.json({...estoque.resumo(med),movimentacao:mov});
+}
+for (const tipo of ["entrada","saida","ajuste"]) app.post(`/farmacia/${tipo}`, (req,res)=>registrarMovimento(tipo,req,res));
 
 // ======================================================
 // ADMIN / RESUMO
@@ -702,7 +691,7 @@ app.get("/admin/resumo", (req, res) => {
   db.triagens.forEach(t => { if (risco[t.risco] !== undefined) risco[t.risco]++; });
   const hoje = new Date().toISOString().slice(0, 10);
   const pontosHoje = db.ponto.filter(p => p.data === hoje);
-  res.json({ pacientes: db.pacientes.length, triagens: db.triagens.length, consultas: db.consultas.length, risco, presentes: pontosHoje.length, funcionarios: db.usuarios.filter(u => u.tipo !== "admin").length, estoqueBaixo: db.medicamentosEstoque.filter(m => m.quantidade <= m.minimo).length });
+  res.json({ pacientes: db.pacientes.length, triagens: db.triagens.length, consultas: db.consultas.length, risco, presentes: pontosHoje.length, funcionarios: db.usuarios.filter(u => u.tipo !== "admin").length, estoqueBaixo: db.medicamentosEstoque.filter(m => estoque.resumo(m).quantidadeDisponivel <= m.minimo).length });
 });
 
 // ======================================================

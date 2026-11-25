@@ -66,3 +66,6 @@ body:not(.dark-mode) .login-showcase{background:linear-gradient(155deg,#07533e,#
 .login-medical-icon{display:grid;place-items:center;width:clamp(110px,18vw,230px);aspect-ratio:1;border:1px solid #ffffff45;border-radius:32%;background:#ffffff14;font-size:clamp(76px,13vw,165px);line-height:1;color:#fff;box-shadow:0 20px 60px #0002}
 .login-shell{min-height:min(690px,calc(100vh - 84px))}.login-showcase-copy{overflow-wrap:anywhere}
 body.sentinela-login .theme-toggle{position:fixed;z-index:9999}
+
+/* V8.2 — login sem emblema central */
+.login-showcase{justify-content:flex-start;gap:24px}.login-showcase-copy{margin-top:auto;margin-bottom:auto}.login-pills{margin-top:auto}

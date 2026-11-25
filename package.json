@@ -1,10 +1,11 @@
 {
   "name": "hospital-system",
-  "version": "8.1.0",
+  "version": "8.2.0",
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "start:render": "node backend/server.js"
+    "start:render": "node backend/server.js",
+    "test": "node --test"
   },
   "dependencies": {
     "cors": "^2.8.5",
