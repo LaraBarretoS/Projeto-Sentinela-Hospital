@@ -73,3 +73,7 @@ A autenticação, as permissões e a proteção dos dados ainda exigem melhorias
 ---
 
 <p align="center"><sub>Hospital Sentinela • Desenvolvimento web e design de interfaces</sub></p>
+
+## V8.1
+
+Correções de sobreposição de diálogos, temas, navegação e responsividade. Lista de queixas e achados observados ampliada para registro acadêmico, sem alteração da regra de classificação. O painel TV acompanha as preferências do navegador. O identificador interno `farmacia` permanece para compatibilidade. Protótipo educacional, não validado para uso clínico.

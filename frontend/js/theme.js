@@ -26,13 +26,14 @@
   }
 
   function ensureThemeButton(){
+    if (document.body.classList.contains("tv-display")) return;
     let button = document.getElementById("themeToggle");
     if (!button) {
       button = document.createElement("button");
       button.id = "themeToggle";
       button.className = "theme-toggle";
       button.type = "button";
-      document.body.appendChild(button);
+      (document.querySelector(".sentinela-header-actions") || document.body).appendChild(button);
     }
     button.onclick = window.alternarTema;
     updateThemeIcon();
@@ -91,6 +92,10 @@
     setEffects
   };
 
+  window.addEventListener("storage", event => {
+    if (event.key === THEME_KEY) { document.body.classList.toggle("dark-mode", readTheme() === "dark"); updateThemeIcon(); }
+    if (event.key === EFFECTS_KEY) { document.body.classList.toggle("effects-disabled", !readEffects()); document.body.classList.toggle("effects-enabled", readEffects()); }
+  });
   document.addEventListener("mousemove", handlePointerMove, { passive: true });
   document.addEventListener("DOMContentLoaded", applyPreferences, { once: true });
   if (document.readyState !== "loading") applyPreferences();

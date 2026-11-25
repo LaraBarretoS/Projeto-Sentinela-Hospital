@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/site.css"/></head>
 <body>
 <button class="theme-toggle" id="themeToggle" onclick="alternarTema()" type="button">🌙</button>
-<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Triagem</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">✚</div><div class="ref-hero-copy"><h2>Avaliação e classificação</h2><p>Acompanhe a fila e registre a avaliação do paciente com segurança.</p></div><div aria-hidden="true" class="ref-hero-art"><img alt="" loading="eager" src="/assets/hospital-ilustracao.png"/></div></div></section><section aria-label="Acompanhamento da fila" class="v4-triage-status"><div class="v4-status-summary"><span class="v4-status-icon">☷</span><span class="v4-status-copy"><small>Pacientes na fila</small><strong id="v4FilaCount">—</strong></span></div><p class="v4-status-note">A classificação de risco é realizada pelo profissional responsável.</p></section><div class="ref-sector-controls v4-toolbar"><button class="btn-abrir-tv ref-subtle-action" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button></div>
+<main class="container sentinela-content sector-content reference-v3 design-v4" id="conteudo-principal"><section aria-label="Identificação do setor" class="ref-hero"><nav aria-label="Localização na aplicação" class="ref-breadcrumb"><a href="#conteudo-principal">⌂</a><span aria-hidden="true">›</span><span>Triagem</span></nav><div class="ref-hero-main"><div aria-hidden="true" class="ref-hero-emblem">✚</div><div class="ref-hero-copy"><h2>Avaliação e classificação</h2><p>Acompanhe a fila e registre a avaliação do paciente com segurança.</p></div></div></section><section aria-label="Acompanhamento da fila" class="v4-triage-status"><div class="v4-status-summary"><span class="v4-status-icon">☷</span><span class="v4-status-copy"><small>Pacientes na fila</small><strong id="v4FilaCount">—</strong></span></div><p class="v4-status-note">A classificação de risco é realizada pelo profissional responsável.</p></section><div class="ref-sector-controls v4-toolbar"><button class="btn-abrir-tv ref-subtle-action" onclick="window.open('tv.html','_blank')">📺 Abrir Tela da TV</button></div>
 <!-- Cabeçalho -->
 <div aria-label="Fila de pacientes e ficha de atendimento" class="triagem-grid ref-clinical-grid">
 <!-- Coluna Esquerda: Lista de Pacientes -->
@@ -52,6 +52,27 @@
 <option value="avc">Suspeita de AVC</option>
 <option value="convulsao">Convulsão</option>
 <option value="hemorragia">Hemorragia</option>
+<option value="dor_cabeca">Dor de cabeça</option>
+<option value="dor_abdominal">Dor abdominal</option>
+<option value="dor_garganta">Dor de garganta</option>
+<option value="dor_ouvido">Dor de ouvido</option>
+<option value="dor_lombar">Dor lombar</option>
+<option value="dor_muscular">Dor muscular</option>
+<option value="dor_articular">Dor articular</option>
+<option value="dor_toracica">Dor torácica</option>
+<option value="nausea">Náusea</option>
+<option value="tontura">Tontura</option>
+<option value="fraqueza">Fraqueza</option>
+<option value="fadiga">Fadiga</option>
+<option value="palpitacoes">Palpitações</option>
+<option value="coceira">Coceira</option>
+<option value="erupcao_cutanea">Erupção cutânea</option>
+<option value="inchaco">Inchaço</option>
+<option value="dor_urinar">Dor ao urinar</option>
+<option value="congestao_nasal">Congestão nasal</option>
+<option value="calafrios">Calafrios</option>
+<option value="trauma">Trauma / queda</option>
+<option value="outro">Outro (descrever nas observações)</option>
 </select>
 </div><div class="form-group">
 <label for="temp">Temperatura (°C) *</label>
@@ -83,6 +104,17 @@
 <label><input name="alerta" type="checkbox" value="cianose"/> Cianose</label>
 <label><input name="alerta" type="checkbox" value="reação alérgica grave"/> Reação alérgica grave</label>
 <label><input name="alerta" type="checkbox" value="risco imediato identificado pelo profissional"/> Outro sinal crítico identificado</label>
+</div><p class="v81-alert-caption">Outros achados para avaliação profissional (registro, sem classificação automática)</p><div class="alertas-grid">
+<label><input name="alerta" type="checkbox" value="palidez"/> Palidez</label>
+<label><input name="alerta" type="checkbox" value="sudorese intensa"/> Sudorese intensa</label>
+<label><input name="alerta" type="checkbox" value="tremores"/> Tremores</label>
+<label><input name="alerta" type="checkbox" value="desmaio relatado"/> Desmaio relatado</label>
+<label><input name="alerta" type="checkbox" value="dificuldade para caminhar"/> Dificuldade para caminhar</label>
+<label><input name="alerta" type="checkbox" value="inchaço visível"/> Inchaço visível</label>
+<label><input name="alerta" type="checkbox" value="vômitos persistentes"/> Vômitos persistentes</label>
+<label><input name="alerta" type="checkbox" value="sinais de desidratação"/> Sinais de desidratação</label>
+<label><input name="alerta" type="checkbox" value="alteração da fala relatada"/> Alteração da fala relatada</label>
+<label><input name="alerta" type="checkbox" value="dor intensa relatada"/> Dor intensa relatada</label>
 </div>
 </div><div class="form-group">
 <label for="riscoManual">Classificação sugerida para revisão profissional</label>

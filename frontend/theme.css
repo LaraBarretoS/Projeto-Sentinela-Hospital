@@ -28,8 +28,8 @@
   --focus-ring:0 0 0 4px rgba(20,156,112,.16);
   --fx-x:50%;
   --fx-y:20%;
-  --glow-strong:rgba(35,126,255,.22);
-  --glow-soft:rgba(92,170,255,.10);
+  --glow-strong:rgba(20,156,112,.22);
+  --glow-soft:rgba(35,185,122,.10);
   --page-grid:rgba(16,63,49,.05);
 }
 body.dark-mode{
@@ -102,7 +102,7 @@ body.sentinela-app::after,body.sentinela-login::after{
   opacity:.55;
 }
 body.effects-disabled::before,body.effects-disabled::after{opacity:0 !important}
-body.sentinela-app > *:not(script), body.sentinela-login > *:not(script){position:relative;z-index:1}
+body.sentinela-app > .sentinela-shell, body.sentinela-login > .login-page{position:relative;z-index:1}
 h1,h2,h3,h4{color:var(--heading);line-height:1.2;letter-spacing:-.025em}
 a{color:inherit}
 button,input,select,textarea{font:inherit}
@@ -200,3 +200,11 @@ body.dark-mode th{background:var(--surface-2);color:var(--heading)}body.dark-mod
 @media(max-width:760px){.container,.wrap{max-width:100%;box-sizing:border-box;margin:10px;padding:14px}.triagem-grid,.medico-grid{grid-template-columns:1fr}.grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}table{display:block;max-width:100%;overflow-x:auto}.sentinela-settings-actions{grid-template-columns:1fr}.theme-toggle{top:12px;right:12px}}
 @media(max-width:420px){.grid-sinais{grid-template-columns:1fr}.sentinela-left,.sentinela-actions{max-width:100%;width:100%}.sentinela-actions{justify-content:flex-start}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}body::before,body::after{display:none!important}}
+
+/* V8.1: shared layer, theme and accessible effects */
+body.dark-mode{background:radial-gradient(ellipse at 80% 0%,#102744 0%,transparent 45%),var(--bg)}
+body.sentinela-app > .sentinela-overlay,body.sentinela-app > .sentinela-password-backdrop,body.sentinela-app > .ponto-overlay,body.sentinela-app > .modal-backdrop{position:fixed!important;inset:0!important;z-index:10020!important;overflow:auto;max-width:none;margin:0;align-items:center;justify-content:center}
+.sentinela-dialog,.sentinela-password-modal,.ponto-modal,.modal-backdrop .modal{position:relative;max-height:calc(100dvh - 40px);overflow:auto;min-width:0;max-width:100%;overflow-wrap:anywhere}
+.sentinela-dialog-close{z-index:2}.sentinela-dialog-main,.sentinela-dialog-aside{min-width:0}.sentinela-dialog-aside{padding-top:48px}.sentinela-switch{flex-shrink:0}.sentinela-toggle-copy{min-width:0}.sentinela-switch input:focus-visible+span{outline:2px solid var(--primary);outline-offset:3px}
+body.effects-disabled *,body.effects-disabled *::before,body.effects-disabled *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}body.effects-disabled::before,body.effects-disabled::after{display:none!important}
+body.dark-mode{--success:#2dd6a4;--petrol:#3b91f1} /* success retains semantic green */

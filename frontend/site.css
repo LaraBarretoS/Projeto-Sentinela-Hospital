@@ -251,7 +251,7 @@ body.sentinela-app:has(.design-v4){background:var(--bg)!important}
 .design-v4 .pharmacy-secondary .btn:last-child{background:#dff2ee!important;color:#005d57!important;border:1px solid #27877c!important}
 /* Responsive and dark-mode parity */
 body.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(110deg,transparent,#103f3b30)}
-body.dark-mode .design-v4 .tab.active{background:#155f53!important;color:#effff7!important}
+body.dark-mode .design-v4 .tab.active{background:var(--surface-3)!important;color:var(--heading)!important}
 body.dark-mode .design-v4 .v4-risk-alerts{background:var(--surface-2)}
 body.dark-mode .design-v4 .ref-hero-art img,body.dark-mode .design-v4 .v4-admin-hero img{opacity:.78}
 @media(max-width:1450px){.design-v4 .admin-metrics .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.design-v4 .v4-triage-main .grid-sinais{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -322,23 +322,23 @@ body.sentinela-app.dark-mode .design-v4 .ref-hero-emblem,
 body.sentinela-app.dark-mode .design-v4 .v4-stat-icon,
 body.sentinela-app.dark-mode .design-v4 .v4-status-icon,
 body.sentinela-app.dark-mode .design-v4 .admin-metrics .card b:before{
-  background:#204a4c!important;color:#78e0c7!important
+  background:var(--surface-3)!important;color:var(--primary)!important
 }
 body.sentinela-app.dark-mode .design-v4 .v4-status-copy strong,
-body.sentinela-app.dark-mode .design-v4 .pharmacy-stat strong{color:#8de6d5!important}
-body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(110deg,transparent,#153d4055)!important}
+body.sentinela-app.dark-mode .design-v4 .pharmacy-stat strong{color:var(--primary)!important}
+body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{background:linear-gradient(125deg,var(--surface),var(--surface-3))!important}
 body.sentinela-app.dark-mode .design-v4 .v4-risk-alerts,
 body.sentinela-app.dark-mode .design-v4 .fila-item,
 body.sentinela-app.dark-mode .design-v4 .pharmacy-table-wrap{background:var(--surface-2)!important;color:var(--text)!important}
 body.sentinela-app.dark-mode .design-v4 .coluna-fila .emergencia-card{background:#482b35!important;color:#ffe4e7!important}
 body.sentinela-app.dark-mode .design-v4 .coluna-fila .emergencia-card :is(h3,h4,p,strong){color:#ffe4e7!important}
-body.sentinela-app.dark-mode .design-v4 .tab.active{background:#21554a!important;color:#dcfff3!important}
-body.sentinela-app.dark-mode .design-v4 .pharmacy-secondary .btn:last-child{background:#254d4a!important;color:#d8fff1!important;border-color:#398b80!important}
+body.sentinela-app.dark-mode .design-v4 .tab.active{background:var(--surface-3)!important;color:var(--heading)!important}
+body.sentinela-app.dark-mode .design-v4 .pharmacy-secondary .btn:last-child{background:var(--surface-3)!important;color:var(--heading)!important;border-color:var(--border)!important}
 body.sentinela-app.dark-mode .design-v4 .admin-columns .table th,
-body.sentinela-app.dark-mode .design-v4 .pharmacy-table-wrap th{background:#294759!important;color:var(--heading)!important}
+body.sentinela-app.dark-mode .design-v4 .pharmacy-table-wrap th{background:var(--surface-3)!important;color:var(--heading)!important}
 body.sentinela-app.dark-mode :is(input,select,textarea){color-scheme:dark}
 body.sentinela-app.dark-mode input[type="file"]{background:var(--surface-2)!important;color:#c3dbe3!important}
-body.sentinela-app.dark-mode input[type="file"]::file-selector-button{background:#285951!important;color:#e8fff5!important;border-color:#34776c}
+body.sentinela-app.dark-mode input[type="file"]::file-selector-button{background:var(--surface-3)!important;color:var(--heading)!important;border-color:var(--border)}
 body.sentinela-app.dark-mode .design-v4 .ref-hero-copy,
 body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{color:var(--text)!important}
 /* Keep image and text legible at laptop widths without horizontal clipping. */
@@ -364,7 +364,6 @@ body.sentinela-app.dark-mode .design-v4 .v4-admin-hero{color:var(--text)!importa
 /* Night-specific copy of the supplied hospital illustration; avoids a bright rectangular background. */
 body.sentinela-app.dark-mode .design-v4 .ref-hero-art img,
 body.sentinela-app.dark-mode .design-v4 .v4-admin-hero img{
-  content:url('/assets/hospital-ilustracao-dark.png')!important;
 }
 
 
@@ -490,3 +489,45 @@ body.sentinela-app .tv-container .box{background:color-mix(in srgb,var(--surface
   body.sentinela-app .sentinela-user-chip{width:100%}
   body.sentinela-app .sentinela-topbar{gap:10px}
 }
+
+/* V8.1: theme-aware accents, viewport dialogs and containment */
+body.sentinela-app{background:var(--bg)!important}
+body.sentinela-app .sentinela-brand{cursor:default;pointer-events:none}
+body.sentinela-app .sentinela-back{color:white!important;font-size:25px;text-decoration:none}
+.sentinela-back span{display:block;transition:transform .18s ease}
+.sentinela-back:hover span,.sentinela-back:focus-visible span{transform:translateX(-4px)}
+body.effects-disabled .sentinela-back span{transform:none!important}
+body.sentinela-app .design-v4 .ref-hero-main{padding-right:0!important;min-width:0}
+body.sentinela-app .design-v4 .v4-admin-hero .v4-admin-copy{max-width:100%}
+body.sentinela-app .design-v4 .v4-admin-hero,body.sentinela-app .design-v4 .ref-hero{min-height:125px;background:linear-gradient(125deg,var(--surface),var(--surface-3))!important}
+body.sentinela-app .design-v4 :is(.ref-hero-emblem,.v4-stat-icon,.v4-status-icon),body.sentinela-app .design-v4 .admin-metrics .card b:before{background:color-mix(in srgb,var(--primary) 14%,var(--surface))!important;color:var(--primary)!important}
+body.sentinela-app .design-v4 .admin-metrics .card:nth-child(4) b:before{color:var(--success)!important}
+body.sentinela-app .design-v4 .admin-metrics .card:nth-child(5) b:before,body.sentinela-app .design-v4 .pharmacy-stat:nth-child(3) .v4-stat-icon{color:var(--warning)!important;background:color-mix(in srgb,var(--warning) 15%,var(--surface))!important}
+body.sentinela-app .design-v4 .admin-metrics .card:nth-child(6) b:before{color:var(--danger)!important;background:color-mix(in srgb,var(--danger) 15%,var(--surface))!important}
+body.sentinela-app .design-v4 .ref-hero-copy{border-color:var(--primary)!important}
+body.sentinela-app .design-v4 .ref-section-heading::first-letter,body.sentinela-app .design-v4 .v4-status-copy strong,body.sentinela-app .design-v4 .pharmacy-stat strong{color:var(--primary)!important}
+body.sentinela-app .design-v4 .tab.active{background:color-mix(in srgb,var(--primary) 13%,var(--surface))!important;color:var(--heading)!important;border-color:var(--primary)!important}
+body.sentinela-app .design-v4 :is(.btn-salvar,.btn-atender,.btn-tv,.ref-primary-action,.btn-adicionar-sintoma,.admin-quick-link,.btn-pdf),body.sentinela-app .design-v4 .coluna-fila>button:last-child,body.sentinela-app .design-v4 .pharmacy-secondary .btn,body.sentinela-app .sentinela-header #btnPontoManual{background:var(--primary)!important;color:#fff!important;border-color:transparent!important}
+body.sentinela-app .design-v4 .pharmacy-secondary .btn:last-child{background:var(--surface-3)!important;color:var(--heading)!important;border:1px solid var(--border)!important}
+body.sentinela-app .design-v4 :is(.table,.pharmacy-table-wrap) th{background:var(--surface-3)!important;color:var(--heading)!important}
+body.sentinela-app input[type=file]::file-selector-button{background:var(--surface-3)!important;color:var(--heading)!important;border-color:var(--border)!important}
+body.sentinela-app .sentinela-rail-button.is-active{outline:2px solid var(--primary)!important}
+body.sentinela-app .sentinela-nav-link:hover,body.sentinela-app .sentinela-nav-link.is-active{color:var(--primary)!important}
+body.sentinela-app .design-v4 .ref-clinical-grid>*,body.sentinela-app .design-v4 .admin-columns>*,body.sentinela-app .design-v4 .form-grid>*,body.sentinela-app .design-v4 .ref-form-grid>*,body.sentinela-app .design-v4 .grid-sinais>*,body.sentinela-app .design-v4 .pharmacy-workspace>*,body.sentinela-app .design-v4 .sintoma-add-grid>*{min-width:0;max-width:100%}
+body.sentinela-app .design-v4 :is(.card,.ref-card,.form-group,.pharmacy-stat,.sintoma-item,.fila-item,.card-paciente){min-width:0;overflow-wrap:anywhere}
+body.sentinela-app .design-v4 :is(input:not([type=checkbox]):not([type=radio]),select,textarea){min-width:0;max-width:100%;width:100%}
+body.sentinela-app .design-v4 .alertas-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr))!important}
+body.sentinela-app .design-v4 .alertas-grid label{display:flex;align-items:flex-start;gap:7px;min-width:0;white-space:normal;overflow-wrap:anywhere}
+body.sentinela-app .design-v4 .alertas-grid input{flex:0 0 auto;margin-top:3px;accent-color:var(--primary)}
+.v81-alert-caption{font-size:12px;color:var(--muted);margin:12px 0 7px;border-top:1px solid var(--border);padding-top:10px}
+body.sentinela-app .design-v4 .form-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+body.sentinela-app .sentinela-header-actions{max-width:100%;flex-wrap:wrap}
+body.sentinela-app .sentinela-user-chip{min-width:0;max-width:100%;overflow-wrap:anywhere}
+body.sentinela-app .sentinela-avatar{flex-shrink:0}
+body.sentinela-app .sentinela-dialog button,body.sentinela-app .ponto-modal button,body.sentinela-app .sentinela-password-modal button{white-space:normal;max-width:100%;overflow-wrap:anywhere}
+body.sentinela-app .sentinela-dialog-close{width:42px!important;padding:0!important;margin:0!important;background:var(--surface)!important;color:var(--heading)!important}
+body.sentinela-app .sentinela-settings-actions>*,body.sentinela-app .sentinela-toggle-row>*{min-width:0}
+body.sentinela-app .hint{color:var(--muted)!important}
+body.sentinela-app .btn.danger{background:var(--danger)!important;color:white!important}
+@media(max-width:760px){body.sentinela-app .sentinela-header .sentinela-btn{min-width:0!important;max-width:100%}body.sentinela-app .sentinela-header-title{min-width:0!important}body.sentinela-app .design-v4 .v4-triage-form-grid{grid-template-columns:1fr!important}body.sentinela-app .design-v4 .ref-clinical-grid{grid-template-columns:1fr!important}body.sentinela-app .design-v4 .sintoma-item{display:flex;flex-wrap:wrap}body.sentinela-app .design-v4 .v4-admin-hero{padding:18px!important}}
+@media(max-width:760px){body.sentinela-app .design-v4 .tabs{max-width:100%;min-width:0}body.sentinela-app .design-v4 .admin-columns{grid-template-columns:minmax(0,1fr)!important}body.sentinela-app .design-v4 .admin-metrics .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.sentinela-app .design-v4 .admin-columns .card{padding:14px!important}body.sentinela-app .sentinela-header-actions{gap:8px}body.sentinela-app .sentinela-header .bell-count{right:0;top:0}}

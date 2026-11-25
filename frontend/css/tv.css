@@ -34,3 +34,11 @@ body.tv-display{background:radial-gradient(ellipse at 75% 8%,#e5f5f0,transparent
 @media(max-width:630px){.tv-container{grid-template-columns:1fr;gap:12px;padding:12px}.right-panel{grid-row:1}.left-panel{grid-row:2;grid-template-columns:1fr 1.1fr;grid-template-rows:minmax(0,1fr)}.patient-box{min-height:300px}.logo-box{min-height:108px}.local-box,.history-box{min-height:170px}.local-number{font-size:68px}.tv-heading,.history-box .tv-heading{font-size:22px}.logo-text{font-size:23px}.tv-hospital-art{width:44%}}
 @media(max-width:420px){.left-panel{grid-template-columns:1fr}.patient-name{font-size:46px}#history-list li{flex-direction:row}.tv-hospital-art{width:40%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}
+
+body.tv-display{--tv-bg:var(--bg);--tv-surface:var(--surface);--tv-heading:var(--heading);--tv-text:var(--text);--tv-accent:var(--primary);--tv-teal:var(--heading);--tv-mint:var(--surface-3);--tv-border:var(--border);background:var(--bg);color:var(--text)}
+body.tv-display .patient-box,body.tv-display .logo-box{background:var(--surface)}
+body.tv-display .local-number{background:var(--primary);color:white}
+body.tv-display #history-list li,body.tv-display .tv-call-instruction{background:var(--surface-3)}
+body.tv-display .tv-cross,body.tv-display .tv-people-icon,body.tv-display .tv-history-icon,body.tv-display .tv-message-icon{color:var(--primary)}
+body.tv-display #conteudoMultimidia{background:var(--surface);color:var(--text)}
+body.tv-display .logo-box{justify-content:center}
