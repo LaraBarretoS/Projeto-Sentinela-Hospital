@@ -87,3 +87,15 @@ Correções de sobreposição de diálogos, temas, navegação e responsividade.
 - Correções visuais: emblema grande removido do login, navegação e estados normais de estoque acompanham o tema. Cores semânticas de alerta e risco clínico preservadas. Retorno de movimentação mostrado dentro do formulário, sem alerta nativo do navegador.
 
 Testes automatizados de estoque (sem dependências externas): `npm test`.
+
+## V8.3 — Catálogo e apresentações
+
+- O estoque passa a ser organizado por item e apresentação independente, com unidade própria. A seleção da apresentação é obrigatória para movimentações. As novas apresentações começam zeradas, sem fabricar saldos ou datas. O estoque prévio mantém seus IDs e lotes; os IDs originais representam as formas/unidades informadas no catálogo anterior, sem inferência de concentração.
+- Na entrada, a validade da embalagem é obrigatória para medicamentos e materiais com exigência de validade. Quando aplicável, é possível informar a data efetiva após abertura/preparo, confirmada pelo responsável conforme a bula, e o sistema utiliza a menor das datas. Não há prazo inventado por apresentação. Datas anteriores ao dia atual são recusadas em novas entradas. O dia de vencimento é exibido separadamente; lotes antigos vencidos permanecem registrados e bloqueados.
+- Lotes sem validade obrigatória ficam indisponíveis até conferência: expanda o lote e use o botão de conferência (✓) para registrar a data efetivamente verificada. Essa ação mantém histórico. Não informe datas fictícias para liberar estoque real.
+- Materiais sem data obrigatória podem ter data registrada quando presente na embalagem. Os novos itens não têm estoque mínimo definido (0). A lista do médico exclui materiais não medicamentosos. FIFO permanece dentro de cada apresentação.
+- Catálogo ilustrativo, não exaustivo, baseado em listas públicas de medicamentos e materiais hospitalares. As concentrações, fabricantes e embalagens comerciais específicas não são validados neste protótipo. Não usar para dispensação real.
+
+Referências: Anvisa, *Saiba como conservar medicamentos em casa* (2019); Ministério da Saúde, RENAME; HU Brasil, *Catálogo de Materiais de Uso Hospitalar*.
+
+Faça backup de `backend/sentinela-data.json` antes de atualizar. Execute `npm test` para verificar as regras de estoque e catálogo.

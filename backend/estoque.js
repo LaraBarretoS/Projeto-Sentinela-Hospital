@@ -30,6 +30,7 @@ function sincronizar(m){
 function situacao(l,hoje){
   if(!l.quantidade)return 'esgotado';
   if(!l.validade)return 'sem_validade';
+  if(l.validade===hoje)return 'vence_hoje';
   if(l.validade<hoje)return 'vencido';
   return (Date.parse(l.validade)-Date.parse(hoje))/DAY<=90?'proximo':'normal';
 }
@@ -37,8 +38,9 @@ function ordenar(lotes){return [...lotes].sort((a,b)=>(a.dataEntrada||'').locale
 function resumo(m,hoje=dataLocal()){
   sincronizar(m);
   const lotes=ordenar(m.lotes).map(l=>({...l,situacao:situacao(l,hoje)}));
+  const quantidadeSemValidade=m.exigeValidade===true?lotes.filter(l=>l.situacao==='sem_validade').reduce((s,l)=>s+l.quantidade,0):0;
   const quantidadeVencida=lotes.filter(l=>l.situacao==='vencido').reduce((s,l)=>s+l.quantidade,0);
-  return {...m,lotes,quantidadeDisponivel:m.quantidade-quantidadeVencida,quantidadeVencida,temValidadeProxima:lotes.some(l=>l.situacao==='proximo'),temValidadeDesconhecida:lotes.some(l=>l.situacao==='sem_validade')};
+  return {...m,lotes,quantidadeDisponivel:m.quantidade-quantidadeVencida-quantidadeSemValidade,quantidadeVencida,quantidadeSemValidade,temValidadeProxima:lotes.some(l=>['proximo','vence_hoje'].includes(l.situacao)),temValidadeDesconhecida:m.exigeValidade!==false&&lotes.some(l=>l.situacao==='sem_validade')};
 }
 function entrada(m,q,validade,now=new Date()){
   if(!quantidadeValida(q)||!Number.isSafeInteger(m.quantidade+Number(q)))throw Error('Informe uma quantidade inteira válida.');
@@ -47,8 +49,8 @@ function entrada(m,q,validade,now=new Date()){
 }
 function retirar(m,q,{hoje=dataLocal(),ajuste=false}={}){
   if(!quantidadeValida(q))throw Error('Informe uma quantidade inteira maior que zero.');
-  const elegiveis=ordenar(m.lotes).filter(l=>l.quantidade>0&&(ajuste||situacao(l,hoje)!=='vencido'));
-  if(elegiveis.reduce((s,l)=>s+l.quantidade,0)<Number(q))throw Error('Estoque disponível insuficiente. Lotes vencidos não podem sair para atendimento.');
+  const elegiveis=ordenar(m.lotes).filter(l=>l.quantidade>0&&(ajuste||(situacao(l,hoje)!=='vencido'&&!(m.exigeValidade===true&&!l.validade))));
+  if(elegiveis.reduce((s,l)=>s+l.quantidade,0)<Number(q))throw Error('Estoque disponível insuficiente. Lotes vencidos ou com validade obrigatória não conferida estão bloqueados.');
   let restante=Number(q);const detalhes=[];
   for(const l of elegiveis){if(!restante)break;const retirada=Math.min(l.quantidade,restante);l.quantidade-=retirada;restante-=retirada;detalhes.push({loteId:l.id,dataEntrada:l.dataEntrada,validade:l.validade,quantidade:retirada});}
   sincronizar(m);return detalhes;

@@ -20,3 +20,6 @@
 
 /* Estilos extraídos dos atributos inline da página. */
 .extracted-57f9e31d { color:var(--muted) }
+
+/* V8.3 — catálogo e apresentação */
+.pharmacy-tools{grid-template-columns:1fr 1fr!important}.pharmacy-tools #searchMed{grid-column:1/-1}.pharmacy-form small,.pharmacy-table-wrap td small{display:block;margin-top:4px;color:var(--muted);font-size:12px}.pharmacy-form select{width:100%;min-width:0}.pharmacy-form [hidden],.conferencia[hidden]{display:none!important}.conferencia{border:1px solid var(--border);border-radius:12px;padding:12px;margin:14px 0;display:grid;gap:8px}.conferencia h3,.conferencia p{margin:0}.conferencia input{width:100%}.lotes-table [data-conferir]{display:inline-grid;margin-left:6px;width:30px;height:30px}.med-name>div{min-width:0;overflow-wrap:anywhere}.pharmacy-table-wrap{max-height:620px;overflow:auto}.pharmacy-table-wrap>table>thead{position:sticky;top:0;z-index:2}.pharmacy-table-wrap>table>thead th{background:var(--surface-3)!important}
